@@ -384,7 +384,7 @@ function renderTracks(){
     const meta=getReleaseMeta(t);
     const num=String(i+1).padStart(2,'0');
     const coverSrc=getTrackCoverSrc(t); const maskedClass = meta.showMask ? 'is-masked' : '';
-    const coverHtml=coverSrc?`<img src="${coverSrc}" alt="${t.title||''}" class="${maskedClass}">`:'<span class="cover-ph-txt">Cover</span>';
+    const coverHtml=coverSrc?`<img src="${coverSrc}" alt="${t.title||''}" style="${meta.showMask ? 'filter:blur(20px) saturate(.7);transform:scale(1.08);' : ''}">`:'<span class="cover-ph-txt">Cover</span>';
     const dur=formatTime(parseTime(t.sampleEnd)-parseTime(t.sampleStart));
     const chip = `<span class="release-chip">${meta.icon ? getLockIcon() : ''}<span>${meta.label}</span></span>`;
     const mask = meta.showMask ? `<div class="cover-mask"><span class="lock-icon">${getLockIcon()}</span></div>` : '';
