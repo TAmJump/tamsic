@@ -15,7 +15,7 @@ function parseDate(str){const [y,m,d]=String(str).split("-").map(Number);return 
 function isLoggedIn(){try{if(window.TAMSICAuth&&typeof window.TAMSICAuth.isLoggedIn==="function")return !!window.TAMSICAuth.isLoggedIn();return !!localStorage.getItem("tamsic_current_user");}catch(e){return false;}}
 function formatJP(str){const [y,m,d]=String(str).split("-");return `${y}.${m}.${d}`;}
 function getState(title){
- const t=config.tracks[title]; if(!t)return"full";
+ const t=config.tracks[title]||config.tracks[title.toUpperCase()]||config.tracks[title.toLowerCase()]||config.tracks[title.charAt(0).toUpperCase()+title.slice(1)]; if(!t)return"full";
  const now=new Date(), sample=parseDate(t.sample), release=parseDate(t.release), early=new Date(release); early.setDate(early.getDate()-config.earlyDays);
  if(now<sample)return"locked";
  if(now>=release)return"full";
@@ -23,7 +23,7 @@ function getState(title){
  return"preview";
 }
 function getMeta(title){
- const t=config.tracks[title]; if(!t)return{label:"NOW AVAILABLE",note:"",showMask:false,canSample:true,canFull:true,icon:false};
+ const t=config.tracks[title]||config.tracks[title.toUpperCase()]||config.tracks[title.toLowerCase()]||config.tracks[title.charAt(0).toUpperCase()+title.slice(1)]; if(!t)return{label:"NOW AVAILABLE",note:"",showMask:false,canSample:true,canFull:true,icon:false};
  const st=getState(title);
  if(st==="locked") return {state:st,label:"COMING SOON",note:`${formatJP(t.sample)} sample / ${formatJP(t.release)} release`,showMask:true,canSample:false,canFull:false,icon:true};
  if(st==="preview") return {state:st,label:"MEMBER EARLY ACCESS",note:`会員は一般公開の7日前から先行視聴できます。 / ${formatJP(t.release)} public release`,showMask:true,canSample:false,canFull:false,icon:true};

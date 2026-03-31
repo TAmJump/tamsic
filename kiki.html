@@ -401,9 +401,9 @@ function renderTracks(){
     const meta=getReleaseMeta(t);
     const num=String(i+1).padStart(2,'0');
     const coverSrc=getTrackCoverSrc(t); const maskedClass = meta.showMask ? 'is-masked' : '';
-    const coverDisplay = meta.showMask
-      ? `<div style="width:100%;aspect-ratio:1;background:#F0EFE8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:1px solid #E0E0D8;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:36px;height:36px;color:#9A9A92"><rect x="5" y="10" width="14" height="11" rx="2.5"/><path d="M8.5 10V7.5a3.5 3.5 0 1 1 7 0V10"/><circle cx="12" cy="15.5" r="1" fill="currentColor" stroke="none"/></svg><span style="font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:#9A9A92;">Locked</span></div>`
-      : (coverSrc ? `<img src="${coverSrc}" alt="${t.title||''}" style="width:100%;height:100%;object-fit:cover;">` : '<span class="cover-ph-txt">Cover</span>');
+    const coverSrcHtml = coverSrc ? `<img src="${coverSrc}" alt="${t.title||''}" style="${meta.showMask ? 'filter:blur(16px) saturate(.6);transform:scale(1.1);' : ''}width:100%;height:100%;object-fit:cover;">` : '<span class="cover-ph-txt">Cover</span>';
+    const lockOverlay = meta.showMask ? `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.08);z-index:2;"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' style='width:32px;height:32px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.4));'><rect x='5' y='10' width='14' height='11' rx='2.5'/><path d='M8.5 10V7.5a3.5 3.5 0 1 1 7 0V10'/><circle cx='12' cy='15.5' r='1' fill='white' stroke='none'/></svg></div>` : '';
+    const coverDisplay = coverSrcHtml + lockOverlay;
     const dur=formatTime(parseTime(t.sampleEnd)-parseTime(t.sampleStart));
     const chip = `<span class="release-chip">${meta.icon ? getLockIcon() : ''}<span>${meta.label}</span></span>`;
     const fullMsg = meta.canFull ? '' : `<div class="full-locked-msg">${meta.note}</div>`;
