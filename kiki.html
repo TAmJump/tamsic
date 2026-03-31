@@ -167,12 +167,15 @@ footer{background:var(--text);color:#fff;padding:48px 64px;display:flex;justify-
 </footer>
 
 <script>
+
 let _tracks=[];
 
-function releaseMeta(track){ return window.TAMSICRelease ? TAMSICRelease.getMeta(track.title||'') : {status:'full',label:'NOW AVAILABLE',note:''}; }
-function sampleAllowed(track){ return window.TAMSICRelease ? TAMSICRelease.canPlaySample(track.title||'') : true; }
-function fullAllowed(track){ return window.TAMSICRelease ? TAMSICRelease.canPlayFull(track.title||'') : true; }
-function externalYouTube(url){ if(url){ window.open(url, '_blank', 'noopener'); } }
+function getReleaseMeta(track){
+  if(!window.TAMSICRelease || !track) return {label:'NOW AVAILABLE',note:'',showMask:false,canSample:true,canFull:true,icon:false};
+  return window.TAMSICRelease.getMeta(track.title || '');
+}
+function getLockIcon(){ return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 10V7.75a3.5 3.5 0 1 1 7 0V10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="5" y="10" width="14" height="10" rx="2.75" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="15" r="1.1" fill="currentColor"/></svg>`; }
+
 
 
 function injectCommerceStyles(){
@@ -235,20 +238,21 @@ function injectCommerceStyles(){
   .lyrics-stanza{break-inside:avoid;page-break-inside:avoid;margin:0 0 1.35em;}
   @media (max-width: 900px){.coin-pack-grid{grid-template-columns:1fr;}.coin-balance{width:100%;}.coin-title{font-size:22px;}.full-box{grid-template-columns:1fr;}.full-side{order:-1;}.full-lyrics{padding:20px 20px;max-width:720px;}.full-lyrics-inner{column-count:1;column-gap:0;}}
   
-  .release-hero{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;margin:0 0 26px;padding:22px 0 6px;}
-  .release-kicker{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
-  .release-copy{font-size:14px;line-height:1.8;color:#6d6d66;}
-  .release-pill{display:inline-flex;align-items:center;justify-content:center;min-width:180px;height:42px;padding:0 18px;border:1px solid rgba(11,29,53,.10);border-radius:999px;background:#fff;color:var(--text);font-size:11px;letter-spacing:.18em;text-transform:uppercase;}
+  .release-hero{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin:0 0 26px;padding:24px 0 6px;}
+  .release-hero-copy{max-width:720px;}
+  .release-eyebrow{margin:0 0 8px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);}
+  .release-title{margin:0 0 8px;font-size:18px;line-height:1.3;color:var(--text);}
+  .release-note{margin:0;line-height:1.8;color:var(--mid);}
+  .release-actions{display:flex;gap:12px;flex-wrap:wrap;}
+  .release-pill{display:inline-flex;align-items:center;justify-content:center;min-width:180px;height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(11,29,53,.10);background:#fff;color:var(--text);text-decoration:none;font-size:12px;letter-spacing:.18em;text-transform:uppercase;}
   .cover-wrap{position:relative;overflow:hidden;}
-  .cover-wrap.is-locked img{filter:blur(16px) saturate(.9) brightness(.94);transform:scale(1.06);}
-  .cover-lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;background:linear-gradient(to bottom, rgba(255,255,255,.06), rgba(255,255,255,.10));}
-  .cover-lock-badge{width:74px;height:74px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.88);box-shadow:0 10px 24px rgba(11,29,53,.08);}
-  .cover-lock-badge svg{width:40px;height:40px;}
-  .release-line{margin:10px 0 0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);line-height:1.8;}
-  .member-note{margin:8px 0 0;font-size:12px;line-height:1.8;color:#7d7468;}
-  .mode-btn.external-link{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
-  .mode-btn.premium.is-locked{opacity:.58;}
-  .full-lock-copy{margin-top:12px;padding:14px 16px;border:1px solid rgba(11,29,53,.08);border-radius:16px;background:rgba(255,255,255,.82);color:#6d6d66;line-height:1.8;font-size:14px;}
+  .cover-mask{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:flex-end;padding:16px;background:rgba(255,255,255,.14);backdrop-filter:blur(12px);z-index:2;}
+  .cover-mask .lock-icon{width:24px;height:24px;color:#0f172a;opacity:.9;}
+  .release-chip{display:inline-flex;align-items:center;gap:8px;min-height:28px;padding:0 12px;border-radius:999px;background:rgba(11,29,53,.88);color:#fff;font-size:10px;letter-spacing:.14em;text-transform:uppercase;}
+  .release-chip svg{width:14px;height:14px;display:block;}
+  .track-release-note{margin:10px 0 0;font-size:11px;letter-spacing:.06em;color:var(--mid);line-height:1.8;}
+  .mode-btn.premium.is-restricted{opacity:.56;cursor:not-allowed;}
+  .full-locked-msg{margin-top:12px;padding:14px 16px;border:1px solid rgba(11,29,53,.08);border-radius:16px;background:rgba(255,255,255,.82);color:var(--mid);line-height:1.8;font-size:14px;}
 `;
   document.head.appendChild(s);
 }
@@ -329,15 +333,16 @@ function chargeCoins(packId){
 function unlockFullTrack(trackId){
   const track=_tracks.find(x=>x.id===trackId);
   if(!track) return;
-  if(!fullAllowed(track)){
-    alert('会員は一般公開の7日前から先行視聴できます。');
+  const meta=getReleaseMeta(track);
+  if(!meta.canFull){
+    alert(meta.note || 'フル試聴はまだ利用できません。');
     return;
   }
   const cost=Number(track.price||0);
   const spend=TAMSICCoins.spendCoins(track.id,cost);
   if(!spend.ok){
     if(spend.loginRequired){
-      window.location.href=`login.html?redirect=${encodeURIComponent(location.pathname.split('/').pop() || 'index.html')}`;
+      window.location.href=`login.html?redirect=${encodeURIComponent(location.pathname.split('/').pop() || 'kiki.html')}`;
       return;
     }
     alert(`コインが不足しています。
@@ -375,79 +380,78 @@ async function init(){
   window.addEventListener('storage',()=>refreshCoinUI());
 }
 
-
 function renderTracks(){
   const c=document.getElementById('tracks-container');
   if(!_tracks.length){c.innerHTML='<div class="empty-msg">Coming Soon — 楽曲を準備中です。</div>';return;}
-  const firstMeta = releaseMeta(_tracks[0]);
-  c.innerHTML = `
+  const firstMeta = getReleaseMeta(_tracks[0]);
+  const hero = `
     <div class="release-hero">
-      <div>
-        <div class="release-kicker">TAMSIC release control</div>
-        <div class="coin-title">${firstMeta.label}</div>
-        <div class="release-copy">各曲は公開スケジュールに合わせて開きます。会員は一般公開の7日前から先行視聴できます。</div>
+      <div class="release-hero-copy">
+        <p class="release-eyebrow">TAMSIC RELEASE CONTROL</p>
+        <h3 class="release-title">${firstMeta.label}</h3>
+        <p class="release-note">${firstMeta.note}</p>
       </div>
-      <div class="release-pill">${firstMeta.label}</div>
-    </div>` + renderCoinPanel() + _tracks.map((t,i)=>{
-      const num=String(i+1).padStart(2,'0');
-      const coverSrc=getTrackCoverSrc(t);
-      const meta=releaseMeta(t);
-      const coverHtml=coverSrc?`<img src="${coverSrc}" alt="${t.title||''}">`:'<span class="cover-ph-txt">Cover</span>';
-      const dur=formatTime(parseTime(t.sampleEnd)-parseTime(t.sampleStart));
-      const lockedClass = meta.status === 'locked' ? ' is-locked' : '';
-      const lockOverlay = meta.status === 'locked' ? `<div class="cover-lock"><div class="cover-lock-badge">${TAMSICRelease.lockSvg('#111')}</div></div>` : '';
-      const premiumLabel = meta.status === 'member' ? '会員先行フル試聴' : (meta.status === 'full' ? `フル試聴 ${t.price||30}コイン` : 'COMING SOON');
-      const premiumClass = meta.status === 'member' || meta.status === 'full' ? '' : ' is-locked';
-      const fullLockCopy = meta.status === 'member' || meta.status === 'full' ? '' : `<div class="full-lock-copy">会員は一般公開の7日前から先行視聴できます。</div>`;
-      const ytButton = t.youtubeUrl ? `<a class="mode-btn external-link" href="${t.youtubeUrl}" target="_blank" rel="noopener">YouTube</a>` : `<span class="mode-btn external-link" style="opacity:.45;pointer-events:none;">YouTube</span>`;
-      return `<div class="track-block" id="track-${t.id}">
-        <div class="tb-cover">
-          <div class="cover-wrap${lockedClass}">${coverHtml}${lockOverlay}</div>
-          <span class="tb-num">${num}</span>
+      <div class="release-actions">
+        <span class="release-pill">${firstMeta.label}</span>
+        <a href="mypage.html" class="release-pill">MY PAGE</a>
+      </div>
+    </div>`;
+  c.innerHTML=hero+renderCoinPanel()+_tracks.map((t,i)=>{
+    const meta=getReleaseMeta(t);
+    const num=String(i+1).padStart(2,'0');
+    const coverSrc=getTrackCoverSrc(t); const blurStyle = meta.showMask ? 'filter:blur(18px) saturate(.8); transform:scale(1.06);' : '';
+    const coverHtml=coverSrc?`<img src="${coverSrc}" alt="${t.title||''}" style="${blurStyle}">`:'<span class="cover-ph-txt">Cover</span>';
+    const dur=formatTime(parseTime(t.sampleEnd)-parseTime(t.sampleStart));
+    const chip = `<span class="release-chip">${meta.icon ? getLockIcon() : ''}<span>${meta.label}</span></span>`;
+    const mask = meta.showMask ? `<div class="cover-mask"><span class="lock-icon">${getLockIcon()}</span></div>` : '';
+    const fullMsg = meta.canFull ? '' : `<div class="full-locked-msg">${meta.note}</div>`;
+    return`<div class="track-block" id="track-${t.id}">
+      <div class="tb-cover">
+        <div class="cover-wrap">${coverHtml}${mask}</div>
+        <span class="tb-num">${num}</span>
+      </div>
+      <div class="tb-body">
+        <div class="tb-meta">${t.isNew?'<span class="badge-new">New</span>':''}<span class="tb-type">Single</span></div>
+        <div class="tb-title">${t.title||'TRACK TITLE'}</div>
+        <div class="tb-sub">kiki</div>
+        <div class="track-release-note">${chip}<div style="margin-top:8px;">${meta.note}</div></div>
+        <div class="player-modes">
+          <button class="mode-btn active" onclick="setMode('${t.id}','site',this)">▶ サイトで聴く</button>
+          ${t.youtubeUrl ? `<button class="mode-btn" onclick="window.open('go.html?url='+encodeURIComponent('${t.youtubeUrl}'),'_blank')">YouTube ↗</button>` : ''}
+          <button class="mode-btn premium ${meta.canFull ? '' : 'is-restricted'}" onclick="setMode('${t.id}','full',this)">${meta.canFull ? `フル試聴 ${t.price||30}コイン` : meta.label}</button>
         </div>
-        <div class="tb-body">
-          <div class="tb-meta">${t.isNew?'<span class="badge-new">New</span>':''}<span class="tb-type">Single</span></div>
-          <div class="tb-title">${t.title||'TRACK TITLE'}</div>
-          <div class="tb-sub">kiki</div>
-          <div class="release-line">${meta.note}</div>
-          <div class="member-note">${meta.status==='member' ? 'MEMBER EARLY ACCESS' : (meta.status==='preview' ? 'sample available now' : '')}</div>
-          <div class="player-modes">
-            <button class="mode-btn active" onclick="setMode('${t.id}','site',this)">▶ サイトで聴く</button>
-            ${ytButton}
-            <button class="mode-btn premium${premiumClass}" onclick="setMode('${t.id}','full',this)">${premiumLabel}</button>
-          </div>
-          <div id="panel-site-${t.id}">
-            <div class="site-player">
-              <div class="sp-bar-wrap" data-bar-id="${t.id}" onclick="scrub(event,this,'${t.id}')">
-                <div class="sp-bar-bg"></div><div class="sp-bar-fill" style="width:0%"></div><div class="sp-dot" style="left:0%"></div>
-              </div>
-              <div class="sp-controls">
-                <button class="sp-btn" onclick="prevT(${i})" title="5秒戻す">&#9664;&#9664;</button>
-                <button class="sp-play" data-play-id="${t.id}" onclick="playT('${t.id}')">${meta.status==='locked' ? TAMSICRelease.lockSvg('#111') : '&#9654;'} </button>
-                <button class="sp-btn" onclick="nextT(${i})" title="5秒進む">&#9654;&#9654;</button>
-                <span class="sp-time" data-time-id="${t.id}">0:00 / ${dur}</span>
-              </div>
+        <div id="panel-site-${t.id}">
+          <div class="site-player">
+            <div class="sp-bar-wrap" data-bar-id="${t.id}" onclick="scrub(event,this,'${t.id}')">
+              <div class="sp-bar-bg"></div><div class="sp-bar-fill" style="width:0%"></div><div class="sp-dot" style="left:0%"></div>
             </div>
-          </div>
-          <div class="full-panel" id="panel-full-${t.id}" style="display:none">
-            <div class="full-box">
-              <div class="full-main">
-                <div class="full-kicker">${meta.label.toLowerCase()}</div>
-                <div class="full-desc">sample は無料です。<strong>フルは1回試聴のみ</strong>で、試聴ごとにコインを消費します。</div>
-                <div class="full-note">ダウンロード不可 / ブラウザ内再生のみ / 再度再生する場合は再度コインを消費</div>
-                ${fullLockCopy}
-                <div class="full-player-mount" id="full-player-${t.id}"></div>
-                <div class="full-lyrics" id="lyrics-${t.id}" style="display:none;--lyrics-bg-image:url('${coverSrc||''}')"><div class="full-lyrics-title">lyrics</div><div class="full-lyrics-inner">${(t.lyrics||'').split(/\n\s*\n/).map(s=>'<p class="lyrics-stanza">'+s.trim().replace(/\n/g,'<br>')+'</p>').join('')}</div></div>
-              </div>
-              <div class="full-side">
-                <div class="full-price"><span class="coin-num" data-track-cost="${t.price||30}">${t.price||30}</span><span class="coin-unit">coin / one listen</span></div>
-                <div class="full-wallet-line">現在の残高：<strong><span data-track-balance>${TAMSICCoins.getBalance()}</span>コイン</strong></div>
-                <button class="full-buy" onclick="unlockFullTrack('${t.id}')">${premiumLabel}</button>
-              </div>
+            <div class="sp-controls">
+              <button class="sp-btn" onclick="prevT(${i})" title="5秒戻す">&#9664;&#9664;</button>
+              <button class="sp-play" data-play-id="${t.id}" onclick="playT('${t.id}')">&#9654;</button>
+              <button class="sp-btn" onclick="nextT(${i})" title="5秒進む">&#9654;&#9654;</button>
+              <span class="sp-time" data-time-id="${t.id}">0:00 / ${dur}</span>
             </div>
           </div>
         </div>
-      </div>`;
+        <div class="full-panel" id="panel-full-${t.id}" style="display:none">
+          <div class="full-box">
+            <div class="full-main">
+              <div class="full-kicker">${meta.label}</div>
+              <div class="full-desc">${meta.canFull ? 'sample は無料です。<strong>フルは1回試聴のみ</strong>で、試聴ごとにコインを消費します。' : '公開状態に応じてフル試聴を制御しています。'}</div>
+              <div class="full-note">${meta.canFull ? 'ダウンロード不可 / ブラウザ内再生のみ / 再度再生する場合は再度コインを消費' : meta.note}</div>
+              ${fullMsg}
+              <div class="full-player-mount" id="full-player-${t.id}"></div>
+              <div class="full-lyrics" id="lyrics-${t.id}" style="display:none;--lyrics-bg-image:url('${coverSrc||''}')"><div class="full-lyrics-title">lyrics</div><div class="full-lyrics-inner">${(t.lyrics||'').split(/\n\s*\n/).map(s=>'<p class="lyrics-stanza">'+s.trim().replace(/\n/g,'<br>')+'</p>').join('')}</div></div>
+            </div>
+            <div class="full-side">
+              <div class="full-price"><span class="coin-num" data-track-cost="${t.price||30}">${t.price||30}</span><span class="coin-unit">coin / one listen</span></div>
+              <div class="full-wallet-line">現在の残高：<strong><span data-track-balance>${TAMSICCoins.getBalance()}</span>コイン</strong></div>
+              <button class="full-buy" onclick="unlockFullTrack('${t.id}')">${meta.canFull ? `${t.price||30}コインで1回フル試聴` : meta.label}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
   }).join('');
 }
 function renderGallery(){
@@ -456,16 +460,15 @@ function renderGallery(){
   g.innerHTML=photos.map(src=>`<div class="g-item"><img src="${src}" alt="kiki" style="width:100%;height:100%;object-fit:cover;"></div>`).join('');
 }
 
-function ytEmbed(url){return ytPh();}
-function ytPh(){return``;}
+function ytEmbed(url){ return ''; }
+function ytPh(){ return ''; }
 
 function setMode(id,mode,btn){
-  if(mode==='full'){
-    const t=_tracks.find(x=>x.id===id);
-    if(t && !fullAllowed(t)){
-      alert('会員は一般公開の7日前から先行視聴できます。');
-      return;
-    }
+  const track=_tracks.find(x=>x.id===id);
+  const meta = track ? getReleaseMeta(track) : {canFull:true};
+  if(mode==='full' && !meta.canFull){
+    alert(meta.note || 'フル試聴はまだ利用できません。');
+    mode='site';
   }
   ['site','full'].forEach(m=>{const el=document.getElementById(`panel-${m}-${id}`);if(el)el.style.display=m===mode?'block':'none';});
   btn.closest('.player-modes').querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
@@ -474,8 +477,9 @@ function setMode(id,mode,btn){
 }
 function playT(id){
   const t=_tracks.find(x=>x.id===id);if(!t)return;
-  if(!sampleAllowed(t)){
-    alert('この曲はまだ公開前です。');
+  const meta=getReleaseMeta(t);
+  if(!meta.canSample){
+    alert(meta.note || 'この曲はまだ試聴できません。');
     return;
   }
   const url=getTrackAudioSrc(t);
@@ -508,6 +512,7 @@ function nextT(i){
 
 init();
 renderGallery();
+
 </script>
 </body>
 </html>

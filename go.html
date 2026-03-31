@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redirecting... | TAMSIC</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root { --gold: #C4960E; --dark: #0E0E0E; --bg: #FAFAF7; --mid: #7A7A72; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--dark);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 40px;
+}
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: .35em;
+  color: var(--dark);
+  text-decoration: none;
+}
+.logo em { color: var(--gold); font-style: normal; }
+.card {
+  text-align: center;
+  max-width: 420px;
+}
+.label {
+  font-size: 10px;
+  letter-spacing: .45em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+.message {
+  font-size: 15px;
+  color: var(--mid);
+  line-height: 1.8;
+  margin-bottom: 32px;
+}
+.dest {
+  font-size: 12px;
+  color: var(--mid);
+  word-break: break-all;
+  margin-bottom: 28px;
+  padding: 12px 16px;
+  border: 1px solid #E6E6E0;
+  background: #F5F5F2;
+}
+.btn-go {
+  display: inline-block;
+  padding: 14px 36px;
+  background: var(--dark);
+  color: #fff;
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background .2s;
+}
+.btn-go:hover { background: #333; }
+.btn-back {
+  display: block;
+  margin-top: 16px;
+  font-size: 11px;
+  letter-spacing: .2em;
+  color: var(--mid);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color .2s;
+}
+.btn-back:hover { color: var(--gold); }
+.spinner {
+  width: 36px; height: 36px;
+  border: 2px solid #E6E6E0;
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="logo">TAM<em>S</em>IC</a>
+
+<div class="card">
+  <div class="label">External Link</div>
+  <div class="spinner" id="spinner"></div>
+  <p class="message">外部サービスへ移動します。<br>TAMSICのサイトを離れます。</p>
+  <div class="dest" id="dest-url">読み込み中...</div>
+  <a href="#" class="btn-go" id="go-btn" target="_blank" rel="noopener noreferrer">このまま移動する</a>
+  <a href="javascript:history.back()" class="btn-back">← TAMSICに戻る</a>
+</div>
+
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const url = params.get('url');
+
+  if (!url) {
+    document.getElementById('dest-url').textContent = 'URLが指定されていません。';
+    document.getElementById('spinner').style.display = 'none';
+    return;
+  }
+
+  // 許可するドメインのホワイトリスト
+  const ALLOWED = [
+    'youtube.com', 'youtu.be', 'www.youtube.com',
+    'music.youtube.com', 'open.spotify.com',
+    'twitter.com', 'x.com', 'instagram.com',
+    'tamjump.com', 'square.link'
+  ];
+
+  let destHost = '';
+  try {
+    destHost = new URL(url).hostname.replace(/^www\./, '');
+  } catch (e) {
+    document.getElementById('dest-url').textContent = '無効なURLです。';
+    document.getElementById('spinner').style.display = 'none';
+    return;
+  }
+
+  const allowed = ALLOWED.some(d => destHost === d || destHost.endsWith('.' + d));
+  if (!allowed) {
+    document.getElementById('dest-url').textContent = 'このリンクへの移動は許可されていません。';
+    document.getElementById('spinner').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('dest-url').textContent = url;
+  document.getElementById('go-btn').href = url;
+
+  // 2秒後に自動リダイレクト
+  setTimeout(() => {
+    window.location.href = url;
+  }, 2000);
+})();
+</script>
+</body>
+</html>
