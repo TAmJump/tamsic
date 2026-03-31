@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kiki | TAMSIC</title>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Nunito:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="tamsic-content.js"></script>
+<script src="purchase-config.js"></script>
+<script src="auth.js"></script>
+<script src="release-control.js"></script>
+<script src="tamsic.js"></script>
+<style>
+:root{--bg:#FDF8F4;--text:#221418;--accent:#C85A72;--accent2:#E8A0B0;--light:#EEE0D8;--mid:#9A7068;--white:#FFFFFF;--soft:#F7EEE8;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font-weight:300;overflow-x:hidden;}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:20px 64px;background:rgba(253,248,244,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--light);}
+.nav-back{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);text-decoration:none;font-weight:400;transition:color .25s;}
+.nav-back:hover{color:var(--accent);}
+.nav-title{font-family:'Bodoni Moda',serif;font-style:italic;font-size:22px;font-weight:400;letter-spacing:.06em;}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color .25s;}
+.nav-links a:hover{color:var(--accent);}
+/* Hero */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 64px 80px;position:relative;overflow:hidden;}
+.decor-l{position:absolute;left:64px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--light) 20%,var(--light) 80%,transparent);}
+.decor-r{position:absolute;right:64px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--light) 20%,var(--light) 80%,transparent);}
+.hero-orn{width:1px;height:64px;background:linear-gradient(to bottom,transparent,var(--accent));margin:0 auto 40px;opacity:0;animation:dIn 1s cubic-bezier(.22,1,.36,1) forwards .1s;}
+.hero-num{font-size:10px;letter-spacing:.5em;color:var(--accent);text-transform:uppercase;margin-bottom:24px;opacity:0;animation:dIn 1s cubic-bezier(.22,1,.36,1) forwards .2s;}
+.hero-name{font-family:'Bodoni Moda',serif;font-style:italic;font-weight:900;font-size:clamp(88px,16vw,200px);line-height:.82;letter-spacing:-.01em;margin-bottom:48px;opacity:0;animation:dIn 1s cubic-bezier(.22,1,.36,1) forwards .35s;}
+.hero-rule{display:flex;align-items:center;gap:20px;margin:0 auto 40px;opacity:0;animation:dIn 1s cubic-bezier(.22,1,.36,1) forwards .5s;}
+.rule-line{width:56px;height:1px;background:var(--accent2);}
+.rule-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);}
+.hero-bio{font-size:15px;line-height:2.1;color:var(--mid);max-width:400px;opacity:0;animation:dIn 1s cubic-bezier(.22,1,.36,1) forwards .62s;}
+@keyframes dIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+/* Feature */
+.feature{display:grid;grid-template-columns:3fr 2fr;min-height:70vh;}
+.feature-photo{background:var(--light);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;min-height:60vh;}
+.feature-photo-bg{position:absolute;inset:0;background:linear-gradient(160deg,#EEE0D8 0%,#DEC8BC 60%,#CEB0A4 100%);}
+.feature-photo-frame{position:relative;z-index:1;width:75%;max-width:400px;aspect-ratio:3/4;overflow:hidden;}
+.feature-photo-frame img{width:100%;height:100%;object-fit:cover;}
+.feature-photo-ph{display:flex;align-items:center;justify-content:center;height:100%;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--mid);background:rgba(255,255,255,.4);}
+.feature-text{background:var(--accent);padding:72px 56px;display:flex;flex-direction:column;justify-content:center;}
+.feature-text h3{font-family:'Bodoni Moda',serif;font-style:italic;font-size:40px;font-weight:400;color:#fff;line-height:1.1;margin-bottom:28px;}
+.feature-text p{font-size:14px;line-height:2;color:rgba(255,255,255,.8);max-width:280px;margin-bottom:48px;}
+.fstat-row{display:flex;gap:32px;}
+.fstat{border-left:1px solid rgba(255,255,255,.3);padding-left:20px;}
+.fstat-num{font-family:'Bodoni Moda',serif;font-size:36px;color:#fff;line-height:1;margin-bottom:4px;}
+.fstat-label{font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.6);text-transform:uppercase;}
+/* Discography */
+.discography{padding:100px 64px;background:var(--white);}
+.sec-header{text-align:center;margin-bottom:64px;}
+.sec-tag{font-size:10px;letter-spacing:.5em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+.sec-title{font-family:'Bodoni Moda',serif;font-style:italic;font-size:clamp(36px,5vw,56px);font-weight:400;}
+/* Track Block (kiki) */
+.track-block{display:grid;grid-template-columns:180px 1fr;gap:36px;padding:40px 0;border-bottom:1px solid var(--light);align-items:start;}
+.tb-cover{position:relative;}
+.cover-wrap{width:100%;aspect-ratio:1;background:var(--soft);border:1px solid var(--light);overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.cover-wrap img{width:100%;height:100%;object-fit:cover;}
+.cover-ph-txt{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);}
+.tb-num{position:absolute;bottom:-14px;right:-14px;font-family:'Bodoni Moda',serif;font-style:italic;font-size:48px;font-weight:900;color:var(--light);line-height:1;pointer-events:none;}
+.tb-body{padding-top:4px;}
+.tb-meta{display:flex;gap:10px;align-items:center;margin-bottom:10px;}
+.badge-new{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);padding:3px 12px;}
+.tb-type{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);}
+.tb-title{font-family:'Bodoni Moda',serif;font-size:22px;font-weight:700;margin-bottom:6px;}
+.tb-sub{font-size:11px;color:var(--mid);letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px;}
+.player-modes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.mode-btn{font-size:10px;letter-spacing:.15em;text-transform:uppercase;padding:9px 20px;border:1px solid var(--light);background:var(--white);color:var(--mid);cursor:pointer;transition:all .22s;font-family:'Nunito',sans-serif;}
+.mode-btn.active,.mode-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(200,90,114,.06);}
+.mode-btn.premium{border-color:#c8960a;color:#8a6500;}
+.mode-btn.premium.active,.mode-btn.premium:hover{background:rgba(200,150,10,.08);}
+.site-player{background:#221418;padding:18px 22px;}
+.sp-bar-wrap{position:relative;height:4px;margin-bottom:14px;cursor:pointer;}
+.sp-bar-bg{position:absolute;inset:0;background:rgba(255,255,255,.15);border-radius:2px;}
+.sp-bar-fill{position:absolute;top:0;bottom:0;left:0;background:var(--accent);border-radius:2px;transition:width .1s linear;}
+.sp-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(200,90,114,.3);transition:left .1s linear;}
+.sp-controls{display:flex;align-items:center;gap:16px;}
+.sp-btn{background:none;border:none;color:rgba(255,255,255,.45);font-size:13px;cursor:pointer;padding:0;transition:color .2s;}
+.sp-btn:hover{color:#fff;}
+.sp-play{width:36px;height:36px;border-radius:50%;background:var(--accent);border:none;color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.sp-play:hover{background:#a03050;}
+.sp-time{margin-left:auto;font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.05em;}
+.yt-panel,.full-panel{margin-top:4px;}
+.yt-embed{width:100%;aspect-ratio:16/9;border:none;}
+.yt-placeholder{background:#111;aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;color:rgba(255,255,255,.5);font-size:12px;line-height:1.8;}
+.yt-icon{width:56px;height:40px;background:#f00;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;}
+.full-box{border:1px solid #c8960a;padding:28px 32px;background:rgba(200,150,10,.03);display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+.full-desc{font-size:12px;color:var(--mid);flex:1;line-height:1.8;}
+.lyrics-preview{margin:14px 0;padding:12px 14px;background:rgba(255,255,255,.55);font-size:12px;line-height:1.8;color:inherit;border:1px dashed rgba(0,0,0,.12);}
+.full-note{font-size:11px;line-height:1.7;color:rgba(0,0,0,.55);margin-bottom:14px;}
+.full-price{font-family:'Bodoni Moda',serif;font-size:28px;font-weight:700;color:#8a6500;}
+.full-buy{font-size:10px;letter-spacing:.2em;text-transform:uppercase;padding:12px 24px;background:#c8960a;border:none;color:#fff;cursor:pointer;transition:background .22s;}
+.full-buy:hover{background:#9a7000;}
+.loading-msg,.empty-msg{padding:48px;text-align:center;color:var(--mid);font-size:12px;}
+.empty-msg{background:var(--soft);border:1px solid var(--light);}
+/* Gallery */
+.gallery{padding:100px 64px;background:var(--soft);}
+.gallery-grid{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto;gap:16px;margin-top:56px;}
+.g-item{background:var(--light);display:flex;align-items:center;justify-content:center;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);overflow:hidden;position:relative;cursor:pointer;transition:opacity .3s;}
+.g-item:hover{opacity:.85;}
+.g-item::after{content:'';position:absolute;inset:0;border:2px solid var(--accent);opacity:0;transition:opacity .3s;}
+.g-item:hover::after{opacity:1;}
+.g-item img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.g-item:nth-child(1){aspect-ratio:3/4;}
+.g-item:nth-child(2){aspect-ratio:3/4;grid-row:span 2;margin-top:48px;}
+.g-item:nth-child(3){aspect-ratio:3/4;}
+.g-item:nth-child(4){aspect-ratio:3/4;}
+.g-item:nth-child(5){aspect-ratio:3/4;margin-top:-48px;}
+.g-item:nth-child(6){aspect-ratio:3/4;}
+footer{background:var(--text);color:#fff;padding:48px 64px;display:flex;justify-content:space-between;align-items:center;}
+.footer-name{font-family:'Bodoni Moda',serif;font-style:italic;font-size:24px;font-weight:400;letter-spacing:.06em;}
+.footer-label{font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.2em;text-transform:uppercase;margin-top:4px;}
+.footer-copy{font-size:11px;color:rgba(255,255,255,.25);}
+@media(max-width:768px){nav{padding:16px 20px;}.nav-links{display:none;}.hero{padding:90px 24px 60px;}.feature{grid-template-columns:1fr;}.feature-photo{min-height:50vh;}.discography,.gallery{padding:80px 24px;}.track-block{grid-template-columns:110px 1fr;gap:16px;}.gallery-grid{grid-template-columns:1fr 1fr;}.g-item:nth-child(2){margin-top:0;grid-row:span 1;}.g-item:nth-child(5){margin-top:0;}footer{padding:32px 24px;flex-direction:column;gap:16px;text-align:center;}}
+.footer-legal{display:flex;gap:20px;flex-wrap:wrap;align-items:center;}.footer-legal a{font-size:11px;letter-spacing:.15em;color:rgba(255,255,255,.4);text-decoration:none;text-transform:uppercase;transition:color .2s;}.footer-legal a:hover{color:var(--accent);}
+.nav-logo { display:flex; align-items:center; }
+
+
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-back">← TAMSIC</a>
+  <span class="nav-title">kiki</span>
+  <ul class="nav-links"><li><a href="#music">Music</a></li><li><a href="releases.html">All Releases</a></li><li><a href="news.html">News</a></li><li><a href="about.html">About</a></li><li><a href="mypage.html">My Page</a></li></ul>
+</nav>
+
+<section class="hero">
+  <div class="decor-l"></div><div class="decor-r"></div>
+  <div class="hero-orn"></div>
+  <p class="hero-num">TAMSIC Artist 002</p>
+  <h1 class="hero-name">kiki</h1>
+  <div class="hero-rule"><div class="rule-line"></div><div class="rule-dot"></div><div class="rule-line"></div></div>
+  <p class="hero-bio">夢と現実の境界を歌う、AIアイドル。<br>繊細な音色と詩的な世界観で<br>心を揺さぶる音楽を届ける。</p>
+</section>
+
+<div class="feature">
+  <div class="feature-photo">
+    <div class="feature-photo-bg"></div>
+    <div class="feature-photo-frame" id="hero-photo">
+      <div class="feature-photo-ph">Photo</div>
+    </div>
+  </div>
+  <div class="feature-text">
+    <h3>About<br>kiki</h3>
+    <p>TAMSICが生み出した次世代のAIアーティスト。透明感のある歌声と独自の世界観で、聴く人すべての心に届く音楽を。</p>
+    <div class="fstat-row">
+      <div class="fstat"><div class="fstat-num" id="track-count">—</div><div class="fstat-label">Tracks</div></div>
+      <div class="fstat"><div class="fstat-num">AI</div><div class="fstat-label">Idol</div></div>
+    </div>
+  </div>
+</div>
+
+<section class="discography" id="music">
+  <div class="sec-header">
+    <p class="sec-tag">Discography</p>
+    <h2 class="sec-title">Music</h2>
+  </div>
+  <div id="tracks-container"><div class="loading-msg">読み込み中...</div></div>
+</section>
+
+
+<footer>
+  <div><div class="footer-name">kiki</div><div class="footer-label">TAMSIC Artist</div></div>
+  <div class="footer-legal"><a href="https://tamjump.com/" target="_blank">プライバシーポリシー</a><a href="https://tamjump.com/" target="_blank">利用規約</a><a href="https://tamjump.com/" target="_blank">特定商取引法</a><a href="https://tamjump.com/contact" target="_blank">お問い合わせ</a></div><span class="footer-copy">© 2025 TAMSIC. All Rights Reserved.</span>
+</footer>
+
+<script>
+let _tracks=[];
+
+function releaseMeta(track){ return window.TAMSICRelease ? TAMSICRelease.getMeta(track.title||'') : {status:'full',label:'NOW AVAILABLE',note:''}; }
+function sampleAllowed(track){ return window.TAMSICRelease ? TAMSICRelease.canPlaySample(track.title||'') : true; }
+function fullAllowed(track){ return window.TAMSICRelease ? TAMSICRelease.canPlayFull(track.title||'') : true; }
+function externalYouTube(url){ if(url){ window.open(url, '_blank', 'noopener'); } }
+
+
+function injectCommerceStyles(){
+  if(document.getElementById('tamsic-commerce-style')) return;
+  const s=document.createElement('style');
+  s.id='tamsic-commerce-style';
+  s.textContent=`
+  .coin-panel{margin:0 0 28px;padding:24px 24px 22px;border:1px solid rgba(11,29,53,.08);background:#fff;border-radius:20px;box-shadow:0 10px 28px rgba(11,29,53,.04);}
+  .coin-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:16px;}
+  .coin-kicker{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+  .coin-title{font-size:26px;font-weight:700;line-height:1.15;color:#111;}
+  .coin-copy{margin-top:8px;font-size:13px;line-height:1.8;color:#6d6d66;max-width:660px;}
+  .coin-balance{min-width:210px;padding:16px 18px;border-radius:18px;background:#111;color:#fff;}
+  .coin-balance-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.62);margin-bottom:8px;}
+  .coin-balance-value{font-size:32px;font-weight:700;line-height:1;}
+  .coin-balance-sub{margin-top:8px;font-size:12px;color:rgba(255,255,255,.72);}
+  .coin-pack-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;}
+  .member-locked,.member-wallet{padding:28px 28px 24px;}
+  .locked-balance{background:#151515;}
+  .member-actions{display:flex;gap:12px;flex-wrap:wrap;}
+  .member-btn{display:inline-flex;align-items:center;justify-content:center;min-width:150px;padding:13px 18px;border-radius:999px;border:1px solid rgba(11,29,53,.08);background:#fff;color:#111;text-decoration:none;font-size:12px;letter-spacing:.08em;text-transform:uppercase;}
+  .member-btn.primary{background:#111;color:#fff;}
+  .member-btn.subtle{background:transparent;}
+  .member-btn:hover{transform:translateY(-1px);}
+  .coin-pack{padding:18px;border-radius:18px;border:1px solid rgba(11,29,53,.08);background:#fff;display:flex;flex-direction:column;gap:8px;}
+  .coin-pack.recommended{border-color:rgba(0,153,204,.32);box-shadow:0 10px 24px rgba(0,153,204,.08);}
+  .coin-pack-top{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .coin-pack-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#66788a;}
+  .coin-pack-badge{padding:4px 8px;border-radius:999px;background:rgba(0,153,204,.1);font-size:10px;color:var(--accent);}
+  .coin-pack-coins{font-size:28px;font-weight:700;color:#111;}
+  .coin-pack-price{font-size:15px;color:#444;}
+  .coin-pack-note{font-size:12px;color:#7a7a72;line-height:1.6;min-height:38px;}
+  .coin-pack-btn{margin-top:auto;border:none;border-radius:999px;background:#111;color:#fff;padding:12px 16px;font-size:13px;cursor:pointer;transition:transform .18s ease,opacity .18s ease;}
+  .coin-pack-btn:hover{transform:translateY(-1px);opacity:.92;}
+  .coin-pack-btn.is-rec{background:var(--accent);color:#fff;}
+  .full-panel{margin-top:4px;}
+  .full-box{border:1px solid rgba(11,29,53,.08);padding:24px;border-radius:18px;background:#fff;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:24px;align-items:start;}
+  .full-main{min-width:0;}
+  .full-side{padding:18px;border-radius:16px;background:var(--bg);border:1px solid rgba(11,29,53,.06);}
+  .full-kicker{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;}
+  .full-desc{font-size:13px;color:#4f5f6e;line-height:1.9;}
+  .full-desc strong{color:#111;}
+  .full-note{font-size:11px;line-height:1.8;color:#6f7d8b;margin-top:12px;}
+  .full-price{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;}
+  .full-price .coin-num{font-size:30px;font-weight:700;color:#111;}
+  .full-price .coin-unit{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#6f7d8b;}
+  .full-wallet-line{margin:0 0 14px;font-size:12px;color:#6f7d8b;line-height:1.7;}
+  .full-wallet-line strong{color:#111;}
+  .full-buy{width:100%;font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.18em;text-transform:uppercase;padding:14px 16px;background:#111;border:none;border-radius:999px;color:#fff;cursor:pointer;transition:opacity .22s, transform .22s;}
+  .full-buy:hover{opacity:.92;transform:translateY(-1px);}
+  .full-buy.disabled{opacity:.55;cursor:not-allowed;transform:none;}
+  .full-player-mount{margin-top:18px;max-width:720px;}
+  .full-player-mount audio{width:100%;display:block;}
+  .full-ended-msg{padding:14px 16px;border-radius:14px;background:rgba(11,29,53,.05);font-size:12px;color:#666;}
+  .full-lyrics{position:relative;overflow:hidden;margin-top:18px;max-width:920px;padding:24px 28px;border-radius:18px;background:linear-gradient(180deg,rgba(248,250,253,.96),rgba(244,247,251,.96));border:1px solid rgba(11,29,53,.06);font-size:15px;line-height:2;color:#243649;word-break:keep-all;}
+  .full-lyrics::before{content:'';position:absolute;inset:0;background-image:var(--lyrics-bg-image);background-size:cover;background-position:center 18%;opacity:.22;filter:saturate(1);pointer-events:none;}
+  .full-lyrics::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(248,250,253,.88));pointer-events:none;}
+  .full-lyrics-title{position:relative;z-index:1;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;}
+  .full-lyrics-inner{position:relative;z-index:1;column-count:2;column-gap:56px;}
+  .lyrics-stanza{break-inside:avoid;page-break-inside:avoid;margin:0 0 1.35em;}
+  @media (max-width: 900px){.coin-pack-grid{grid-template-columns:1fr;}.coin-balance{width:100%;}.coin-title{font-size:22px;}.full-box{grid-template-columns:1fr;}.full-side{order:-1;}.full-lyrics{padding:20px 20px;max-width:720px;}.full-lyrics-inner{column-count:1;column-gap:0;}}
+  
+  .release-hero{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;margin:0 0 26px;padding:22px 0 6px;}
+  .release-kicker{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+  .release-copy{font-size:14px;line-height:1.8;color:#6d6d66;}
+  .release-pill{display:inline-flex;align-items:center;justify-content:center;min-width:180px;height:42px;padding:0 18px;border:1px solid rgba(11,29,53,.10);border-radius:999px;background:#fff;color:var(--text);font-size:11px;letter-spacing:.18em;text-transform:uppercase;}
+  .cover-wrap{position:relative;overflow:hidden;}
+  .cover-wrap.is-locked img{filter:blur(16px) saturate(.9) brightness(.94);transform:scale(1.06);}
+  .cover-lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;background:linear-gradient(to bottom, rgba(255,255,255,.06), rgba(255,255,255,.10));}
+  .cover-lock-badge{width:74px;height:74px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.88);box-shadow:0 10px 24px rgba(11,29,53,.08);}
+  .cover-lock-badge svg{width:40px;height:40px;}
+  .release-line{margin:10px 0 0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);line-height:1.8;}
+  .member-note{margin:8px 0 0;font-size:12px;line-height:1.8;color:#7d7468;}
+  .mode-btn.external-link{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
+  .mode-btn.premium.is-locked{opacity:.58;}
+  .full-lock-copy{margin-top:12px;padding:14px 16px;border:1px solid rgba(11,29,53,.08);border-radius:16px;background:rgba(255,255,255,.82);color:#6d6d66;line-height:1.8;font-size:14px;}
+`;
+  document.head.appendChild(s);
+}
+
+function renderCoinPanel(){
+  const loggedIn = !!(window.TAMSICAuth && TAMSICAuth.isLoggedIn && TAMSICAuth.isLoggedIn());
+  const balance = TAMSICCoins.getBalance();
+  if (!loggedIn) {
+    return `<div class="coin-panel member-locked">
+      <div class="coin-panel-head">
+        <div>
+          <div class="coin-kicker">TAMSIC Member</div>
+          <div class="coin-title">フル試聴と残高表示はログイン後に解放されます。</div>
+          <div class="coin-copy">sample は無料です。コインの購入、残高管理、フル試聴は My Page を起点に統一します。</div>
+        </div>
+        <div class="coin-balance locked-balance">
+          <div class="coin-balance-label">Member only</div>
+          <div class="coin-balance-value">— coin</div>
+          <div class="coin-balance-sub">Login / Sign up / My Page</div>
+        </div>
+      </div>
+      <div class="member-actions">
+        <a class="member-btn primary" href="login.html?redirect=${encodeURIComponent(location.pathname.split('/').pop() || 'kiki.html')}">Login</a>
+        <a class="member-btn" href="signup.html?redirect=${encodeURIComponent(location.pathname.split('/').pop() || 'kiki.html')}">Sign up</a>
+        <a class="member-btn subtle" href="mypage.html">My Page</a>
+      </div>
+    </div>`;
+  }
+  return `<div class="coin-panel member-wallet">
+    <div class="coin-panel-head">
+      <div>
+        <div class="coin-kicker">TAMSIC Wallet</div>
+        <div class="coin-title">フル試聴は My Page で購入したコインから消費されます。</div>
+        <div class="coin-copy">artist page では残高確認と再生導線のみ表示します。購入・履歴・残高管理は My Page に集約します。</div>
+      </div>
+      <div class="coin-balance">
+        <div class="coin-balance-label">Balance</div>
+        <div class="coin-balance-value"><span data-coin-balance>${balance}</span> coin</div>
+        <div class="coin-balance-sub">Logged in as member</div>
+      </div>
+    </div>
+    <div class="member-actions">
+      <a class="member-btn primary" href="mypage.html">My Pageでコインを管理</a>
+      <a class="member-btn subtle" href="mypage.html#purchase-grid">コインを購入</a>
+    </div>
+  </div>`;
+}
+
+function refreshCoinUI(){
+  const loggedIn = !!(window.TAMSICAuth && TAMSICAuth.isLoggedIn && TAMSICAuth.isLoggedIn());
+  const balance = loggedIn ? TAMSICCoins.getBalance() : 0;
+  document.querySelectorAll('[data-coin-balance]').forEach(el=>el.textContent=balance);
+  document.querySelectorAll('[data-track-cost]').forEach(el=>{
+    const cost=Number(el.getAttribute('data-track-cost')||0);
+    const panel=el.closest('.full-panel');
+    const btn=panel?.querySelector('.full-buy');
+    const line=panel?.querySelector('[data-track-balance]');
+    if(line) line.textContent = loggedIn ? balance : '—';
+    if(btn){
+      if(!loggedIn){
+        btn.classList.remove('disabled');
+        btn.textContent = 'ログインしてフル試聴';
+      } else if(balance >= cost){
+        btn.classList.remove('disabled');
+        btn.textContent = `${cost}コインで1回フル試聴`;
+      } else {
+        btn.classList.remove('disabled');
+        btn.textContent = 'My Pageでコイン購入';
+      }
+    }
+  });
+}
+
+function chargeCoins(packId){
+  window.location.href = 'mypage.html#purchase-grid';
+}
+
+function unlockFullTrack(trackId){
+  const track=_tracks.find(x=>x.id===trackId);
+  if(!track) return;
+  if(!fullAllowed(track)){
+    alert('会員は一般公開の7日前から先行視聴できます。');
+    return;
+  }
+  const cost=Number(track.price||0);
+  const spend=TAMSICCoins.spendCoins(track.id,cost);
+  if(!spend.ok){
+    if(spend.loginRequired){
+      window.location.href=`login.html?redirect=${encodeURIComponent(location.pathname.split('/').pop() || 'index.html')}`;
+      return;
+    }
+    alert(`コインが不足しています。
+「${track.title}」には ${cost}コイン必要です。
+My Page でコインを追加してください。`);
+    window.location.href='mypage.html#purchase-grid';
+    return;
+  }
+  refreshCoinUI();
+  const mount=document.getElementById(`full-player-${track.id}`);
+  const lyrics=document.getElementById(`lyrics-${track.id}`);
+  if(lyrics) lyrics.style.display='block';
+  const url=getTrackAudioSrc(track);
+  if(!url){
+    alert('音声ファイルが設定されていません。');
+    return;
+  }
+  TAMSICPlayer.playFull(track.id,url,mount);
+}
+
+
+async function init(){
+  injectCommerceStyles();
+  _tracks=await TAMSICDB.getTracks('kiki');
+  const n=_tracks.length||'—';
+  document.getElementById('track-count').textContent=n;
+  
+  if(_tracks.length&&getTrackCoverSrc(_tracks[0])){
+    const f=document.getElementById('hero-photo');
+    f.innerHTML=`<img src="${getTrackCoverSrc(_tracks[0])}" alt="kiki" style="width:100%;height:100%;object-fit:cover;">`;
+  }
+  renderTracks();
+  refreshCoinUI();
+  TAMSICCoins.onChange(()=>refreshCoinUI());
+  window.addEventListener('storage',()=>refreshCoinUI());
+}
+
+
+function renderTracks(){
+  const c=document.getElementById('tracks-container');
+  if(!_tracks.length){c.innerHTML='<div class="empty-msg">Coming Soon — 楽曲を準備中です。</div>';return;}
+  const firstMeta = releaseMeta(_tracks[0]);
+  c.innerHTML = `
+    <div class="release-hero">
+      <div>
+        <div class="release-kicker">TAMSIC release control</div>
+        <div class="coin-title">${firstMeta.label}</div>
+        <div class="release-copy">各曲は公開スケジュールに合わせて開きます。会員は一般公開の7日前から先行視聴できます。</div>
+      </div>
+      <div class="release-pill">${firstMeta.label}</div>
+    </div>` + renderCoinPanel() + _tracks.map((t,i)=>{
+      const num=String(i+1).padStart(2,'0');
+      const coverSrc=getTrackCoverSrc(t);
+      const meta=releaseMeta(t);
+      const coverHtml=coverSrc?`<img src="${coverSrc}" alt="${t.title||''}">`:'<span class="cover-ph-txt">Cover</span>';
+      const dur=formatTime(parseTime(t.sampleEnd)-parseTime(t.sampleStart));
+      const lockedClass = meta.status === 'locked' ? ' is-locked' : '';
+      const lockOverlay = meta.status === 'locked' ? `<div class="cover-lock"><div class="cover-lock-badge">${TAMSICRelease.lockSvg('#111')}</div></div>` : '';
+      const premiumLabel = meta.status === 'member' ? '会員先行フル試聴' : (meta.status === 'full' ? `フル試聴 ${t.price||30}コイン` : 'COMING SOON');
+      const premiumClass = meta.status === 'member' || meta.status === 'full' ? '' : ' is-locked';
+      const fullLockCopy = meta.status === 'member' || meta.status === 'full' ? '' : `<div class="full-lock-copy">会員は一般公開の7日前から先行視聴できます。</div>`;
+      const ytButton = t.youtubeUrl ? `<a class="mode-btn external-link" href="${t.youtubeUrl}" target="_blank" rel="noopener">YouTube</a>` : `<span class="mode-btn external-link" style="opacity:.45;pointer-events:none;">YouTube</span>`;
+      return `<div class="track-block" id="track-${t.id}">
+        <div class="tb-cover">
+          <div class="cover-wrap${lockedClass}">${coverHtml}${lockOverlay}</div>
+          <span class="tb-num">${num}</span>
+        </div>
+        <div class="tb-body">
+          <div class="tb-meta">${t.isNew?'<span class="badge-new">New</span>':''}<span class="tb-type">Single</span></div>
+          <div class="tb-title">${t.title||'TRACK TITLE'}</div>
+          <div class="tb-sub">kiki</div>
+          <div class="release-line">${meta.note}</div>
+          <div class="member-note">${meta.status==='member' ? 'MEMBER EARLY ACCESS' : (meta.status==='preview' ? 'sample available now' : '')}</div>
+          <div class="player-modes">
+            <button class="mode-btn active" onclick="setMode('${t.id}','site',this)">▶ サイトで聴く</button>
+            ${ytButton}
+            <button class="mode-btn premium${premiumClass}" onclick="setMode('${t.id}','full',this)">${premiumLabel}</button>
+          </div>
+          <div id="panel-site-${t.id}">
+            <div class="site-player">
+              <div class="sp-bar-wrap" data-bar-id="${t.id}" onclick="scrub(event,this,'${t.id}')">
+                <div class="sp-bar-bg"></div><div class="sp-bar-fill" style="width:0%"></div><div class="sp-dot" style="left:0%"></div>
+              </div>
+              <div class="sp-controls">
+                <button class="sp-btn" onclick="prevT(${i})" title="5秒戻す">&#9664;&#9664;</button>
+                <button class="sp-play" data-play-id="${t.id}" onclick="playT('${t.id}')">${meta.status==='locked' ? TAMSICRelease.lockSvg('#111') : '&#9654;'} </button>
+                <button class="sp-btn" onclick="nextT(${i})" title="5秒進む">&#9654;&#9654;</button>
+                <span class="sp-time" data-time-id="${t.id}">0:00 / ${dur}</span>
+              </div>
+            </div>
+          </div>
+          <div class="full-panel" id="panel-full-${t.id}" style="display:none">
+            <div class="full-box">
+              <div class="full-main">
+                <div class="full-kicker">${meta.label.toLowerCase()}</div>
+                <div class="full-desc">sample は無料です。<strong>フルは1回試聴のみ</strong>で、試聴ごとにコインを消費します。</div>
+                <div class="full-note">ダウンロード不可 / ブラウザ内再生のみ / 再度再生する場合は再度コインを消費</div>
+                ${fullLockCopy}
+                <div class="full-player-mount" id="full-player-${t.id}"></div>
+                <div class="full-lyrics" id="lyrics-${t.id}" style="display:none;--lyrics-bg-image:url('${coverSrc||''}')"><div class="full-lyrics-title">lyrics</div><div class="full-lyrics-inner">${(t.lyrics||'').split(/\n\s*\n/).map(s=>'<p class="lyrics-stanza">'+s.trim().replace(/\n/g,'<br>')+'</p>').join('')}</div></div>
+              </div>
+              <div class="full-side">
+                <div class="full-price"><span class="coin-num" data-track-cost="${t.price||30}">${t.price||30}</span><span class="coin-unit">coin / one listen</span></div>
+                <div class="full-wallet-line">現在の残高：<strong><span data-track-balance>${TAMSICCoins.getBalance()}</span>コイン</strong></div>
+                <button class="full-buy" onclick="unlockFullTrack('${t.id}')">${premiumLabel}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+function renderGallery(){
+  const g=document.getElementById('gallery-grid');
+  const photos=getArtistPhotos('kiki');
+  g.innerHTML=photos.map(src=>`<div class="g-item"><img src="${src}" alt="kiki" style="width:100%;height:100%;object-fit:cover;"></div>`).join('');
+}
+
+function ytEmbed(url){return ytPh();}
+function ytPh(){return``;}
+
+function setMode(id,mode,btn){
+  if(mode==='full'){
+    const t=_tracks.find(x=>x.id===id);
+    if(t && !fullAllowed(t)){
+      alert('会員は一般公開の7日前から先行視聴できます。');
+      return;
+    }
+  }
+  ['site','full'].forEach(m=>{const el=document.getElementById(`panel-${m}-${id}`);if(el)el.style.display=m===mode?'block':'none';});
+  btn.closest('.player-modes').querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(mode!=='site')TAMSICPlayer.stop(true);
+}
+function playT(id){
+  const t=_tracks.find(x=>x.id===id);if(!t)return;
+  if(!sampleAllowed(t)){
+    alert('この曲はまだ公開前です。');
+    return;
+  }
+  const url=getTrackAudioSrc(t);
+  if(!url){alert('音声ファイルが設定されていません。');return;}
+  TAMSICPlayer.play(id,url,t.sampleStart,t.sampleEnd);
+}
+function scrub(e,wrap,id){
+  const rect=wrap.getBoundingClientRect();
+  const pct=Math.max(0,Math.min(100,((e.clientX-rect.left)/rect.width)*100));
+  const fill=wrap.querySelector('.sp-bar-fill');
+  const dot=wrap.querySelector('.sp-dot');
+  if(fill) fill.style.width=pct+'%';
+  if(dot) dot.style.left=pct+'%';
+  if(window.TAMSICPlayer) TAMSICPlayer.setSamplePosition(id,pct);
+}
+function prevT(i){
+  const t=_tracks[i];
+  if(!t) return;
+  if(window.TAMSICPlayer && TAMSICPlayer.seekSampleBy(t.id,-5)) return;
+  const el=document.getElementById('track-'+t.id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function nextT(i){
+  const t=_tracks[i];
+  if(!t) return;
+  if(window.TAMSICPlayer && TAMSICPlayer.seekSampleBy(t.id,5)) return;
+  const el=document.getElementById('track-'+t.id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+init();
+renderGallery();
+</script>
+</body>
+</html>

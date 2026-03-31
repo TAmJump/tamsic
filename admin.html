@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAMSIC Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="tamsic-content.js"></script>
+<script src="tamsic.js"></script>
+<style>
+:root {
+  --bg:#F5F5F0;--white:#FFFFFF;--text:#0E0E0E;--mid:#6B6B63;
+  --accent:#C4960E;--accent2:#8B2FC9;--light:#E0E0D8;--danger:#C94040;
+  --sidebar:220px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Jost',sans-serif;font-weight:300;}
+
+/* ─── AUTH ─── */
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);}
+.auth-card{background:var(--white);padding:60px 48px;text-align:center;border:1px solid var(--light);width:360px;}
+.auth-logo{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;letter-spacing:.4em;margin-bottom:8px;}
+.auth-sub{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--mid);margin-bottom:40px;}
+.auth-card input{width:100%;padding:14px 16px;border:1px solid var(--light);background:var(--bg);font-size:14px;font-family:'Jost',sans-serif;outline:none;margin-bottom:16px;letter-spacing:.2em;text-align:center;}
+.auth-card input:focus{border-color:var(--accent);}
+.auth-btn{width:100%;padding:14px;background:var(--text);color:var(--white);border:none;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.35em;text-transform:uppercase;cursor:pointer;transition:background .2s;}
+.auth-btn:hover{background:#333;}
+.auth-err{color:var(--danger);font-size:12px;margin-top:12px;display:none;}
+
+/* ─── LAYOUT ─── */
+#admin-main{display:none;min-height:100vh;}
+.admin-sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar);background:var(--text);color:var(--white);display:flex;flex-direction:column;z-index:100;}
+.sidebar-logo{padding:32px 24px 28px;border-bottom:1px solid rgba(255,255,255,.08);}
+.sidebar-logo-main{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;letter-spacing:.3em;}
+.sidebar-logo-sub{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:4px;}
+.sidebar-nav{flex:1;padding:20px 0;}
+.snav-btn{display:flex;align-items:center;gap:12px;width:100%;padding:14px 24px;background:none;border:none;color:rgba(255,255,255,.5);font-family:'Jost',sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .2s;text-align:left;}
+.snav-btn:hover{color:var(--white);background:rgba(255,255,255,.05);}
+.snav-btn.active{color:var(--accent);background:rgba(196,150,14,.08);border-left:2px solid var(--accent);}
+.snav-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+.sidebar-footer{padding:20px 24px;border-top:1px solid rgba(255,255,255,.08);}
+.sidebar-footer a{font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.3);text-decoration:none;text-transform:uppercase;}
+.sidebar-footer a:hover{color:rgba(255,255,255,.6);}
+
+.admin-content{margin-left:var(--sidebar);padding:48px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+.content-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;padding-bottom:20px;border-bottom:1px solid var(--light);}
+.content-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;}
+.content-sub{font-size:11px;letter-spacing:.25em;color:var(--mid);text-transform:uppercase;margin-top:4px;}
+.add-btn{font-size:10px;letter-spacing:.3em;text-transform:uppercase;padding:12px 24px;background:var(--accent);color:var(--white);border:none;cursor:pointer;font-family:'Jost',sans-serif;transition:background .2s;}
+.add-btn:hover{background:#a07800;}
+
+/* ─── TRACK CARDS ─── */
+.track-admin-list{display:flex;flex-direction:column;gap:16px;}
+.track-admin-card{display:grid;grid-template-columns:80px 1fr auto;gap:20px;align-items:center;background:var(--white);padding:20px 24px;border:1px solid var(--light);}
+.tac-cover{width:80px;height:80px;background:var(--bg);border:1px solid var(--light);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.tac-cover img{width:100%;height:100%;object-fit:cover;}
+.tac-cover-ph{font-size:9px;letter-spacing:.15em;color:var(--mid);text-transform:uppercase;text-align:center;}
+.tac-info{}
+.tac-num{font-size:10px;letter-spacing:.3em;color:var(--mid);text-transform:uppercase;margin-bottom:4px;}
+.tac-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:6px;}
+.tac-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.tac-tag{font-size:10px;letter-spacing:.15em;color:var(--mid);background:var(--bg);padding:3px 10px;border:1px solid var(--light);}
+.tac-actions{display:flex;gap:8px;}
+.act-btn{padding:9px 18px;border:1px solid var(--light);background:var(--white);font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;font-family:'Jost',sans-serif;transition:all .2s;}
+.act-btn:hover{border-color:var(--accent);color:var(--accent);}
+.act-btn.del:hover{border-color:var(--danger);color:var(--danger);}
+.no-tracks-msg{padding:48px;text-align:center;color:var(--mid);font-size:13px;background:var(--white);border:1px solid var(--light);}
+
+/* ─── NEWS CARDS ─── */
+.news-admin-list{display:flex;flex-direction:column;gap:12px;}
+.news-admin-card{display:flex;align-items:center;gap:20px;background:var(--white);padding:18px 24px;border:1px solid var(--light);}
+.nac-date{font-size:12px;color:var(--mid);min-width:110px;letter-spacing:.05em;}
+.nac-title{flex:1;font-size:14px;}
+.nac-tag{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(196,150,14,.4);padding:4px 12px;white-space:nowrap;}
+
+/* ─── MODAL ─── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(14,14,14,.7);z-index:500;align-items:center;justify-content:center;overflow-y:auto;padding:40px;}
+.modal-overlay.open{display:flex;}
+.modal-card{background:var(--white);width:100%;max-width:800px;border:1px solid var(--light);max-height:90vh;overflow-y:auto;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:24px 32px;border-bottom:1px solid var(--light);}
+.modal-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--mid);line-height:1;}
+.modal-close:hover{color:var(--text);}
+.modal-body{padding:32px;}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 28px;}
+.form-group{display:flex;flex-direction:column;gap:8px;}
+.form-group.full{grid-column:1/-1;}
+.form-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--mid);}
+.form-input{padding:12px 14px;border:1px solid var(--light);background:var(--bg);font-size:13px;font-family:'Jost',sans-serif;outline:none;transition:border-color .2s;}
+.form-input:focus{border-color:var(--accent);}
+.form-hint{font-size:11px;color:var(--mid);margin-top:2px;}
+
+.file-zone{border:2px dashed var(--light);padding:28px;text-align:center;cursor:pointer;transition:border-color .2s;background:var(--bg);}
+.file-zone:hover{border-color:var(--accent);}
+.file-zone input{display:none;}
+.file-zone-text{font-size:12px;letter-spacing:.15em;color:var(--mid);}
+.file-zone-sub{font-size:11px;color:rgba(107,107,99,.6);margin-top:4px;}
+
+.preview-cover{width:100%;aspect-ratio:1;object-fit:cover;display:none;margin-top:12px;border:1px solid var(--light);}
+.preview-audio{width:100%;margin-top:12px;display:none;}
+
+.time-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.time-row .form-input{font-family:monospace;font-size:16px;text-align:center;letter-spacing:.15em;}
+
+.checkbox-row{display:flex;align-items:center;gap:10px;}
+.checkbox-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);}
+.checkbox-row label{font-size:13px;}
+
+.modal-footer{padding:24px 32px;border-top:1px solid var(--light);display:flex;gap:12px;justify-content:flex-end;}
+.save-btn{padding:12px 32px;background:var(--accent);color:var(--white);border:none;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.3em;text-transform:uppercase;cursor:pointer;transition:background .2s;}
+.save-btn:hover{background:#a07800;}
+.cancel-btn{padding:12px 24px;background:var(--white);color:var(--mid);border:1px solid var(--light);font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.3em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.cancel-btn:hover{border-color:var(--mid);color:var(--text);}
+
+/* news modal */
+.news-form .form-grid{grid-template-columns:1fr;}
+select.form-input{-webkit-appearance:none;}
+
+.badge-new{display:inline-block;font-size:9px;letter-spacing:.2em;text-transform:uppercase;background:var(--accent);color:var(--white);padding:2px 8px;margin-left:8px;}
+</style>
+</head>
+<body>
+
+<!-- ─── 認証 ─── -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">TAMSIC</div>
+    <div class="auth-sub">Admin Panel</div>
+    <input type="password" id="pw-input" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')login()">
+    <button class="auth-btn" onclick="login()">ログイン</button>
+    <p class="auth-err" id="auth-err">パスワードが違います</p>
+  </div>
+</div>
+
+<!-- ─── メイン ─── -->
+<div id="admin-main">
+  <div class="admin-sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-main">TAMSIC</div>
+      <div class="sidebar-logo-sub">Admin Panel</div>
+    </div>
+    <div class="sidebar-nav">
+      <button class="snav-btn active" onclick="showTab('nono')"><span class="snav-dot"></span>no-no</button>
+      <button class="snav-btn" onclick="showTab('kiki')"><span class="snav-dot"></span>kiki</button>
+      <button class="snav-btn" onclick="showTab('news')"><span class="snav-dot"></span>News</button>
+    </div>
+    <div class="sidebar-footer">
+      <a href="index.html" target="_blank">← サイトを見る</a>
+    </div>
+  </div>
+
+  <div class="admin-content">
+
+    <!-- no-no -->
+    <div id="tab-nono" class="tab-panel active">
+      <div class="content-header">
+        <div>
+          <h2 class="content-title">no-no</h2>
+          <p class="content-sub">楽曲管理 · Artist 001</p>
+        </div>
+        <button class="add-btn" onclick="openTrackModal('nono')">+ 曲を追加</button>
+      </div>
+      <div class="track-admin-list" id="nono-list"></div>
+    </div>
+
+    <!-- kiki -->
+    <div id="tab-kiki" class="tab-panel">
+      <div class="content-header">
+        <div>
+          <h2 class="content-title">kiki</h2>
+          <p class="content-sub">楽曲管理 · Artist 002</p>
+        </div>
+        <button class="add-btn" onclick="openTrackModal('kiki')">+ 曲を追加</button>
+      </div>
+      <div class="track-admin-list" id="kiki-list"></div>
+    </div>
+
+    <!-- News -->
+    <div id="tab-news" class="tab-panel">
+      <div class="content-header">
+        <div>
+          <h2 class="content-title">News</h2>
+          <p class="content-sub">お知らせ管理</p>
+        </div>
+        <button class="add-btn" onclick="openNewsModal()">+ 追加</button>
+      </div>
+      <div class="news-admin-list" id="news-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── トラックモーダル ─── -->
+<div class="modal-overlay" id="track-modal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modal-title">曲を追加</h3>
+      <button class="modal-close" onclick="closeModal('track-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-track-id">
+      <input type="hidden" id="edit-track-artist">
+      <div class="form-grid">
+
+        <div class="form-group full">
+          <label class="form-label">曲タイトル</label>
+          <input type="text" class="form-input" id="f-title" placeholder="例: Fragment of Light">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">カバー画像</label>
+          <div class="file-zone" onclick="document.getElementById('f-cover').click()">
+            <input type="file" id="f-cover" accept="image/*" onchange="onCoverChange(this)">
+            <div class="file-zone-text">クリックして画像を選択</div>
+            <div class="file-zone-sub">JPG / PNG / WEBP</div>
+          </div>
+          <img id="cover-preview" class="preview-cover" alt="Cover Preview">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">音声ファイル</label>
+          <div class="file-zone" onclick="document.getElementById('f-audio').click()">
+            <input type="file" id="f-audio" accept="audio/*" onchange="onAudioChange(this)">
+            <div class="file-zone-text">クリックして音声を選択</div>
+            <div class="file-zone-sub">MP3 / WAV / AAC（IndexedDBに保存）</div>
+          </div>
+          <audio id="audio-preview" class="preview-audio" controls></audio>
+          <p class="form-hint" id="audio-status"></p>
+        </div>
+
+        <div class="form-group full">
+          <label class="form-label">YouTube URL（任意）</label>
+          <input type="url" class="form-input" id="f-youtube" placeholder="https://youtube.com/watch?v=...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Sample 開始時刻</label>
+          <div class="time-row">
+            <input type="text" class="form-input" id="f-start" placeholder="0:00" maxlength="7">
+          </div>
+          <p class="form-hint">例: 0:30 / 1:15</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Sample 終了時刻</label>
+          <div class="time-row">
+            <input type="text" class="form-input" id="f-end" placeholder="0:30" maxlength="7">
+          </div>
+          <p class="form-hint">サンプル終了位置。フェードアウトで自動終了</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">価格（フル試聴）</label>
+          <input type="number" class="form-input" id="f-price" value="30" min="10" max="500" step="10">
+          <p class="form-hint">¥ 単位</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">曲順</label>
+          <input type="number" class="form-input" id="f-order" value="1" min="1">
+        </div>
+
+        <div class="form-group full">
+          <div class="checkbox-row">
+            <input type="checkbox" id="f-isnew">
+            <label for="f-isnew">「New」バッジを表示する</label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="cancel-btn" onclick="closeModal('track-modal')">キャンセル</button>
+      <button class="save-btn" onclick="saveTrack()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Newsモーダル ─── -->
+<div class="modal-overlay" id="news-modal">
+  <div class="modal-card" style="max-width:560px">
+    <div class="modal-header">
+      <h3 class="modal-title">ニュースを追加</h3>
+      <button class="modal-close" onclick="closeModal('news-modal')">✕</button>
+    </div>
+    <div class="modal-body news-form">
+      <input type="hidden" id="edit-news-id">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label class="form-label">タイトル（日本語）</label>
+          <input type="text" class="form-input" id="n-title" placeholder="例: no-no デビューシングル リリース決定">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">タイトル（英語 / 任意）</label>
+          <input type="text" class="form-input" id="n-title-en" placeholder="Example: Debut single release confirmed">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">日付</label>
+          <input type="date" class="form-input" id="n-date">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">カテゴリ</label>
+          <select class="form-input" id="n-tag">
+            <option value="Info">Info</option>
+            <option value="Release">Release</option>
+            <option value="Event">Event</option>
+            <option value="Media">Media</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="cancel-btn" onclick="closeModal('news-modal')">キャンセル</button>
+      <button class="save-btn" onclick="saveNews()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Auth ───────────────────────────────────────────────
+const ADMIN_PW = 'TAMSIC2025';
+function login() {
+  const pw = document.getElementById('pw-input').value;
+  if (pw === ADMIN_PW) {
+    sessionStorage.setItem('tamsic_admin','1');
+    document.getElementById('auth-screen').style.display='none';
+    document.getElementById('admin-main').style.display='block';
+    loadAll();
+  } else {
+    document.getElementById('auth-err').style.display='block';
+  }
+}
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('tamsic_admin')==='1') {
+    document.getElementById('auth-screen').style.display='none';
+    document.getElementById('admin-main').style.display='block';
+    loadAll();
+  }
+});
+
+// ─── Tab ────────────────────────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.snav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (name==='nono') renderTracks('nono');
+  if (name==='kiki') renderTracks('kiki');
+  if (name==='news') renderNews();
+}
+
+// ─── Load All ───────────────────────────────────────────
+async function loadAll() {
+  await renderTracks('nono');
+  await renderTracks('kiki');
+  await renderNews();
+}
+
+// ─── Render Tracks ──────────────────────────────────────
+async function renderTracks(artist) {
+  const list = document.getElementById(artist+'-list');
+  list.innerHTML = '<p style="color:var(--mid);font-size:12px;padding:20px">読み込み中...</p>';
+  const tracks = await TAMSICDB.getTracks(artist);
+  if (!tracks.length) {
+    list.innerHTML = '<div class="no-tracks-msg">まだ曲が追加されていません。「+ 曲を追加」から追加してください。</div>';
+    return;
+  }
+  list.innerHTML = tracks.map(t => {
+    const coverHtml = t.coverDataUrl
+      ? `<img src="${t.coverDataUrl}" alt="cover">`
+      : `<div class="tac-cover-ph">No Cover</div>`;
+    return `<div class="track-admin-card">
+      <div class="tac-cover">${coverHtml}</div>
+      <div class="tac-info">
+        <div class="tac-num">${artist.toUpperCase()} — Track ${String(t.order).padStart(2,'0')}</div>
+        <div class="tac-title">${t.title||'(タイトル未設定)'}${t.isNew?'<span class="badge-new">New</span>':''}</div>
+        <div class="tac-meta">
+          <span class="tac-tag">${t.sampleStart||'0:00'} ～ ${t.sampleEnd||'0:30'}</span>
+          <span class="tac-tag">¥${t.price||30}</span>
+          ${t.youtubeUrl?`<span class="tac-tag">YouTube ✓</span>`:''}
+          ${t.hasAudio?`<span class="tac-tag">音声 ✓</span>`:''}
+        </div>
+      </div>
+      <div class="tac-actions">
+        <button class="act-btn" onclick="editTrack('${t.id}','${artist}')">編集</button>
+        <button class="act-btn del" onclick="deleteTrack('${t.id}','${artist}')">削除</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── Render News ────────────────────────────────────────
+async function renderNews() {
+  const list = document.getElementById('news-list');
+  const items = await TAMSICDB.getNews();
+  if (!items.length) {
+    list.innerHTML = '<div class="no-tracks-msg">まだニュースがありません。</div>';
+    return;
+  }
+  list.innerHTML = items.map(n => `
+    <div class="news-admin-card">
+      <span class="nac-date">${n.date||'—'}</span>
+      <div>
+        <div class="nac-title">${n.title}</div>
+        ${n.titleEn?`<div style="font-size:11px;color:var(--mid);margin-top:2px">${n.titleEn}</div>`:''}
+      </div>
+      <span class="nac-tag">${n.tag||'Info'}</span>
+      <div class="tac-actions">
+        <button class="act-btn" onclick="editNews('${n.id}')">編集</button>
+        <button class="act-btn del" onclick="deleteNews('${n.id}')">削除</button>
+      </div>
+    </div>`).join('');
+}
+
+// ─── Track Modal ─────────────────────────────────────────
+let _tempCoverDataUrl = null;
+let _tempAudioData    = null;
+let _tempAudioType    = null;
+
+function openTrackModal(artist, track=null) {
+  _tempCoverDataUrl = null;
+  _tempAudioData    = null;
+  _tempAudioType    = null;
+
+  document.getElementById('modal-title').textContent = track ? '曲を編集' : '曲を追加';
+  document.getElementById('edit-track-id').value     = track?.id || '';
+  document.getElementById('edit-track-artist').value = track?.artist || artist;
+  document.getElementById('f-title').value   = track?.title || '';
+  document.getElementById('f-youtube').value = track?.youtubeUrl || '';
+  document.getElementById('f-start').value   = track?.sampleStart || '0:00';
+  document.getElementById('f-end').value     = track?.sampleEnd || '0:30';
+  document.getElementById('f-price').value   = track?.price || 30;
+  document.getElementById('f-order').value   = track?.order || 1;
+  document.getElementById('f-isnew').checked = track?.isNew || false;
+  document.getElementById('f-cover').value   = '';
+  document.getElementById('f-audio').value   = '';
+  document.getElementById('audio-status').textContent = track?.hasAudio ? '✓ 音声保存済み' : '';
+
+  const coverPrev = document.getElementById('cover-preview');
+  if (track?.coverDataUrl) {
+    coverPrev.src = track.coverDataUrl;
+    coverPrev.style.display = 'block';
+    _tempCoverDataUrl = track.coverDataUrl;
+  } else {
+    coverPrev.style.display = 'none';
+    coverPrev.src = '';
+  }
+  document.getElementById('audio-preview').style.display = 'none';
+  document.getElementById('audio-preview').src = '';
+
+  document.getElementById('track-modal').classList.add('open');
+}
+
+async function editTrack(id, artist) {
+  const tracks = await TAMSICDB.getTracks(artist);
+  const t = tracks.find(x=>x.id===id);
+  if (t) {
+    // Load audio blob URL for preview
+    if (t.audioData) {
+      const blob = new Blob([t.audioData], { type: t.audioType||'audio/mpeg' });
+      const url  = URL.createObjectURL(blob);
+      const ap   = document.getElementById('audio-preview');
+      ap.src = url;
+      ap.style.display = 'block';
+      _tempAudioData = t.audioData;
+      _tempAudioType = t.audioType;
+    }
+    openTrackModal(artist, t);
+  }
+}
+
+function onCoverChange(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    _tempCoverDataUrl = e.target.result;
+    const prev = document.getElementById('cover-preview');
+    prev.src = _tempCoverDataUrl;
+    prev.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function onAudioChange(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('audio-status').textContent = '読み込み中...';
+  const reader = new FileReader();
+  reader.onload = e => {
+    _tempAudioData = e.target.result; // ArrayBuffer
+    _tempAudioType = file.type;
+    const blob = new Blob([_tempAudioData], { type: _tempAudioType });
+    const url  = URL.createObjectURL(blob);
+    const ap   = document.getElementById('audio-preview');
+    ap.src = url;
+    ap.style.display = 'block';
+    const mb = (file.size/1024/1024).toFixed(1);
+    document.getElementById('audio-status').textContent = `✓ ${file.name} (${mb} MB)`;
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+async function saveTrack() {
+  const id     = document.getElementById('edit-track-id').value;
+  const artist = document.getElementById('edit-track-artist').value;
+  const title  = document.getElementById('f-title').value.trim();
+  if (!title) { alert('タイトルを入力してください'); return; }
+
+  const track = {
+    id:         id || `${artist}-${Date.now()}`,
+    artist,
+    order:      parseInt(document.getElementById('f-order').value)||1,
+    title,
+    coverDataUrl: _tempCoverDataUrl,
+    audioData:  _tempAudioData,
+    audioType:  _tempAudioType,
+    hasAudio:   !!_tempAudioData,
+    youtubeUrl: document.getElementById('f-youtube').value.trim(),
+    sampleStart:document.getElementById('f-start').value.trim()||'0:00',
+    sampleEnd:  document.getElementById('f-end').value.trim()||'0:30',
+    price:      parseInt(document.getElementById('f-price').value)||30,
+    isNew:      document.getElementById('f-isnew').checked,
+    addedAt:    id ? undefined : new Date().toISOString(),
+  };
+  if (id) {
+    // Preserve existing audio/cover if not changed
+    const existing = (await TAMSICDB.getTracks(artist)).find(x=>x.id===id);
+    if (existing) {
+      if (!_tempAudioData && existing.audioData) { track.audioData=existing.audioData; track.audioType=existing.audioType; track.hasAudio=true; }
+      if (!_tempCoverDataUrl && existing.coverDataUrl) track.coverDataUrl=existing.coverDataUrl;
+      track.addedAt = existing.addedAt;
+    }
+  }
+
+  await TAMSICDB.saveTrack(track);
+  closeModal('track-modal');
+  renderTracks(artist);
+}
+
+async function deleteTrack(id, artist) {
+  if (!confirm('この曲を削除しますか？')) return;
+  await TAMSICDB.deleteTrack(id);
+  renderTracks(artist);
+}
+
+// ─── News Modal ──────────────────────────────────────────
+function openNewsModal(item=null) {
+  document.getElementById('edit-news-id').value = item?.id||'';
+  document.getElementById('n-title').value    = item?.title||'';
+  document.getElementById('n-title-en').value = item?.titleEn||'';
+  document.getElementById('n-date').value     = item?.date||new Date().toISOString().split('T')[0];
+  document.getElementById('n-tag').value      = item?.tag||'Info';
+  document.getElementById('news-modal').classList.add('open');
+}
+
+async function editNews(id) {
+  const items = await TAMSICDB.getNews();
+  const n = items.find(x=>x.id===id);
+  if (n) openNewsModal(n);
+}
+
+async function saveNews() {
+  const title = document.getElementById('n-title').value.trim();
+  if (!title) { alert('タイトルを入力してください'); return; }
+  const id = document.getElementById('edit-news-id').value;
+  const item = {
+    id: id||`news-${Date.now()}`,
+    title,
+    titleEn:  document.getElementById('n-title-en').value.trim(),
+    date:     document.getElementById('n-date').value,
+    tag:      document.getElementById('n-tag').value,
+    addedAt:  id ? (await TAMSICDB.getNews()).find(x=>x.id===id)?.addedAt||new Date().toISOString() : new Date().toISOString(),
+  };
+  await TAMSICDB.saveNews(item);
+  closeModal('news-modal');
+  renderNews();
+}
+
+async function deleteNews(id) {
+  if (!confirm('このニュースを削除しますか？')) return;
+  await TAMSICDB.deleteNews(id);
+  renderNews();
+}
+
+// ─── Modal Close ─────────────────────────────────────────
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); });
+});
+</script>
+</body>
+</html>

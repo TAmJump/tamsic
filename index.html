@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAMSIC</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF7;
+  --text: #0E0E0E;
+  --accent: #C4960E;
+  --accent2: #8B2FC9;
+  --light: #E6E6E0;
+  --mid: #7A7A72;
+  --white: #FFFFFF;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 64px;
+  background: rgba(250,250,247,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--light);
+}
+
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.35em;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 44px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.nav-links a {
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--mid);
+  text-decoration: none;
+  font-weight: 400;
+  transition: color 0.25s;
+}
+
+.nav-links a:hover { color: var(--accent); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 64px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-grid-lines {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  pointer-events: none;
+}
+
+.hgl {
+  flex: 1;
+  border-right: 1px solid var(--light);
+  opacity: 0.6;
+}
+
+
+.hero-bg-logo {
+  position: absolute;
+  top: 50%;
+  left: 68%;
+  transform: translate(-50%, -50%);
+  width: min(72vw, 1040px);
+  opacity: 0.09;
+  user-select: none;
+  pointer-events: none;
+  animation: heroLogoSpin 42s linear infinite;
+  mix-blend-mode: multiply;
+}
+.hero-bg-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 36px rgba(0,0,0,0.06));
+}
+@keyframes heroLogoSpin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 340px;
+  padding-top: 84px;
+  padding-left: 8px;
+}
+
+.hero-tagline {
+  font-size: 11px;
+  font-weight: 300;
+  color: #9a9a9a;
+  line-height: 1.9;
+  max-width: 260px;
+  margin-bottom: 10px;
+  opacity: 0;
+  animation: riseUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards 0.1s;
+}
+
+.hero-label {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #caa43b;
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: riseUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards 0.25s;
+}
+
+.hero-title {
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #111111;
+  opacity: 0;
+  animation: riseUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards 0.4s;
+}
+
+.hero-title em {
+  color: inherit;
+  font-style: normal;
+}
+
+.hero-rule {
+  display: none;
+}
+
+
+.hero-scroll {
+  position: absolute;
+  right: 64px;
+  bottom: 80px;
+  writing-mode: vertical-rl;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--mid);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  animation: riseUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards 0.7s;
+}
+
+.hero-scroll::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 48px;
+  background: var(--mid);
+}
+
+@keyframes riseUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── SECTION BASE ─── */
+.sec-label {
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.sec-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+/* ─── ARTISTS ─── */
+.artists {
+  padding: 120px 64px;
+  background: var(--white);
+}
+
+.artists-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 64px;
+}
+
+.artists-count {
+  font-family: 'Playfair Display', serif;
+  font-size: 80px;
+  font-weight: 900;
+  color: var(--light);
+  line-height: 1;
+}
+
+.artists-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+.artist-card {
+  display: block;
+  text-decoration: none;
+  color: var(--text);
+  overflow: hidden;
+  background: var(--bg);
+  transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
+  position: relative;
+}
+
+.artist-card:hover { transform: translateY(-10px); }
+
+.artist-card:hover .artist-photo::after {
+  opacity: 0.12;
+}
+
+.artist-photo {
+  width: 100%;
+  aspect-ratio: 3/4;
+  background: var(--light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.artist-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.photo-placeholder-text {
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+.artist-bar {
+  height: 3px;
+  background: var(--light);
+  position: relative;
+  overflow: hidden;
+}
+
+.artist-bar::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 0;
+  background: var(--accent);
+  transition: width 0.5s cubic-bezier(0.22,1,0.36,1);
+}
+
+.artist-card:hover .artist-bar::after { width: 100%; }
+
+.artist-card:nth-child(2) .artist-bar::after { background: var(--accent2); }
+
+.artist-info {
+  padding: 28px 32px;
+}
+
+.artist-number {
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  color: var(--mid);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.artist-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.artist-meta {
+  font-size: 12px;
+  color: var(--mid);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ─── LATEST ─── */
+.latest {
+  padding: 120px 64px;
+  background: var(--bg);
+}
+
+.latest-inner {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.release-placeholder {
+  background: var(--light);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--mid);
+  text-transform: uppercase;
+}
+
+.latest-tracks {
+  padding-top: 8px;
+}
+
+.latest-track {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--light);
+}
+
+.lt-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--light);
+  min-width: 32px;
+}
+
+.lt-name {
+  font-size: 15px;
+  font-weight: 400;
+  flex: 1;
+  letter-spacing: 0.03em;
+}
+
+.lt-artist {
+  font-size: 11px;
+  color: var(--mid);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ─── NEWS ─── */
+.news {
+  padding: 120px 64px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.news .sec-label { color: var(--accent); }
+.news .sec-title { color: var(--text); margin-bottom: 64px; }
+
+.news-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.news-item {
+  display: flex;
+  gap: 48px;
+  align-items: baseline;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--light);
+}
+
+.news-date {
+  font-size: 12px;
+  color: var(--mid);
+  letter-spacing: 0.1em;
+  min-width: 110px;
+}
+
+.news-body { flex: 1; }
+
+.news-headline {
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+.news-sub {
+  font-size: 12px;
+  color: var(--mid);
+  letter-spacing: 0.1em;
+}
+
+.news-tag {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid rgba(196,150,14,0.4);
+  padding: 5px 14px;
+  white-space: nowrap;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  padding: 48px 64px;
+  background: #2C2A26;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 0.35em;
+  color: var(--white);
+}
+
+.footer-legal {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.footer-legal a {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.footer-legal a:hover {
+  color: var(--accent);
+}
+
+.footer-copy {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.1em;
+}
+
+
+.hero-audio {
+  margin-top: 28px;
+  width: min(360px, 82vw);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  animation: riseUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards 0.55s;
+}
+
+.hero-audio-row {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  align-items: start;
+  gap: 12px;
+  padding: 14px 14px 16px;
+  border: 1px solid rgba(202, 164, 59, 0.28);
+  border-radius: 36px;
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(8px);
+}
+
+.hero-audio-play {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid #caa43b;
+  background: transparent;
+  color: #111111;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.hero-audio-play:hover {
+  transform: scale(1.04);
+  background: rgba(202, 164, 59, 0.08);
+}
+
+.hero-audio-meta {
+  min-width: 0;
+  width: 100%;
+}
+
+.hero-audio-title {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #111111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hero-audio-sub {
+  font-size: 10px;
+  color: #9a9a9a;
+  margin-top: 2px;
+}
+
+
+.hero-audio-note {
+  font-size: 10px;
+  color: #9a9a9a;
+  margin-top: 4px;
+  padding-left: 8px;
+}
+
+.hero-audio audio {
+  display: none;
+}
+
+
+.hero-audio-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.hero-audio-seek {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  flex: 1;
+  height: 18px;
+  background: transparent;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
+.hero-audio-seek::-webkit-slider-runnable-track {
+  height: 2px;
+  background: rgba(202, 164, 59, 0.42);
+  border-radius: 999px;
+}
+
+.hero-audio-seek::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #caa43b;
+  border: 0;
+}
+
+.hero-audio-seek::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #caa43b;
+  border: 0;
+}
+
+.hero-audio-seek::-moz-range-track {
+  height: 2px;
+  background: rgba(202, 164, 59, 0.32);
+  border-radius: 999px;
+}
+
+.hero-audio-current {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: #9a9a9a;
+  min-width: 32px;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 120px 24px 56px;
+    align-items: center;
+  }
+  .hero-bg-logo {
+    left: 50%;
+    width: min(92vw, 520px);
+    opacity: 0.08;
+  }
+  .hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 340px;
+  padding-top: 84px;
+  padding-left: 8px;
+}
+  .hero-tagline,
+  .hero-label,
+  .hero-title {
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #111111;
+  opacity: 0;
+  animation: riseUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards 0.4s;
+}
+
+  nav { padding: 18px 24px; }
+  .nav-links { display: none; }
+  .hero { padding: 0 24px 60px; }
+  .artists { padding: 80px 24px; }
+  .artists-grid { grid-template-columns: 1fr; }
+  .latest { padding: 80px 24px; }
+  .latest-inner { grid-template-columns: 1fr; }
+  .news { padding: 80px 24px; }
+  footer { padding: 32px 24px; flex-direction: column; gap: 16px; text-align: center; }
+}
+
+
+
+
+
+.artist-card .media,
+.artist-panel .media,
+.artist-photo-frame,
+.artist-image-frame,
+.artist-visual-frame {
+  background: #efefec;
+}
+
+
+/* refined top artists section only */
+.artists {
+  padding: 120px 72px;
+}
+
+.artists-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 34px;
+  align-items: stretch;
+}
+
+.artist-card {
+  border: 1px solid rgba(17,17,17,0.06);
+  background: #f4f2ee;
+}
+
+.artist-card:nth-child(1) {
+  background:
+    linear-gradient(180deg, rgba(186,205,229,0.28) 0%, rgba(186,205,229,0.16) 100%),
+    #f4f2ee;
+}
+
+.artist-card:nth-child(2) {
+  background:
+    linear-gradient(180deg, rgba(205,120,142,0.18) 0%, rgba(205,120,142,0.10) 100%),
+    #f4f2ee;
+}
+
+.artist-photo {
+  width: 100%;
+  aspect-ratio: 5 / 6;
+  background: transparent;
+  padding: 18px 18px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.artist-photo::after {
+  display: none;
+}
+
+.artist-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.10);
+}
+
+.artist-card:nth-child(1) .artist-photo img {
+  object-position: center 42%;
+}
+
+.artist-card:nth-child(2) .artist-photo img {
+  object-position: center 26%;
+}
+
+.photo-placeholder-text {
+  display: none !important;
+}
+
+.artist-bar {
+  height: 2px;
+  margin: 0 18px;
+  background: rgba(17,17,17,0.06);
+}
+
+.artist-card:nth-child(1) .artist-bar::after {
+  background: #7ca1c8;
+}
+
+.artist-card:nth-child(2) .artist-bar::after {
+  background: #c76580;
+}
+
+.artist-info {
+  padding: 26px 28px 30px;
+}
+
+.artist-number {
+  margin-bottom: 12px;
+}
+
+.artist-name {
+  margin-bottom: 10px;
+  line-height: 0.95;
+}
+
+.artist-meta {
+  letter-spacing: 0.18em;
+}
+
+@media (max-width: 980px) {
+  .artists {
+    padding: 96px 24px;
+  }
+  .artists-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .artist-photo {
+    aspect-ratio: 4 / 5;
+    padding: 16px 16px 0;
+  }
+  .artist-bar {
+    margin: 0 16px;
+  }
+  .artist-info {
+    padding: 22px 22px 26px;
+  }
+}
+
+
+/* ===== FINAL ARTIST IMAGE FIX ===== */
+.artist-photo {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  padding: 0;
+  background: #f4f2ee;
+}
+
+.artist-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* no-no */
+.artist-card:nth-child(1) .artist-photo img {
+  object-position: center 30%;
+  transform: scale(1.15);
+}
+
+/* kiki */
+.artist-card:nth-child(2) .artist-photo img {
+  object-position: center 35%;
+  transform: scale(1.05);
+}
+
+</style>
+<script src="tamsic-content.js"></script>
+<script src="tamsic.js"></script>
+</head>
+<body>
+
+<nav>
+  <ul class="nav-links">
+    <li><a href="index.html#artists">Artists</a></li>
+    <li><a href="releases.html">Music</a></li>
+    <li><a href="news.html">News</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="https://tamjump.com/contact" target="_blank">Contact</a></li>
+  <li><a href="mypage.html">My Page</a></li></ul>
+  <a href="index.html" class="nav-logo">TAMSIC</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid-lines">
+    <div class="hgl"></div>
+    <div class="hgl"></div>
+    <div class="hgl"></div>
+    <div class="hgl"></div>
+    <div class="hgl"></div>
+  </div>
+  <div class="hero-bg-logo"><img src="./tamsic_logo2.png" alt="TAMSIC rotating logo"></div>
+
+  <div class="hero-content">
+    <p class="hero-tagline">音楽の未来を創る。<br>次世代のアーティストとともに、<br>新しい時代のサウンドを。</p>
+    <p class="hero-label">Music Label &amp; Entertainment</p>
+    <h1 class="hero-title">TAM<em>S</em>IC</h1>
+    <div class="hero-rule"></div>
+  </div>
+  <div class="hero-scroll">Scroll
+      <div class="hero-audio">
+        <div class="hero-audio-row">
+          <button class="hero-audio-play" data-audio-btn="heroTrack1" type="button">▶</button>
+          <div class="hero-audio-meta">
+            <div class="hero-audio-title">TAMSIC TRACK 01</div>
+            <div class="hero-audio-sub">Opening Theme</div>
+            <div class="hero-audio-progress">
+              <input class="hero-audio-seek" type="range" min="0" max="100" value="0" data-audio="heroTrack1" aria-label="seek bar for TAMSIC TRACK 01">
+              <span class="hero-audio-current" data-time="heroTrack1">0:00</span>
+            </div>
+          </div>
+          <audio id="heroTrack1" preload="metadata" src="T+111.mp3"></audio>
+        </div>
+
+        <div class="hero-audio-row">
+          <button class="hero-audio-play" data-audio-btn="heroTrack2" type="button">▶</button>
+          <div class="hero-audio-meta">
+            <div class="hero-audio-title">TAMSIC TRACK 02</div>
+            <div class="hero-audio-sub">Label Sound</div>
+            <div class="hero-audio-progress">
+              <input class="hero-audio-seek" type="range" min="0" max="100" value="0" data-audio="heroTrack2" aria-label="seek bar for TAMSIC TRACK 02">
+              <span class="hero-audio-current" data-time="heroTrack2">0:00</span>
+            </div>
+          </div>
+          <audio id="heroTrack2" preload="metadata" src="T+101.mp3"></audio>
+        </div>
+
+        <div class="hero-audio-row">
+          <button class="hero-audio-play" data-audio-btn="heroTrack3" type="button">▶</button>
+          <div class="hero-audio-meta">
+            <div class="hero-audio-title">TAMSIC TRACK 03</div>
+            <div class="hero-audio-sub">New Single Mood</div>
+            <div class="hero-audio-progress">
+              <input class="hero-audio-seek" type="range" min="0" max="100" value="0" data-audio="heroTrack3" aria-label="seek bar for TAMSIC TRACK 03">
+              <span class="hero-audio-current" data-time="heroTrack3">0:00</span>
+            </div>
+          </div>
+          <audio id="heroTrack3" preload="metadata" src="T+110.mp3"></audio>
+        </div>
+
+        <div class="hero-audio-note">TAMSIC sound selection</div>
+      </div>
+
+</div>
+</section>
+
+<section class="artists" id="artists">
+  <div class="artists-header">
+    <div>
+      <p class="sec-label">Our Artists</p>
+      <h2 class="sec-title">Artists</h2>
+    </div>
+    <div class="artists-count">02</div>
+  </div>
+  <div class="artists-grid">
+    <a href="nono.html" class="artist-card">
+      <div class="artist-photo">
+        <img src="assets/images/nono_main.png" alt="no-no">
+      </div>
+      <div class="artist-bar"></div>
+      <div class="artist-info">
+        <p class="artist-number">TAMSIC Artist 001</p>
+        <h3 class="artist-name">no-no</h3>
+        <p class="artist-meta" id="artist-meta-nono">AI Idol · 5 Tracks</p>
+      </div>
+    </a>
+    <a href="kiki.html" class="artist-card">
+      <div class="artist-photo">
+        <img src="assets/images/kiki_main.png" alt="kiki">
+      </div>
+      <div class="artist-bar"></div>
+      <div class="artist-info">
+        <p class="artist-number">TAMSIC Artist 002</p>
+        <h3 class="artist-name">kiki</h3>
+        <p class="artist-meta" id="artist-meta-kiki">AI Idol · 5 Tracks</p>
+      </div>
+    </a>
+  </div>
+</section>
+<section class="news" id="news">
+  <p class="sec-label">News</p>
+  <h2 class="sec-title">Latest News</h2>
+  <div class="news-list" id="home-news-list">
+    <div class="news-item">
+      <span class="news-date">—</span>
+      <div class="news-body">
+        <p class="news-headline">TAMSIC 公式サイト オープン</p>
+        <p class="news-sub">Official website now live</p>
+      </div>
+      <span class="news-tag">Info</span>
+    </div>
+    <div class="news-item">
+      <span class="news-date">—</span>
+      <div class="news-body">
+        <p class="news-headline">no-no — デビューシングル リリース予定</p>
+        <p class="news-sub">Debut single coming soon</p>
+      </div>
+      <span class="news-tag">Release</span>
+    </div>
+    <div class="news-item">
+      <span class="news-date">—</span>
+      <div class="news-body">
+        <p class="news-headline">kiki — デビューシングル リリース予定</p>
+        <p class="news-sub">Debut single coming soon</p>
+      </div>
+      <span class="news-tag">Release</span>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  
+  <div class="footer-legal"><a href="https://tamjump.com/" target="_blank">プライバシーポリシー</a><a href="https://tamjump.com/" target="_blank">利用規約</a><a href="https://tamjump.com/" target="_blank">特定商取引法</a><a href="https://tamjump.com/contact" target="_blank">お問い合わせ</a></div><span class="footer-copy">© 2025 TAMSIC. All Rights Reserved.</span>
+</footer>
+
+
+<script>
+async function initHome(){
+  const allTracks = await TAMSICDB.getAllTracks();
+  const news = await TAMSICDB.getNews();
+  const photos = { nono: getArtistPhotos('nono')[0], kiki: getArtistPhotos('kiki')[0] };
+
+  if (photos.nono) {
+    document.getElementById('artist-photo-nono').src = photos.nono;
+    document.getElementById('artist-photo-nono').style.display = 'block';
+    document.getElementById('artist-photo-nono-ph').style.display = 'none';
+  }
+  if (photos.kiki) {
+    document.getElementById('artist-photo-kiki').src = photos.kiki;
+    document.getElementById('artist-photo-kiki').style.display = 'block';
+    document.getElementById('artist-photo-kiki-ph').style.display = 'none';
+  }
+
+  const nonoCount = allTracks.filter(t => t.artist === 'nono').length;
+  const kikiCount = allTracks.filter(t => t.artist === 'kiki').length;
+  document.getElementById('artist-meta-nono').textContent = `AI Idol · ${nonoCount} Tracks`;
+  document.getElementById('artist-meta-kiki').textContent = `AI Idol · ${kikiCount} Tracks`;
+
+  const latest = [...allTracks].sort((a,b)=> String(b.id).localeCompare(String(a.id))).slice(0,4);
+  if (latest.length) {
+    const art = getTrackCoverSrc(latest[0]);
+    const artWrap = document.getElementById('latest-artwork');
+    if (art) artWrap.innerHTML = `<img src="${art}" alt="${escapeHtml(latest[0].title)}" style="width:100%;height:100%;object-fit:contain; background:#efefec;">`;
+    document.getElementById('latest-tracks').innerHTML = latest.map((t,idx)=>`
+      <div class="latest-track" onclick="window.location='${t.artist}.html#track-${t.id}'" style="cursor:pointer">
+        <span class="lt-num">${String(idx+1).padStart(2,'0')}</span>
+        <span class="lt-name">${escapeHtml(t.title)}</span>
+        <span class="lt-artist">${t.artist === 'nono' ? 'no-no' : 'kiki'} · sample無料 / フル ${t.price||30}コイン</span>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('home-news-list').innerHTML = news.slice(0,3).map(n=>`
+    <div class="news-item">
+      <span class="news-date">${escapeHtml(n.date || '—')}</span>
+      <div class="news-body">
+        <p class="news-headline">${escapeHtml(n.title || '')}</p>
+        <p class="news-sub">${escapeHtml(n.titleEn || '')}</p>
+      </div>
+      <span class="news-tag">${escapeHtml(n.tag || 'Info')}</span>
+    </div>
+  `).join('');
+}
+initHome();
+</script>
+
+
+
+
+
+<script>
+(function(){
+  const ids = ['heroTrack1','heroTrack2','heroTrack3'];
+
+  function formatTime(sec){
+    if (!isFinite(sec)) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  function buttonFor(id){
+    return document.querySelector(`.hero-audio-play[data-audio-btn="${id}"]`);
+  }
+
+  function seekFor(id){
+    return document.querySelector(`.hero-audio-seek[data-audio="${id}"]`);
+  }
+
+  function timeFor(id){
+    return document.querySelector(`.hero-audio-current[data-time="${id}"]`);
+  }
+
+  function syncTrackUI(audio){
+    const seek = seekFor(audio.id);
+    const time = timeFor(audio.id);
+    if (!seek || !time) return;
+
+    if (isFinite(audio.duration) && audio.duration > 0) {
+      seek.value = String((audio.currentTime / audio.duration) * 100);
+    } else {
+      seek.value = "0";
+    }
+    time.textContent = formatTime(audio.currentTime);
+  }
+
+  function resetOtherTracks(activeId){
+    ids.forEach(id => {
+      const audio = document.getElementById(id);
+      const btn = buttonFor(id);
+      if (!audio) return;
+      if (id !== activeId) {
+        audio.pause();
+        audio.currentTime = 0;
+        if (btn) btn.textContent = '▶';
+        syncTrackUI(audio);
+      }
+    });
+  }
+
+  function toggleHeroTrack(id){
+    const current = document.getElementById(id);
+    const btn = buttonFor(id);
+    if (!current) return;
+
+    if (current.paused) {
+      resetOtherTracks(id);
+      current.play().then(() => {
+        if (btn) btn.textContent = '❚❚';
+      }).catch(() => {
+        if (btn) btn.textContent = '▶';
+      });
+    } else {
+      current.pause();
+      if (btn) btn.textContent = '▶';
+    }
+  }
+
+  ids.forEach(id => {
+    const audio = document.getElementById(id);
+    const seek = seekFor(id);
+    const btn = buttonFor(id);
+    if (!audio || !seek || !btn) return;
+
+    btn.addEventListener('click', () => toggleHeroTrack(id));
+
+    audio.addEventListener('timeupdate', () => syncTrackUI(audio));
+    audio.addEventListener('loadedmetadata', () => syncTrackUI(audio));
+    audio.addEventListener('ended', () => {
+      btn.textContent = '▶';
+      audio.currentTime = 0;
+      syncTrackUI(audio);
+    });
+
+    const scrub = () => {
+      if (!isFinite(audio.duration) || audio.duration <= 0) return;
+      audio.currentTime = (Number(seek.value) / 100) * audio.duration;
+      syncTrackUI(audio);
+    };
+
+    seek.addEventListener('input', scrub);
+    seek.addEventListener('change', scrub);
+    seek.addEventListener('pointerup', scrub);
+    seek.addEventListener('mouseup', scrub);
+    seek.addEventListener('touchend', scrub, { passive: true });
+
+    syncTrackUI(audio);
+  });
+})();
+</script>
+
+
+
+
+</body>
+</html>
