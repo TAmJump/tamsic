@@ -57,6 +57,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
 .tb-cover{position:relative;}
 .cover-wrap{width:100%;aspect-ratio:1;background:var(--soft);border:1px solid var(--light);overflow:hidden;display:flex;align-items:center;justify-content:center;}
 .cover-wrap img{width:100%;height:100%;object-fit:cover;}
+.cover-wrap img.is-masked{filter:blur(20px) saturate(.7);transform:scale(1.08);transition:none;}
 .cover-ph-txt{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);}
 .tb-num{position:absolute;bottom:-14px;right:-14px;font-family:'Bodoni Moda',serif;font-style:italic;font-size:48px;font-weight:900;color:var(--light);line-height:1;pointer-events:none;}
 .tb-body{padding-top:4px;}
@@ -399,8 +400,8 @@ function renderTracks(){
   c.innerHTML=hero+renderCoinPanel()+_tracks.map((t,i)=>{
     const meta=getReleaseMeta(t);
     const num=String(i+1).padStart(2,'0');
-    const coverSrc=getTrackCoverSrc(t); const blurStyle = meta.showMask ? 'filter:blur(18px) saturate(.8); transform:scale(1.06);' : '';
-    const coverHtml=coverSrc?`<img src="${coverSrc}" alt="${t.title||''}" style="${blurStyle}">`:'<span class="cover-ph-txt">Cover</span>';
+    const coverSrc=getTrackCoverSrc(t); const maskedClass = meta.showMask ? 'is-masked' : '';
+    const coverHtml=coverSrc?`<img src="${coverSrc}" alt="${t.title||''}" class="${maskedClass}">`:'<span class="cover-ph-txt">Cover</span>';
     const dur=formatTime(parseTime(t.sampleEnd)-parseTime(t.sampleStart));
     const chip = `<span class="release-chip">${meta.icon ? getLockIcon() : ''}<span>${meta.label}</span></span>`;
     const mask = meta.showMask ? `<div class="cover-mask"><span class="lock-icon">${getLockIcon()}</span></div>` : '';
@@ -456,6 +457,7 @@ function renderTracks(){
 }
 function renderGallery(){
   const g=document.getElementById('gallery-grid');
+  if(!g) return;
   const photos=getArtistPhotos('kiki');
   g.innerHTML=photos.map(src=>`<div class="g-item"><img src="${src}" alt="kiki" style="width:100%;height:100%;object-fit:cover;"></div>`).join('');
 }
