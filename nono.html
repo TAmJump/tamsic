@@ -48,9 +48,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
 /* Track Block */
 .track-block{display:grid;grid-template-columns:180px 1fr;gap:36px;padding:36px 0;border-bottom:1px solid var(--light);align-items:start;}
 .tb-cover{position:relative;}
-.cover-wrap{width:100%;aspect-ratio:1;background:var(--bg);border:1px solid var(--light);overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative;}
+.cover-wrap{width:100%;aspect-ratio:1;background:var(--bg);border:1px solid var(--light);overflow:hidden;display:flex;align-items:center;justify-content:center;}
 .cover-wrap img{width:100%;height:100%;object-fit:cover;}
-.cover-wrap img.is-masked{filter:blur(20px) saturate(.7);transform:scale(1.08);transition:none;}
 .cover-ph-txt{font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--mid);}
 .tb-num{position:absolute;bottom:-12px;right:-12px;font-family:'Syncopate',sans-serif;font-size:36px;font-weight:700;color:var(--light);line-height:1;pointer-events:none;}
 .tb-body{padding-top:4px;}
@@ -112,7 +111,7 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
 <nav>
   <a href="index.html" class="nav-back">← TAMSIC</a>
   <span class="nav-title">no-no</span>
-  <ul class="nav-links"><li><a href="#music">Music</a></li><li><a href="index.html#music">All Releases</a></li><li><a href="news.html">News</a></li><li><a href="about.html">About</a></li><li><a href="mypage.html">My Page</a></li></ul>
+  <ul class="nav-links"><li><a href="#music">Music</a></li><li><a href="releases.html">All Releases</a></li><li><a href="news.html">News</a></li><li><a href="about.html">About</a></li><li><a href="mypage.html">My Page</a></li></ul>
 </nav>
 
 <section class="hero">
@@ -242,7 +241,7 @@ function injectCommerceStyles(){
 }
 
 function renderCoinPanel(){
-  const loggedIn = !!(window.TAMSICAuth && TAMSICAuth.isLoggedIn && TAMSICAuth.isLoggedIn());
+  const loggedIn = !!(typeof isLoggedIn === "function" ? isLoggedIn() : (window.TAMSICAuth && TAMSICAuth.isLoggedIn && TAMSICAuth.isLoggedIn()));
   const balance = TAMSICCoins.getBalance();
   if (!loggedIn) {
     return `<div class="coin-panel member-locked">
@@ -255,13 +254,11 @@ function renderCoinPanel(){
         <div class="coin-balance locked-balance">
           <div class="coin-balance-label">Member only</div>
           <div class="coin-balance-value">— coin</div>
-          <div class="coin-balance-sub">Login / Sign up / My Page</div>
+          <div class="coin-balance-sub">Login して先行視聴</div>
         </div>
       </div>
       <div class="member-actions">
-        <a class="member-btn primary" href="login.html?redirect=${encodeURIComponent(location.pathname.split('/').pop() || 'nono.html')}">Login</a>
-        <a class="member-btn" href="signup.html?redirect=${encodeURIComponent(location.pathname.split('/').pop() || 'nono.html')}">Sign up</a>
-        <a class="member-btn subtle" href="mypage.html">My Page</a>
+        <a class="member-btn primary" href="login.html">Login / Sign up</a>
       </div>
     </div>`;
   }
@@ -270,7 +267,7 @@ function renderCoinPanel(){
       <div>
         <div class="coin-kicker">TAMSIC Wallet</div>
         <div class="coin-title">フル試聴は My Page で購入したコインから消費されます。</div>
-        <div class="coin-copy">artist page では残高確認と再生導線のみ表示します。購入・履歴・残高管理は My Page に集約します。</div>
+        <div class="coin-copy">コインの購入・残高管理は My Page に集約します。</div>
       </div>
       <div class="coin-balance">
         <div class="coin-balance-label">Balance</div>
@@ -279,14 +276,13 @@ function renderCoinPanel(){
       </div>
     </div>
     <div class="member-actions">
-      <a class="member-btn primary" href="mypage.html">My Pageでコインを管理</a>
-      <a class="member-btn subtle" href="mypage.html#purchase-grid">コインを購入</a>
+      <a class="member-btn primary" href="mypage.html">My Page</a>
     </div>
   </div>`;
 }
 
 function refreshCoinUI(){
-  const loggedIn = !!(window.TAMSICAuth && TAMSICAuth.isLoggedIn && TAMSICAuth.isLoggedIn());
+  const loggedIn = !!(typeof isLoggedIn === "function" ? isLoggedIn() : (window.TAMSICAuth && TAMSICAuth.isLoggedIn && TAMSICAuth.isLoggedIn()));
   const balance = loggedIn ? TAMSICCoins.getBalance() : 0;
   document.querySelectorAll('[data-coin-balance]').forEach(el=>el.textContent=balance);
   document.querySelectorAll('[data-track-cost]').forEach(el=>{
@@ -383,16 +379,15 @@ function renderTracks(){
   c.innerHTML=hero+renderCoinPanel()+_tracks.map((t,i)=>{
     const meta=getReleaseMeta(t);
     const num=String(i+1).padStart(2,'0');
-    const coverSrc=getTrackCoverSrc(t); const maskedClass = meta.showMask ? 'is-masked' : '';
-    const coverSrcHtml = coverSrc ? `<img src="${coverSrc}" alt="${t.title||''}" style="${meta.showMask ? 'filter:blur(16px) saturate(.6);transform:scale(1.1);' : ''}width:100%;height:100%;object-fit:cover;">` : '<span class="cover-ph-txt">Cover</span>';
-    const lockOverlay = meta.showMask ? `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.08);z-index:2;"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' style='width:32px;height:32px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.4));'><rect x='5' y='10' width='14' height='11' rx='2.5'/><path d='M8.5 10V7.5a3.5 3.5 0 1 1 7 0V10'/><circle cx='12' cy='15.5' r='1' fill='white' stroke='none'/></svg></div>` : '';
-    const coverDisplay = coverSrcHtml + lockOverlay;
+    const coverSrc=getTrackCoverSrc(t); const blurStyle = meta.showMask ? 'filter:blur(18px) saturate(.8); transform:scale(1.06);' : '';
+    const coverHtml=coverSrc?`<img src="${coverSrc}" alt="${t.title||''}" style="${blurStyle}">`:'<span class="cover-ph-txt">Cover</span>';
     const dur=formatTime(parseTime(t.sampleEnd)-parseTime(t.sampleStart));
     const chip = `<span class="release-chip">${meta.icon ? getLockIcon() : ''}<span>${meta.label}</span></span>`;
+    const mask = meta.showMask ? `<div class="cover-mask"><span class="lock-icon">${getLockIcon()}</span></div>` : '';
     const fullMsg = meta.canFull ? '' : `<div class="full-locked-msg">${meta.note}</div>`;
     return`<div class="track-block" id="track-${t.id}">
       <div class="tb-cover">
-        <div class="cover-wrap">${coverDisplay}</div>
+        <div class="cover-wrap">${coverHtml}${mask}</div>
         <span class="tb-num">${num}</span>
       </div>
       <div class="tb-body">
@@ -402,7 +397,7 @@ function renderTracks(){
         <div class="track-release-note">${chip}<div style="margin-top:8px;">${meta.note}</div></div>
         <div class="player-modes">
           <button class="mode-btn active" onclick="setMode('${t.id}','site',this)">▶ サイトで聴く</button>
-          ${t.youtubeUrl ? `<button class="mode-btn" onclick="window.open('go.html?url='+encodeURIComponent('${t.youtubeUrl}'),'_blank')">YouTube ↗</button>` : ''}
+          <button class="mode-btn" onclick="setMode('${t.id}','yt',this)">YouTube</button>
           <button class="mode-btn premium ${meta.canFull ? '' : 'is-restricted'}" onclick="setMode('${t.id}','full',this)">${meta.canFull ? `フル試聴 ${t.price||30}コイン` : meta.label}</button>
         </div>
         <div id="panel-site-${t.id}">
@@ -417,6 +412,9 @@ function renderTracks(){
               <span class="sp-time" data-time-id="${t.id}">0:00 / ${dur}</span>
             </div>
           </div>
+        </div>
+        <div class="yt-panel" id="panel-yt-${t.id}" style="display:none">
+          ${t.youtubeUrl?ytEmbed(t.youtubeUrl):ytPh()}
         </div>
         <div class="full-panel" id="panel-full-${t.id}" style="display:none">
           <div class="full-box">
@@ -441,13 +439,16 @@ function renderTracks(){
 }
 function renderGallery(){
   const g=document.getElementById('gallery-grid');
-  if(!g) return;
   const photos=getArtistPhotos('nono');
   g.innerHTML=photos.map(src=>`<div class="g-item"><img src="${src}" alt="no-no" style="width:100%;height:100%;object-fit:cover;"></div>`).join('');
 }
 
-function ytEmbed(url){ return ''; }
-function ytPh(){ return ''; }
+function ytEmbed(url){
+  let id='';
+  try{const u=new URL(url);id=u.searchParams.get('v')||u.pathname.split('/').pop();}catch(e){return ytPh();}
+  return`<iframe class="yt-embed" src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>`;
+}
+function ytPh(){return`<div class="yt-placeholder"><div class="yt-icon">▶</div><span>YouTube 動画を埋め込み予定<br><small>管理パネルでURLを設定してください</small></span></div>`;}
 
 function setMode(id,mode,btn){
   const track=_tracks.find(x=>x.id===id);
@@ -456,9 +457,13 @@ function setMode(id,mode,btn){
     alert(meta.note || 'フル試聴はまだ利用できません。');
     mode='site';
   }
-  ['site','full'].forEach(m=>{const el=document.getElementById(`panel-${m}-${id}`);if(el)el.style.display=m===mode?'block':'none';});
+  ['site','yt','full'].forEach(m=>{const el=document.getElementById(`panel-${m}-${id}`);if(el)el.style.display=m===mode?'block':'none';});
   btn.closest('.player-modes').querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+  const selected = Array.from(btn.closest('.player-modes').querySelectorAll('.mode-btn')).find(b => {
+    const oc = b.getAttribute('onclick') || '';
+    return oc.includes(`'${mode}'`);
+  });
+  (selected || btn).classList.add('active');
   if(mode!=='site')TAMSICPlayer.stop(true);
 }
 function playT(id){
