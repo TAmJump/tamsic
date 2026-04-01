@@ -194,29 +194,29 @@
 
 <main>
   <div class="card">
-    <h1 class="card-title">Join TAMSIC</h1>
-    <p class="card-sub">無料会員登録で先行試聴・コイン購入機能が使えます</p>
+    <h1 class="card-title" data-ja="TAMSIC に参加する" data-en="Join TAMSIC">TAMSIC に参加する</h1>
+    <p class="card-sub"><span data-ja="無料会員登録で先行試聴・コイン購入機能が使えます" data-en="Free membership — early listening &amp; coins">無料会員登録で先行試聴・コイン購入機能が使えます</span></p>
 
     <ul class="benefits">
-      <li>一般公開より2週間早い先行試聴</li>
-      <li>アーティスト限定コンテンツへのアクセス</li>
-      <li>コインでお気に入り楽曲をアンロック</li>
-      <li>新曲リリース通知（予定）</li>
+      <li data-ja="一般公開より2週間早い先行試聴" data-en="Early access before public release">一般公開より2週間早い先行試聴</li>
+      <li data-ja="アーティスト限定コンテンツへのアクセス" data-en="Exclusive artist content">アーティスト限定コンテンツへのアクセス</li>
+      <li data-ja="コインでお気に入り楽曲をアンロック" data-en="Unlock tracks with coins">コインでお気に入り楽曲をアンロック</li>
+      <li data-ja="新曲リリース通知（予定）" data-en="New release notifications (coming soon)">新曲リリース通知（予定）</li>
     </ul>
 
     <button class="btn-signup" id="signupBtn" onclick="handleSignup()">
       <div class="spinner-sm"></div>
-      <span>Create Account</span>
+      <span data-ja="アカウント作成" data-en="Create Account">アカウント作成</span>
     </button>
 
-    <div class="divider">すでに会員の方</div>
+    <div class="divider"><span data-ja="すでに会員の方" data-en="Already a member?">すでに会員の方</span></div>
 
     <p class="login-link">
-      <a href="/login.html">ログインはこちら</a>
+      <a href="/login.html" data-ja="ログインはこちら" data-en="Login here">ログインはこちら</a>
     </p>
 
     <p class="terms">
-      登録することで、TAMSICの利用規約およびプライバシーポリシーに同意したものとみなします。
+      <span data-ja="登録することで、TAMSICの利用規約およびプライバシーポリシーに同意したものとみなします。" data-en="By registering you agree to our Terms of Service and Privacy Policy.">登録することで、TAMSICの利用規約およびプライバシーポリシーに同意したものとみなします。</span>
     </p>
   </div>
 </main>
@@ -224,6 +224,7 @@
 <footer>© 2026 TAMSIC — All rights reserved</footer>
 
 <script src="auth.js"></script>
+<script src="lang.js"></script>
 <script>
   // すでにログイン済みならマイページへ
   if (isLoggedIn()) {

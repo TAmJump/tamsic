@@ -12,9 +12,9 @@
 <main class="page-shell mypage-shell">
   <div class="mypage-topline">
     <div class="mypage-intro">
-      <div class="page-kicker">Member lounge</div>
-      <h1 class="page-title">My Page</h1>
-      <p class="page-copy">購入・残高・再生履歴を、TAMSICらしい静かな会員空間にまとめています。コイン管理とフル試聴の起点はこのページです。</p>
+      <div class="page-kicker" data-ja="会員ラウンジ" data-en="Member lounge">会員ラウンジ</div>
+      <h1 class="page-title" data-ja="マイページ" data-en="My Page">マイページ</h1>
+      <p class="page-copy"><span data-ja="購入・残高・再生履歴を、TAMSICらしい静かな会員空間にまとめています。コイン管理とフル試聴の起点はこのページです。" data-en="Purchases, balance, and play history — your quiet member space. Hub for coins and full listening.">購入・残高・再生履歴を、TAMSICらしい静かな会員空間にまとめています。コイン管理とフル試聴の起点はこのページです。</span></p>
     </div>
     <div class="member-chip">member <strong data-user-email>—</strong></div>
   </div>
@@ -22,7 +22,7 @@
   <section class="mypage-lounge">
     <div class="vault-card">
       <div class="vault-header">
-        <div class="vault-label">current balance</div>
+        <div class="vault-label" data-ja="現在の残高" data-en="current balance">現在の残高</div>
         <div class="vault-status">member lounge</div>
       </div>
       <div class="vault-balance"><strong data-wallet-balance>0</strong><span>coin</span></div>
@@ -58,7 +58,7 @@
     <div class="section-card purchase-section">
       <div class="purchase-hero">
         <div>
-          <div class="section-title">Buy coin</div>
+          <div class="section-title" data-ja="コインを購入" data-en="Buy coin">コインを購入</div>
           <div class="purchase-hero-copy">Square決済ページへ移動します。購入後はこの会員を基準に残高を管理します。価格は税込、コインの有効期限は無期限です。</div>
         </div>
         <a class="ghost-link" href="releases.html">Go to releases</a>
@@ -71,7 +71,7 @@
     <div class="accordion-group">
       <div class="accordion" data-accordion="pending">
         <button class="accordion-toggle" type="button" onclick="toggleAccordion('pending')">
-          <span><span class="accordion-title">Pending purchase intent</span><span class="accordion-copy">決済ページへ遷移した購入リクエストの反映待ち一覧。</span></span>
+          <span><span class="accordion-title" data-ja="反映待ち購入" data-en="Pending purchase intent">反映待ち購入</span><span class="accordion-copy">決済ページへ遷移した購入リクエストの反映待ち一覧。</span></span>
           <span class="accordion-icon">+</span>
         </button>
         <div class="accordion-content"><div id="pending-intents"></div></div>
@@ -79,17 +79,17 @@
 
       <div class="accordion" data-accordion="purchase">
         <button class="accordion-toggle" type="button" onclick="toggleAccordion('purchase')">
-          <span><span class="accordion-title">Purchase history</span><span class="accordion-copy">購入履歴を必要な時だけ開いて確認できます。</span></span>
+          <span><span class="accordion-title" data-ja="購入履歴" data-en="Purchase history">購入履歴</span><span class="accordion-copy">購入履歴を必要な時だけ開いて確認できます。</span></span>
           <span class="accordion-icon">+</span>
         </button>
         <div class="accordion-content">
-          <div class="table-wrap flush"><table class="table"><thead><tr><th>日時</th><th>内容</th><th>金額</th><th>状態</th></tr></thead><tbody id="purchase-history-body"></tbody></table></div>
+          <div class="table-wrap flush"><table class="table"><thead><tr><th data-ja="日時" data-en="Date">日時</th><th data-ja="内容" data-en="Item">内容</th><th data-ja="金額" data-en="Amount">金額</th><th data-ja="状態" data-en="Status">状態</th></tr></thead><tbody id="purchase-history-body"></tbody></table></div>
         </div>
       </div>
 
       <div class="accordion" data-accordion="play">
         <button class="accordion-toggle" type="button" onclick="toggleAccordion('play')">
-          <span><span class="accordion-title">Play history</span><span class="accordion-copy">フル再生時の消費履歴をまとめて確認できます。</span></span>
+          <span><span class="accordion-title" data-ja="再生履歴" data-en="Play history">再生履歴</span><span class="accordion-copy">フル再生時の消費履歴をまとめて確認できます。</span></span>
           <span class="accordion-icon">+</span>
         </button>
         <div class="accordion-content">

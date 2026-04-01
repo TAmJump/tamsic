@@ -179,29 +179,30 @@
 
 <main>
   <div class="card">
-    <h1 class="card-title">Member Login</h1>
-    <p class="card-sub">先行試聴・コイン機能を利用するにはログインが必要です</p>
+    <h1 class="card-title" data-ja="会員ログイン" data-en="Member Login">会員ログイン</h1>
+    <p class="card-sub"><span data-ja="先行試聴・コイン機能を利用するにはログインが必要です" data-en="Login required for early listening &amp; coins">先行試聴・コイン機能を利用するにはログインが必要です</span></p>
 
     <button class="btn-login" id="loginBtn" onclick="handleLogin()">
       <div class="spinner-sm"></div>
-      <span>Login</span>
+      <span data-ja="ログイン" data-en="Login">ログイン</span>
     </button>
 
     <div class="divider">or</div>
 
     <p class="signup-link">
-      アカウントをお持ちでない方は <a href="/signup.html">新規登録</a>
+      <span data-ja="アカウントをお持ちでない方は" data-en="New here?">アカウントをお持ちでない方は</span> <a href="/signup.html" data-ja="新規登録" data-en="Create account">新規登録</a>
     </p>
 
     <div class="notice">
-      <strong>会員特典：</strong>一般公開より2週間早く新曲を試聴できます。コインを購入して楽曲をアンロックしましょう。
+      <strong data-ja="会員特典：" data-en="Member benefits:">会員特典：</strong><span data-ja="一般公開より2週間早く新曲を試聴できます。コインを購入して楽曲をアンロックしましょう。" data-en="Listen early &amp; unlock full tracks with coins.">一般公開より2週間早く新曲を試聴できます。コインを購入して楽曲をアンロックしましょう。</span>
     </div>
   </div>
 </main>
 
-<footer>© 2026 TAMSIC — All rights reserved</footer>
+<footer><span data-ja="© 2026 TAMSIC — All rights reserved" data-en="© 2026 TAMSIC — All rights reserved">© 2026 TAMSIC — All rights reserved</span></footer>
 
 <script src="auth.js"></script>
+<script src="lang.js"></script>
 <script>
   // すでにログイン済みならマイページへ
   if (isLoggedIn()) {

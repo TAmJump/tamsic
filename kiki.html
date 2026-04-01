@@ -9,6 +9,7 @@
 <script src="purchase-config.js"></script>
 <script src="auth.js"></script>
 <script src="release-control.js"></script>
+<script src="lang.js"></script>
 <script src="tamsic.js"></script>
 <style>
 :root{--bg:#FDF8F4;--text:#221418;--accent:#C85A72;--accent2:#E8A0B0;--light:#EEE0D8;--mid:#9A7068;--white:#FFFFFF;--soft:#F7EEE8;}
@@ -123,7 +124,7 @@ footer{background:var(--text);color:#fff;padding:48px 64px;display:flex;justify-
 <nav>
   <a href="index.html" class="nav-back">← TAMSIC</a>
   <span class="nav-title">kiki</span>
-  <ul class="nav-links"><li><a href="#music">Music</a></li><li><a href="releases.html">All Releases</a></li><li><a href="news.html">News</a></li><li><a href="about.html">About</a></li><li><a href="mypage.html">My Page</a></li></ul>
+  <ul class="nav-links"><li><a href="#music" data-ja="ミュージック" data-en="Music">ミュージック</a></li><li><a href="releases.html" data-ja="全リリース" data-en="All Releases">全リリース</a></li><li><a href="news.html" data-ja="ニュース" data-en="News">ニュース</a></li><li><a href="about.html" data-ja="レーベル紹介" data-en="About">レーベル紹介</a></li><li><a href="mypage.html" data-ja="マイページ" data-en="My Page">マイページ</a></li></ul>
 </nav>
 
 <section class="hero">
@@ -163,7 +164,7 @@ footer{background:var(--text);color:#fff;padding:48px 64px;display:flex;justify-
 
 <footer>
   <div><div class="footer-name">kiki</div><div class="footer-label">TAMSIC Artist</div></div>
-  <div class="footer-legal"><a href="https://tamjump.com/" target="_blank">プライバシーポリシー</a><a href="https://tamjump.com/" target="_blank">利用規約</a><a href="https://tamjump.com/" target="_blank">特定商取引法</a><a href="https://tamjump.com/contact" target="_blank">お問い合わせ</a></div><span class="footer-copy">© 2025 TAMSIC. All Rights Reserved.</span>
+  <div class="footer-legal"><a href="https://tamjump.com/" target="_blank" data-ja="プライバシーポリシー" data-en="Privacy Policy">プライバシーポリシー</a><a href="https://tamjump.com/" target="_blank" data-ja="利用規約" data-en="Terms of Service">利用規約</a><a href="https://tamjump.com/" target="_blank" data-ja="特定商取引法" data-en="Commercial Transactions">特定商取引法</a><a href="https://tamjump.com/contact" target="_blank" data-ja="お問い合わせ" data-en="Contact">お問い合わせ</a></div><span class="footer-copy">© 2025 TAMSIC. All Rights Reserved.</span>
 </footer>
 
 <script>
@@ -264,18 +265,18 @@ function renderCoinPanel(){
     return `<div class="coin-panel member-locked">
       <div class="coin-panel-head">
         <div>
-          <div class="coin-kicker">TAMSIC Member</div>
-          <div class="coin-title">フル試聴と残高表示はログイン後に解放されます。</div>
-          <div class="coin-copy">sample は無料です。コインの購入、残高管理、フル試聴は My Page を起点に統一します。</div>
+          <div class="coin-kicker" data-ja="TAMSICメンバー" data-en="TAMSIC Member">TAMSICメンバー</div>
+          <div class="coin-title"><span data-ja="フル試聴と残高表示はログイン後に解放されます。" data-en="Full listening and balance require login.">フル試聴と残高表示はログイン後に解放されます。</span></div>
+          <div class="coin-copy"><span data-ja="sample は無料です。コインの購入、残高管理、フル試聴は My Page を起点に統一します。" data-en="Samples are free. Manage coins, balance, and full listening from My Page.">sample は無料です。コインの購入、残高管理、フル試聴は My Page を起点に統一します。</span></div>
         </div>
         <div class="coin-balance locked-balance">
           <div class="coin-balance-label">Member only</div>
           <div class="coin-balance-value">— coin</div>
-          <div class="coin-balance-sub">Login して先行視聴</div>
+          <div class="coin-balance-sub"><span data-ja="Login して先行視聴" data-en="Login for early access">Login して先行視聴</span></div>
         </div>
       </div>
       <div class="member-actions">
-        <a class="member-btn primary" href="login.html">Login / Sign up</a>
+        <a class="member-btn primary" href="login.html" data-ja="ログイン / 新規登録" data-en="Login / Sign up">ログイン / 新規登録</a>
       </div>
     </div>`;
   }
@@ -293,7 +294,7 @@ function renderCoinPanel(){
       </div>
     </div>
     <div class="member-actions">
-      <a class="member-btn primary" href="mypage.html">My Page</a>
+      <a class="member-btn primary" href="mypage.html" data-ja="マイページ" data-en="My Page">マイページ</a>
     </div>
   </div>`;
 }
