@@ -71,6 +71,14 @@ nav {
 }
 
 .nav-links a:hover { color: var(--accent); }
+.nav-login-btn {
+  border: 1px solid var(--accent) !important;
+  color: var(--accent) !important;
+  padding: 6px 16px !important;
+  border-radius: 2px;
+  transition: background 0.2s, color 0.2s !important;
+}
+.nav-login-btn:hover { background: var(--accent) !important; color: #fff !important; }
 
 /* ─── HERO ─── */
 .hero {
@@ -837,8 +845,11 @@ footer {
     <li><a href="news.html">News</a></li>
     <li><a href="about.html">About</a></li>
     <li><a href="https://tamjump.com/contact" target="_blank">Contact</a></li>
+    <!-- ログイン済み -->
     <li id="nav-mypage-li" style="display:none"><a href="mypage.html" style="color:var(--accent);font-weight:500">My Page</a></li>
-    <li id="nav-login-li"><a href="login.html" style="border:1px solid var(--accent);color:var(--accent);padding:6px 16px;border-radius:2px;transition:background .2s,color .2s" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='var(--accent)'">Login</a></li>
+    <li id="nav-logout-li" style="display:none"><a href="#" id="nav-logout-btn" style="color:var(--mid)">Logout</a></li>
+    <!-- 未ログイン -->
+    <li id="nav-login-li"><a href="login.html" class="nav-login-btn">Login</a></li>
   </ul>
   <a href="index.html" class="nav-logo">TAMSIC</a>
 </nav>
@@ -1025,11 +1036,28 @@ async function initHome(){
 }
 // ── ナビのログイン状態切り替え ──
 (function() {
+  const loginLi  = document.getElementById('nav-login-li');
+  const mypageLi = document.getElementById('nav-mypage-li');
+  const logoutLi = document.getElementById('nav-logout-li');
+  const logoutBtn= document.getElementById('nav-logout-btn');
+
   if (typeof isLoggedIn === 'function' && isLoggedIn()) {
-    const loginLi  = document.getElementById('nav-login-li');
-    const mypageLi = document.getElementById('nav-mypage-li');
     if (loginLi)  loginLi.style.display  = 'none';
     if (mypageLi) mypageLi.style.display = 'list-item';
+    if (logoutLi) logoutLi.style.display = 'list-item';
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (typeof cognitoLogout === 'function') {
+        cognitoLogout();
+      } else {
+        // フォールバック：sessionStorageをクリアしてTOPへ
+        sessionStorage.clear();
+        window.location.reload();
+      }
+    });
   }
 })();
 initHome();
