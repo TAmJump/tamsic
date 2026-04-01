@@ -1,6 +1,9 @@
 // 言語ヘルパー
 function _L(ja, en){ return (window.TAMSICLang && window.TAMSICLang.get()==='en') ? en : ja; }
 
+// ウォレットキャッシュ（renderMypage → サブ関数で共有）
+let _currentWallet = { balance: 0, purchases: [], listens: [] };
+
 /**
  * mypage.js — TAMSIC マイページ制御
  * coins.js（localStorage）+ auth.js（Cognito）対応版
@@ -30,7 +33,8 @@ async function renderMypage() {
   }
 
   // Cognitoからウォレット読み込み
-  const wallet = typeof loadWallet === 'function' ? await loadWallet() : { balance: 0, purchases: [], listens: [] };
+  _currentWallet = typeof loadWallet === 'function' ? await loadWallet() : { balance: 0, purchases: [], listens: [] };
+  const wallet = _currentWallet;
   const balance = wallet.balance || 0;
   document.querySelectorAll('[data-wallet-balance]').forEach(el => {
     el.textContent = balance.toLocaleString('ja-JP');
@@ -56,7 +60,7 @@ async function renderMypage() {
 function renderPurchaseHistory() {
   const tbody = document.getElementById('purchase-history-body');
   if (!tbody) return;
-  const purchases = wallet.purchases || [];
+  const purchases = _currentWallet.purchases || [];
   if (!purchases.length) {
     tbody.innerHTML = `<tr><td colspan="4"><div class="inline-empty">${_L("購入履歴はまだありません。","No purchase history yet.")}</div></td></tr>`;
     return;
@@ -73,7 +77,7 @@ function renderPurchaseHistory() {
 function renderListenHistory() {
   const tbody = document.getElementById('listen-history-body');
   if (!tbody) return;
-  const listens = wallet.listens || [];
+  const listens = _currentWallet.listens || [];
   if (!listens.length) {
     tbody.innerHTML = `<tr><td colspan="3"><div class="inline-empty">${_L("再生履歴はまだありません。","No play history yet.")}</div></td></tr>`;
     return;
