@@ -5,7 +5,7 @@ window.TAMSIC_PAYMENT_LINKS = {
     title: 'TAMSIC 100coin',
     coins: 100,
     priceYen: 200,
-    label: 'Starter',
+    label: 'Starter', labelEn: 'Starter',
     url: 'https://square.link/u/ooAT7lXM'
   },
   standard: {
@@ -13,7 +13,7 @@ window.TAMSIC_PAYMENT_LINKS = {
     title: 'TAMSIC 300coin',
     coins: 300,
     priceYen: 500,
-    label: 'Recommended',
+    label: 'おすすめ', labelEn: 'Recommended',
     url: 'https://square.link/u/ze3xiMxQ'
   },
   premium: {
@@ -21,7 +21,7 @@ window.TAMSIC_PAYMENT_LINKS = {
     title: 'TAMSIC 500coin',
     coins: 500,
     priceYen: 800,
-    label: 'Best value',
+    label: 'お得', labelEn: 'Best Value',
     url: 'https://square.link/u/4Qs8fs2U'
   }
 };

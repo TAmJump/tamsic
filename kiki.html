@@ -379,6 +379,8 @@ async function init(){
   refreshCoinUI();
   TAMSICCoins.onChange(()=>refreshCoinUI());
   window.addEventListener('storage',()=>refreshCoinUI());
+  // 動的生成されたdata-ja/en要素に翻訳を適用
+  if(window.TAMSICLang) window.TAMSICLang.apply(window.TAMSICLang.get());
 }
 
 function renderTracks(){

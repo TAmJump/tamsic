@@ -354,6 +354,7 @@ async function init(){
   const n=_tracks.length||'—';
   document.getElementById('track-count').textContent=n;
   document.getElementById('disc-count').textContent=n;
+  if(window.TAMSICLang) window.TAMSICLang.apply(window.TAMSICLang.get());
   if(_tracks.length&&getTrackCoverSrc(_tracks[0])){
     const f=document.getElementById('hero-photo');
     f.innerHTML=`<img src="assets/images/nono/nono_official_top.png" alt="no-no">`;
@@ -362,6 +363,8 @@ async function init(){
   refreshCoinUI();
   TAMSICCoins.onChange(()=>refreshCoinUI());
   window.addEventListener('storage',()=>refreshCoinUI());
+  // 動的生成されたdata-ja/en要素に翻訳を適用
+  if(window.TAMSICLang) window.TAMSICLang.apply(window.TAMSICLang.get());
 }
 
 function renderTracks(){

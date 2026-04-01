@@ -43,6 +43,9 @@ function renderMypage() {
 
   // Pending（購入処理中）の表示
   renderPending();
+
+  // 動的生成されたdata-ja/en要素に翻訳を再適用
+  if(window.TAMSICLang) window.TAMSICLang.apply(window.TAMSICLang.get());
 }
 
 /* ─── 購入履歴テーブル ─── */
@@ -85,11 +88,11 @@ function renderPurchaseGrid() {
   const packs = Object.values(window.TAMSIC_PAYMENT_LINKS);
   grid.innerHTML = packs.map((pack, i) => `
     <div class="purchase-card ${i === 1 ? 'featured' : ''}">
-      <div class="purchase-label">${pack.label}</div>
+      <div class="purchase-label" data-ja="${pack.label}" data-en="${pack.labelEn||pack.label}">${pack.label}</div>
       <div class="purchase-coins">${pack.coins}<span style="font-size:18px;font-family:'Jost',sans-serif;font-weight:400;"> coin</span></div>
       <div class="purchase-price">${TAMSICCoins.formatYen(pack.priceYen)}</div>
-      <div class="purchase-note">Squareで決済後、「購入を反映する」ボタンで残高に加算されます。</div>
-      <button class="btn-primary" type="button" onclick="startPurchase('${pack.id}')">Squareで購入</button>
+      <div class="purchase-note" data-ja="Squareで決済後、購入を反映するボタンで残高に加算されます。" data-en="After Square checkout, click Confirm purchase to add coins.">Squareで決済後、購入を反映するボタンで残高に加算されます。</div>
+      <button class="btn-primary" type="button" onclick="startPurchase('${pack.id}')" data-ja="Squareで購入" data-en="Buy on Square">Squareで購入</button>
     </div>
   `).join('');
 }
