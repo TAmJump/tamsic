@@ -46,19 +46,19 @@ const STORAGE_KEYS = {
 };
 
 function _saveTokens(tokenResponse) {
-  sessionStorage.setItem(STORAGE_KEYS.accessToken,  tokenResponse.access_token  || '');
-  sessionStorage.setItem(STORAGE_KEYS.idToken,      tokenResponse.id_token      || '');
-  sessionStorage.setItem(STORAGE_KEYS.refreshToken, tokenResponse.refresh_token || '');
+  localStorage.setItem(STORAGE_KEYS.accessToken,  tokenResponse.access_token  || '');
+  localStorage.setItem(STORAGE_KEYS.idToken,      tokenResponse.id_token      || '');
+  localStorage.setItem(STORAGE_KEYS.refreshToken, tokenResponse.refresh_token || '');
   const expiry = Date.now() + (tokenResponse.expires_in || 3600) * 1000;
-  sessionStorage.setItem(STORAGE_KEYS.expiry, String(expiry));
+  localStorage.setItem(STORAGE_KEYS.expiry, String(expiry));
   // コイン初期値（DynamoDB未実装時の暫定）
-  if (!sessionStorage.getItem(STORAGE_KEYS.coins)) {
-    sessionStorage.setItem(STORAGE_KEYS.coins, '0');
+  if (!localStorage.getItem(STORAGE_KEYS.coins)) {
+    localStorage.setItem(STORAGE_KEYS.coins, '0');
   }
 }
 
 function _clearTokens() {
-  Object.values(STORAGE_KEYS).forEach(k => sessionStorage.removeItem(k));
+  Object.values(STORAGE_KEYS).forEach(k => localStorage.removeItem(k));
 }
 
 /* ─── 公開API ─── */
@@ -67,8 +67,8 @@ function _clearTokens() {
  * ログイン中かどうか（トークン有効期限チェック付き）
  */
 function isLoggedIn() {
-  const token  = sessionStorage.getItem(STORAGE_KEYS.accessToken);
-  const expiry = Number(sessionStorage.getItem(STORAGE_KEYS.expiry) || 0);
+  const token  = localStorage.getItem(STORAGE_KEYS.accessToken);
+  const expiry = Number(localStorage.getItem(STORAGE_KEYS.expiry) || 0);
   return !!(token && Date.now() < expiry);
 }
 
@@ -77,9 +77,9 @@ function isLoggedIn() {
  */
 function getTokens() {
   return {
-    accessToken:  sessionStorage.getItem(STORAGE_KEYS.accessToken),
-    idToken:      sessionStorage.getItem(STORAGE_KEYS.idToken),
-    refreshToken: sessionStorage.getItem(STORAGE_KEYS.refreshToken),
+    accessToken:  localStorage.getItem(STORAGE_KEYS.accessToken),
+    idToken:      localStorage.getItem(STORAGE_KEYS.idToken),
+    refreshToken: localStorage.getItem(STORAGE_KEYS.refreshToken),
   };
 }
 
@@ -87,7 +87,7 @@ function getTokens() {
  * IDトークンからユーザー情報を取得
  */
 function getUserInfo() {
-  const idToken = sessionStorage.getItem(STORAGE_KEYS.idToken);
+  const idToken = localStorage.getItem(STORAGE_KEYS.idToken);
   if (!idToken) return null;
   try {
     const payload = idToken.split('.')[1];
@@ -101,7 +101,7 @@ function getUserInfo() {
  * コイン残高取得（暫定: sessionStorage）
  */
 function getCoins() {
-  return parseInt(sessionStorage.getItem(STORAGE_KEYS.coins) || '0', 10);
+  return parseInt(localStorage.getItem(STORAGE_KEYS.coins) || '0', 10);
 }
 
 /**
@@ -110,7 +110,7 @@ function getCoins() {
 function spendCoins(amount) {
   const current = getCoins();
   if (current < amount) return false;
-  sessionStorage.setItem(STORAGE_KEYS.coins, String(current - amount));
+  localStorage.setItem(STORAGE_KEYS.coins, String(current - amount));
   return true;
 }
 
@@ -122,8 +122,8 @@ async function cognitoLogin() {
   const state      = _generateRandom(16);
   const challenge  = await _generateCodeChallenge(verifier);
 
-  sessionStorage.setItem(STORAGE_KEYS.verifier, verifier);
-  sessionStorage.setItem(STORAGE_KEYS.state,    state);
+  localStorage.setItem(STORAGE_KEYS.verifier, verifier);
+  localStorage.setItem(STORAGE_KEYS.state,    state);
 
   const _lang = localStorage.getItem('tamsic_lang') || 'ja';
   const params = new URLSearchParams({
@@ -149,8 +149,8 @@ async function cognitoSignup() {
   const state      = _generateRandom(16);
   const challenge  = await _generateCodeChallenge(verifier);
 
-  sessionStorage.setItem(STORAGE_KEYS.verifier, verifier);
-  sessionStorage.setItem(STORAGE_KEYS.state,    state);
+  localStorage.setItem(STORAGE_KEYS.verifier, verifier);
+  localStorage.setItem(STORAGE_KEYS.state,    state);
 
   const params = new URLSearchParams({
     response_type:         'code',
@@ -194,8 +194,8 @@ async function handleCallback() {
     return false;
   }
 
-  const savedState    = sessionStorage.getItem(STORAGE_KEYS.state);
-  const codeVerifier  = sessionStorage.getItem(STORAGE_KEYS.verifier);
+  const savedState    = localStorage.getItem(STORAGE_KEYS.state);
+  const codeVerifier  = localStorage.getItem(STORAGE_KEYS.verifier);
 
   if (!code || !codeVerifier) return false;
   if (state !== savedState)   return false;
@@ -228,8 +228,8 @@ async function handleCallback() {
     _saveTokens(tokenResponse);
 
     // 使い捨て値をクリア
-    sessionStorage.removeItem(STORAGE_KEYS.verifier);
-    sessionStorage.removeItem(STORAGE_KEYS.state);
+    localStorage.removeItem(STORAGE_KEYS.verifier);
+    localStorage.removeItem(STORAGE_KEYS.state);
 
     return true;
   } catch (e) {
