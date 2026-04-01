@@ -1,92 +1,208 @@
-function renderMypage(){
-  const user = TAMSICAuth.requireAuth();
-  if (!user) return;
-  const wallet = TAMSICAuth.getCoinState();
-  const intents = TAMSICAuth.getPurchaseIntents();
-  document.querySelectorAll('[data-user-email]').forEach(el => el.textContent = user.email);
-  document.querySelectorAll('[data-wallet-balance]').forEach(el => el.textContent = (wallet.balance || 0).toLocaleString('ja-JP'));
-  document.querySelectorAll('[data-wallet-bonus]').forEach(el => el.textContent = wallet.firstVisitAwarded ? '付与済み' : '未付与');
+/**
+ * mypage.js — TAMSIC マイページ制御
+ * coins.js（localStorage）+ auth.js（Cognito）対応版
+ */
 
-  const purchaseTable = document.getElementById('purchase-history-body');
-  const purchases = wallet.purchases || [];
-  if (!purchases.length) {
-    purchaseTable.innerHTML = `<tr><td colspan="4"><div class="inline-empty">購入履歴はまだありません。購入後にこのページへ戻ると、反映履歴をここで確認できます。</div></td></tr>`;
-  } else {
-    purchaseTable.innerHTML = purchases.map(item => `<tr>
-      <td>${TAMSICAuth.formatDate(item.at)}</td>
-      <td>${item.coins} coin</td>
-      <td>${TAMSICAuth.formatYen(item.priceYen)}</td>
-      <td><span class="badge ok">reflected</span></td>
-    </tr>`).join('');
+/* ─── 認証チェック ─── */
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
+    window.location.href = 'login.html';
+    return;
+  }
+  renderMypage();
+});
+
+window.addEventListener('tamsic:coins-updated', renderMypage);
+
+/* ─── メイン描画 ─── */
+function renderMypage() {
+  // ユーザー情報
+  if (typeof getUserInfo === 'function') {
+    const info = getUserInfo();
+    if (info) {
+      document.querySelectorAll('[data-user-email]').forEach(el => {
+        el.textContent = info.email || info.sub || 'member';
+      });
+    }
   }
 
-  const listenTable = document.getElementById('listen-history-body');
-  const listens = wallet.listens || [];
-  if (!listens.length) {
-    listenTable.innerHTML = `<tr><td colspan="3"><div class="inline-empty">再生履歴はまだありません。</div></td></tr>`;
-  } else {
-    listenTable.innerHTML = listens.map(item => `<tr>
-      <td>${TAMSICAuth.formatDate(item.at)}</td>
-      <td>${item.trackId}</td>
-      <td>${item.coins} coin</td>
-    </tr>`).join('');
-  }
+  // コイン残高
+  const balance = typeof TAMSICCoins !== 'undefined' ? TAMSICCoins.getBalance() : 0;
+  document.querySelectorAll('[data-wallet-balance]').forEach(el => {
+    el.textContent = balance.toLocaleString('ja-JP');
+  });
 
-  const pendingWrap = document.getElementById('pending-intents');
-  const pending = intents.filter(x => x.status === 'pending');
-  if (!pending.length) {
-    pendingWrap.innerHTML = `<div class="inline-empty">購入後にこのページへ戻ると、反映待ちの購入リクエストをここで確認できます。</div>`;
-  } else {
-    pendingWrap.innerHTML = `<div class="table-wrap flush"><table class="table"><thead><tr><th>作成日時</th><th>内容</th><th>状態</th></tr></thead><tbody>${pending.map(item => `<tr>
-      <td>${TAMSICAuth.formatDate(item.createdAt)}</td>
-      <td>${item.title} / ${item.coins} coin / ${TAMSICAuth.formatYen(item.priceYen)}</td>
-      <td><span class="badge pending">pending</span></td>
-    </tr>`).join('')}</tbody></table></div>`;
-  }
+  // 購入履歴
+  renderPurchaseHistory();
 
-  const packs = Object.values(window.TAMSIC_PAYMENT_LINKS || {});
-  const purchaseGrid = document.getElementById('purchase-grid');
-  purchaseGrid.innerHTML = packs.map((pack, index) => `<div class="purchase-card ${index===1?'featured':''}">
-    <div class="purchase-label">${pack.label}</div>
-    <div class="purchase-coins">${pack.coins}<span style="font-size:18px;font-family:'Jost',sans-serif;font-weight:400;"> coin</span></div>
-    <div class="purchase-price">${TAMSICAuth.formatYen(pack.priceYen)}</div>
-    <div class="purchase-note">Square決済ページへ遷移します。購入後は My Page に戻って残高と履歴を確認できます。</div>
-    <button class="btn-primary" type="button" onclick="startPurchase('${pack.id}')">Squareで購入</button>
-  </div>`).join('');
+  // 再生履歴
+  renderListenHistory();
+
+  // 購入パック
+  renderPurchaseGrid();
+
+  // Pending（購入処理中）の表示
+  renderPending();
 }
 
-function startPurchase(packId){
-  const pack = (window.TAMSIC_PAYMENT_LINKS && window.TAMSIC_PAYMENT_LINKS[packId]) || null;
-  const user = TAMSICAuth.getCurrentUser();
-  if (!pack || !user) return;
-  TAMSICAuth.createPurchaseIntent({
-    userId: user.id,
-    email: user.email,
-    packId: pack.id,
-    title: pack.title,
-    coins: pack.coins,
+/* ─── 購入履歴テーブル ─── */
+function renderPurchaseHistory() {
+  const tbody = document.getElementById('purchase-history-body');
+  if (!tbody) return;
+  const purchases = typeof TAMSICCoins !== 'undefined' ? TAMSICCoins.getPurchases() : [];
+  if (!purchases.length) {
+    tbody.innerHTML = `<tr><td colspan="4"><div class="inline-empty">購入履歴はまだありません。</div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = purchases.map(item => `<tr>
+    <td>${TAMSICCoins.formatDate(item.at)}</td>
+    <td>${item.title || item.packId} / ${item.coins} coin</td>
+    <td>${TAMSICCoins.formatYen(item.priceYen)}</td>
+    <td><span class="badge ok">反映済み</span></td>
+  </tr>`).join('');
+}
+
+/* ─── 再生履歴テーブル ─── */
+function renderListenHistory() {
+  const tbody = document.getElementById('listen-history-body');
+  if (!tbody) return;
+  const listens = typeof TAMSICCoins !== 'undefined' ? TAMSICCoins.getListens() : [];
+  if (!listens.length) {
+    tbody.innerHTML = `<tr><td colspan="3"><div class="inline-empty">再生履歴はまだありません。</div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = listens.map(item => `<tr>
+    <td>${TAMSICCoins.formatDate(item.at)}</td>
+    <td>${item.trackTitle || item.trackId}</td>
+    <td>${item.coins} coin</td>
+  </tr>`).join('');
+}
+
+/* ─── 購入パックグリッド ─── */
+function renderPurchaseGrid() {
+  const grid = document.getElementById('purchase-grid');
+  if (!grid || typeof window.TAMSIC_PAYMENT_LINKS === 'undefined') return;
+  const packs = Object.values(window.TAMSIC_PAYMENT_LINKS);
+  grid.innerHTML = packs.map((pack, i) => `
+    <div class="purchase-card ${i === 1 ? 'featured' : ''}">
+      <div class="purchase-label">${pack.label}</div>
+      <div class="purchase-coins">${pack.coins}<span style="font-size:18px;font-family:'Jost',sans-serif;font-weight:400;"> coin</span></div>
+      <div class="purchase-price">${TAMSICCoins.formatYen(pack.priceYen)}</div>
+      <div class="purchase-note">Squareで決済後、「購入を反映する」ボタンで残高に加算されます。</div>
+      <button class="btn-primary" type="button" onclick="startPurchase('${pack.id}')">Squareで購入</button>
+    </div>
+  `).join('');
+}
+
+/* ─── Pending表示（購入処理中） ─── */
+function renderPending() {
+  const wrap = document.getElementById('pending-intents');
+  if (!wrap) return;
+  const pending = JSON.parse(localStorage.getItem('tamsic_pending_purchase') || 'null');
+  if (!pending) {
+    wrap.innerHTML = `<div class="inline-empty">現在、反映待ちの購入はありません。</div>`;
+    return;
+  }
+  wrap.innerHTML = `
+    <div style="padding:20px;border:1px solid var(--accent, #C4960E);border-radius:8px;background:rgba(196,150,14,0.05);">
+      <p style="font-size:13px;margin-bottom:12px;">
+        <strong>${pending.title} / ${pending.coins} coin / ${TAMSICCoins.formatYen(pending.priceYen)}</strong><br>
+        <span style="font-size:11px;color:#7A7A72;">Square決済を完了しましたか？完了したら下のボタンで残高に反映してください。</span>
+      </p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="confirmPurchase()" style="background:#C4960E;">
+          ✓ 購入を反映する
+        </button>
+        <button onclick="cancelPurchase()" style="background:none;border:1px solid #ccc;padding:8px 16px;cursor:pointer;font-size:12px;border-radius:4px;color:#7A7A72;">
+          キャンセル
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+/* ─── 購入開始（Square新タブ → 反映待ちを記録） ─── */
+function startPurchase(packId) {
+  const pack = window.TAMSIC_PAYMENT_LINKS && window.TAMSIC_PAYMENT_LINKS[packId];
+  if (!pack) return;
+
+  // 反映待ちをlocalStorageに記録
+  localStorage.setItem('tamsic_pending_purchase', JSON.stringify({
+    packId:   pack.id,
+    title:    pack.title,
+    coins:    pack.coins,
     priceYen: pack.priceYen,
-    link: pack.url
-  });
+    startedAt: new Date().toISOString(),
+  }));
+
+  // Squareを新タブで開く
+  window.open(pack.url, '_blank', 'noopener');
+
+  // pending セクションを開いて表示
+  const pendingAccordion = document.querySelector('[data-accordion="pending"]');
+  if (pendingAccordion && !pendingAccordion.classList.contains('is-open')) {
+    pendingAccordion.classList.add('is-open');
+  }
+
   const note = document.getElementById('purchase-note');
   if (note) {
-    note.innerHTML = `<strong>Square決済ページを新しいタブで開きました。</strong> 決済完了後はこのマイページに戻り、残高・購入履歴・反映待ち一覧を確認してください。`;
+    note.innerHTML = `<strong>Squareの決済ページを新しいタブで開きました。</strong><br>決済完了後、「Pending purchase intent」の「購入を反映する」ボタンを押してください。`;
+    note.style.display = 'block';
   }
-  window.open(pack.url, '_blank', 'noopener');
+
+  renderPending();
+}
+
+/* ─── 購入確定（コイン加算 + 履歴保存） ─── */
+function confirmPurchase() {
+  const pending = JSON.parse(localStorage.getItem('tamsic_pending_purchase') || 'null');
+  if (!pending) return;
+
+  // コイン加算
+  const newBalance = TAMSICCoins.addCoins(pending.coins, {
+    packId:   pending.packId,
+    title:    pending.title,
+    priceYen: pending.priceYen,
+  });
+
+  // pending削除
+  localStorage.removeItem('tamsic_pending_purchase');
+
+  // 購入履歴アコーディオンを開く
+  const purchaseAccordion = document.querySelector('[data-accordion="purchase"]');
+  if (purchaseAccordion && !purchaseAccordion.classList.contains('is-open')) {
+    purchaseAccordion.classList.add('is-open');
+  }
+
+  const note = document.getElementById('purchase-note');
+  if (note) {
+    note.innerHTML = `<strong style="color:#2a8a2a;">✓ ${pending.coins} coin を残高に反映しました！</strong> 現在の残高: ${newBalance.toLocaleString('ja-JP')} coin`;
+    note.style.display = 'block';
+  }
+
   renderMypage();
 }
 
-function handleLogout(){
-  TAMSICAuth.logout();
-  location.href = 'login.html';
+/* ─── 購入キャンセル ─── */
+function cancelPurchase() {
+  if (confirm('購入リクエストをキャンセルしますか？（決済済みの場合は反映されません）')) {
+    localStorage.removeItem('tamsic_pending_purchase');
+    renderPending();
+  }
 }
 
-function toggleAccordion(name){
+/* ─── ログアウト ─── */
+function handleLogout() {
+  if (typeof cognitoLogout === 'function') {
+    cognitoLogout();
+  } else {
+    sessionStorage.clear();
+    window.location.href = 'index.html';
+  }
+}
+
+/* ─── アコーディオン ─── */
+function toggleAccordion(name) {
   const el = document.querySelector(`[data-accordion="${name}"]`);
-  if (!el) return;
-  el.classList.toggle('is-open');
+  if (el) el.classList.toggle('is-open');
 }
-
-document.addEventListener('DOMContentLoaded', renderMypage);
-window.addEventListener('storage', renderMypage);
-window.addEventListener('tamsic:coins-updated', renderMypage);
