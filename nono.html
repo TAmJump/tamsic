@@ -138,7 +138,7 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
 
 <section class="discography" id="music">
   <div class="sec-header">
-    <div class="sec-left"><span class="sec-tag">Discography</span><h2 class="sec-title">Music</h2></div>
+    <div class="sec-left"><span class="sec-tag" data-ja="ディスコグラフィー" data-en="Discography">ディスコグラフィー</span><h2 class="sec-title">Music</h2></div>
     <span class="sec-count" id="disc-count">—</span>
   </div>
   <div id="tracks-container"><div class="loading-msg">読み込み中...</div></div>
@@ -151,6 +151,9 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
 </footer>
 
 <script>
+
+// 言語ヘルパー
+function _L(ja, en){ return (window.TAMSICLang && window.TAMSICLang.get()==='en') ? en : ja; }
 
 let _tracks=[];
 
@@ -266,14 +269,14 @@ function renderCoinPanel(){
   return `<div class="coin-panel member-wallet">
     <div class="coin-panel-head">
       <div>
-        <div class="coin-kicker">TAMSIC Wallet</div>
-        <div class="coin-title">フル試聴は My Page で購入したコインから消費されます。</div>
-        <div class="coin-copy">コインの購入・残高管理は My Page に集約します。</div>
+        <div class="coin-kicker" data-ja="TAMSICウォレット" data-en="TAMSIC Wallet">TAMSICウォレット</div>
+        <div class="coin-title" data-ja="フル試聴は My Page で購入したコインから消費されます。" data-en="Full listening uses coins purchased on My Page.">フル試聴は My Page で購入したコインから消費されます。</div>
+        <div class="coin-copy" data-ja="コインの購入・残高管理は My Page に集約します。" data-en="Manage coins and balance from My Page.">コインの購入・残高管理は My Page に集約します。</div>
       </div>
       <div class="coin-balance">
-        <div class="coin-balance-label">Balance</div>
+        <div class="coin-balance-label" data-ja="残高" data-en="Balance">残高</div>
         <div class="coin-balance-value"><span data-coin-balance>${balance}</span> coin</div>
-        <div class="coin-balance-sub">Logged in as member</div>
+        <div class="coin-balance-sub" data-ja="ログイン中" data-en="Logged in as member">ログイン中</div>
       </div>
     </div>
     <div class="member-actions">
@@ -374,7 +377,7 @@ function renderTracks(){
       </div>
       <div class="release-actions">
         <span class="release-pill">${firstMeta.label}</span>
-        <a href="mypage.html" class="release-pill">MY PAGE</a>
+        <a href="mypage.html" class="release-pill">${_L('マイページ','MY PAGE')}</a>
       </div>
     </div>`;
   c.innerHTML=hero+renderCoinPanel()+_tracks.map((t,i)=>{
@@ -397,9 +400,9 @@ function renderTracks(){
         <div class="tb-sub">no-no</div>
         <div class="track-release-note">${chip}<div style="margin-top:8px;">${meta.note}</div></div>
         <div class="player-modes">
-          <button class="mode-btn active" onclick="setMode('${t.id}','site',this)">▶ サイトで聴く</button>
+          <button class="mode-btn active" onclick="setMode('${t.id}','site',this)">${_L('▶ サイトで聴く','▶ Listen')}</button>
           <button class="mode-btn" onclick="setMode('${t.id}','yt',this)">YouTube</button>
-          <button class="mode-btn premium ${meta.canFull ? '' : 'is-restricted'}" onclick="setMode('${t.id}','full',this)">${meta.canFull ? `フル試聴 ${t.price||30}コイン` : meta.label}</button>
+          <button class="mode-btn premium ${meta.canFull ? '' : 'is-restricted'}" onclick="setMode('${t.id}','full',this)">${meta.canFull ? `${_L('フル試聴','Full')} ${t.price||30}coin` : meta.label}</button>
         </div>
         <div id="panel-site-${t.id}">
           <div class="site-player">

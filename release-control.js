@@ -1,3 +1,4 @@
+function _RL(ja,en){return(window.TAMSICLang&&window.TAMSICLang.get()==='en')?en:ja;}
 window.TAMSICRelease=(function(){
 const config={tracks:{
 "ぎりぎりだよ。":{sample:"2026-04-01",release:"2026-04-15"},
@@ -41,10 +42,10 @@ function getState(title){
 function getMeta(title){
   const t=config.tracks[title]; if(!t)return{label:"NOW AVAILABLE",note:"",showMask:false,canSample:true,canFull:true,icon:false};
   const st=getState(title);
-  if(st==="locked") return {state:st,label:"COMING SOON",note:`${formatJP(t.sample)} sample / ${formatJP(t.release)} release`,showMask:true,canSample:false,canFull:false,icon:true};
-  if(st==="preview") return {state:st,label:"MEMBER EARLY ACCESS",note:`会員は一般公開前から先行視聴できます。 / ${formatJP(t.release)} public release`,showMask:true,canSample:false,canFull:false,icon:true};
-  if(st==="member") return {state:st,label:"MEMBER EARLY ACCESS",note:`会員先行視聴中。 / ${formatJP(t.release)} public release`,showMask:false,canSample:true,canFull:true,icon:false};
-  return {state:st,label:"NOW AVAILABLE",note:"公開中",showMask:false,canSample:true,canFull:true,icon:false};
+  if(st==="locked") return {state:st,label:_RL("COMING SOON","COMING SOON"),note:`${formatJP(t.sample)} ${_RL("sample公開","sample")} / ${formatJP(t.release)} ${_RL("一般公開","release")}`,showMask:true,canSample:false,canFull:false,icon:true};
+  if(st==="preview") return {state:st,label:_RL("会員先行アクセス","MEMBER EARLY ACCESS"),note:_RL(`会員は一般公開前から先行視聴できます。 / ${formatJP(t.release)} 公開`,`Members can listen early. / ${formatJP(t.release)} public release`),showMask:true,canSample:false,canFull:false,icon:true};
+  if(st==="member") return {state:st,label:_RL("会員先行アクセス","MEMBER EARLY ACCESS"),note:_RL(`会員先行視聴中。 / ${formatJP(t.release)} 公開`,`Early access active. / ${formatJP(t.release)} public release`),showMask:false,canSample:true,canFull:true,icon:false};
+  return {state:st,label:_RL("公開中","NOW AVAILABLE"),note:_RL("公開中","Now available"),showMask:false,canSample:true,canFull:true,icon:false};
 }
 
 return{config,getState,getMeta};
