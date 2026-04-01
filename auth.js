@@ -1,202 +1,179 @@
+// ─── TAMSIC Auth — Amazon Cognito (ap-northeast-1) ───────────────────────────
+// User Pool ID : ap-northeast-1_vozRgCY5k
+// Client ID    : 62e35ra0h4s2dr657euorlm5bu
+// ─────────────────────────────────────────────────────────────────────────────
 
-const TAMSIC_AUTH_USERS_KEY = 'TAMSIC_AUTH_USERS_V1';
-const TAMSIC_AUTH_SESSION_KEY = 'TAMSIC_AUTH_SESSION_V1';
-const TAMSIC_RESET_TOKENS_KEY = 'TAMSIC_AUTH_RESET_TOKENS_V1';
-const TAMSIC_PURCHASE_INTENTS_KEY = 'TAMSIC_PURCHASE_INTENTS_V1';
-const TAMSIC_COIN_WALLETS_KEY = 'TAMSIC_COIN_WALLETS_V2';
-const TAMSIC_LEGACY_COIN_STATE_KEY = 'TAMSIC_COIN_STATE_V1';
+const COGNITO = {
+  region:      'ap-northeast-1',
+  userPoolId:  'ap-northeast-1_vozRgCY5k',
+  clientId:    '62e35ra0h4s2dr657euorlm5bu',
+  domain:      'ap-northeast-1vozrgcy5k.auth.ap-northeast-1.amazoncognito.com',
+  redirectUri: 'https://tamsic.tamjump.com/callback.html',
+  logoutUri:   'https://tamsic.tamjump.com/',
+};
 
-function authNowIso(){ return new Date().toISOString(); }
-function authUid(prefix='id'){ return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`; }
-function authRead(key, fallback){
+// ─── PKCE ヘルパー ────────────────────────────────────────────────────────────
+function _base64url(buf) {
+  return btoa(String.fromCharCode(...new Uint8Array(buf)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+async function _generatePKCE() {
+  const verifier = _base64url(crypto.getRandomValues(new Uint8Array(32)));
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
+  return { verifier, challenge: _base64url(digest) };
+}
+
+// ─── ログイン（Cognito Hosted UI へリダイレクト） ─────────────────────────────
+async function cognitoLogin() {
+  const { verifier, challenge } = await _generatePKCE();
+  const state = _base64url(crypto.getRandomValues(new Uint8Array(16)));
+  sessionStorage.setItem('pkce_verifier', verifier);
+  sessionStorage.setItem('pkce_state',    state);
+
+  const params = new URLSearchParams({
+    response_type:         'code',
+    client_id:             COGNITO.clientId,
+    redirect_uri:          COGNITO.redirectUri,
+    scope:                 'openid email profile',
+    state,
+    code_challenge:        challenge,
+    code_challenge_method: 'S256',
+  });
+  window.location.href = `https://${COGNITO.domain}/oauth2/authorize?${params}`;
+}
+
+// ─── サインアップ（Hosted UI のサインアップ画面へ） ──────────────────────────
+async function cognitoSignup() {
+  const { verifier, challenge } = await _generatePKCE();
+  const state = _base64url(crypto.getRandomValues(new Uint8Array(16)));
+  sessionStorage.setItem('pkce_verifier', verifier);
+  sessionStorage.setItem('pkce_state',    state);
+
+  const params = new URLSearchParams({
+    response_type:         'code',
+    client_id:             COGNITO.clientId,
+    redirect_uri:          COGNITO.redirectUri,
+    scope:                 'openid email profile',
+    state,
+    code_challenge:        challenge,
+    code_challenge_method: 'S256',
+  });
+  window.location.href = `https://${COGNITO.domain}/signup?${params}`;
+}
+
+// ─── コールバック処理（callback.html から呼ぶ） ───────────────────────────────
+async function cognitoHandleCallback() {
+  const params   = new URLSearchParams(window.location.search);
+  const code     = params.get('code');
+  const state    = params.get('state');
+  const verifier = sessionStorage.getItem('pkce_verifier');
+  const savedState = sessionStorage.getItem('pkce_state');
+
+  if (!code || state !== savedState) {
+    console.error('Auth error: invalid state or missing code');
+    window.location.href = '/';
+    return;
+  }
+
+  const res = await fetch(`https://${COGNITO.domain}/oauth2/token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type:    'authorization_code',
+      client_id:     COGNITO.clientId,
+      redirect_uri:  COGNITO.redirectUri,
+      code,
+      code_verifier: verifier,
+    }),
+  });
+
+  if (!res.ok) {
+    console.error('Token exchange failed');
+    window.location.href = '/';
+    return;
+  }
+
+  const tokens = await res.json();
+  sessionStorage.setItem('id_token',      tokens.id_token);
+  sessionStorage.setItem('access_token',  tokens.access_token);
+  sessionStorage.setItem('refresh_token', tokens.refresh_token);
+  sessionStorage.removeItem('pkce_verifier');
+  sessionStorage.removeItem('pkce_state');
+
+  // ユーザー情報を取得して保存
+  const user = _parseJwt(tokens.id_token);
+  sessionStorage.setItem('tamsic_user', JSON.stringify({
+    email: user.email,
+    sub:   user.sub,
+  }));
+
+  window.location.href = '/';
+}
+
+// ─── ログアウト ───────────────────────────────────────────────────────────────
+function cognitoLogout() {
+  sessionStorage.clear();
+  const params = new URLSearchParams({
+    client_id:  COGNITO.clientId,
+    logout_uri: COGNITO.logoutUri,
+  });
+  window.location.href = `https://${COGNITO.domain}/logout?${params}`;
+}
+
+// ─── ログイン状態チェック ─────────────────────────────────────────────────────
+function isLoggedIn() {
+  const token = sessionStorage.getItem('id_token');
+  if (!token) return false;
   try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return fallback;
-    return JSON.parse(raw);
-  } catch(e){
-    return fallback;
+    const payload = _parseJwt(token);
+    return payload.exp * 1000 > Date.now();
+  } catch {
+    return false;
   }
 }
-function authWrite(key, value){ localStorage.setItem(key, JSON.stringify(value)); return value; }
-function getAuthUsers(){ return authRead(TAMSIC_AUTH_USERS_KEY, []); }
-function saveAuthUsers(users){ return authWrite(TAMSIC_AUTH_USERS_KEY, users); }
-function getAuthSession(){ return authRead(TAMSIC_AUTH_SESSION_KEY, null); }
-function setAuthSession(session){ return authWrite(TAMSIC_AUTH_SESSION_KEY, session); }
-function clearAuthSession(){ localStorage.removeItem(TAMSIC_AUTH_SESSION_KEY); }
-function getPurchaseIntents(){ return authRead(TAMSIC_PURCHASE_INTENTS_KEY, []); }
-function savePurchaseIntents(items){ return authWrite(TAMSIC_PURCHASE_INTENTS_KEY, items); }
-function getResetTokens(){ return authRead(TAMSIC_RESET_TOKENS_KEY, []); }
-function saveResetTokens(items){ return authWrite(TAMSIC_RESET_TOKENS_KEY, items); }
-function defaultWalletState(){
-  return { balance: 100, firstVisitAwarded: true, awardedAt: authNowIso(), purchases: [], listens: [] };
-}
-function getWalletStore(){ return authRead(TAMSIC_COIN_WALLETS_KEY, {}); }
-function saveWalletStore(store){ return authWrite(TAMSIC_COIN_WALLETS_KEY, store); }
-function getCoinState(){
-  const fallback = defaultWalletState();
-  const user = getCurrentAuthUser();
-  if (!user) return { balance: 0, firstVisitAwarded: false, awardedAt: null, purchases: [], listens: [] };
-  const store = getWalletStore();
-  if (!store[user.id]) {
-    const legacy = authRead(TAMSIC_LEGACY_COIN_STATE_KEY, null);
-    if (legacy && typeof legacy.balance === 'number' && Object.keys(store).length === 0) {
-      store[user.id] = legacy;
-      localStorage.removeItem(TAMSIC_LEGACY_COIN_STATE_KEY);
-    } else {
-      store[user.id] = fallback;
-    }
-    saveWalletStore(store);
-  }
-  const wallet = store[user.id];
-  return {
-    balance: Number(wallet.balance || 0),
-    firstVisitAwarded: !!wallet.firstVisitAwarded,
-    awardedAt: wallet.awardedAt || null,
-    purchases: Array.isArray(wallet.purchases) ? wallet.purchases : [],
-    listens: Array.isArray(wallet.listens) ? wallet.listens : []
-  };
-}
-function setCoinState(state){
-  const user = getCurrentAuthUser();
-  if (!user) return state;
-  const store = getWalletStore();
-  store[user.id] = state;
-  return saveWalletStore(store);
-}
-function normalizeEmail(v){ return String(v||'').trim().toLowerCase(); }
-function fakeHash(v){ return btoa(unescape(encodeURIComponent(`tamsic::${String(v||'')}`))); }
-function findUserByEmail(email){ return getAuthUsers().find(u => u.email === normalizeEmail(email)); }
 
-function registerAuthUser(email, password){
-  const users = getAuthUsers();
-  const normalized = normalizeEmail(email);
-  if (!normalized || !password) return { ok:false, message:'メールアドレスとパスワードを入力してください。' };
-  if (users.some(u => u.email === normalized)) return { ok:false, message:'このメールアドレスはすでに登録されています。' };
-  const user = { id: authUid('user'), email: normalized, passwordHash: fakeHash(password), createdAt: authNowIso() };
-  users.push(user);
-  saveAuthUsers(users);
-  setAuthSession({ userId: user.id, email: user.email, loggedInAt: authNowIso() });
-  ensureWallet();
-  return { ok:true, user };
-}
-
-function loginAuthUser(email, password){
-  const normalized = normalizeEmail(email);
-  const user = findUserByEmail(normalized);
-  if (!user) return { ok:false, message:'登録済みのメールアドレスが見つかりません。' };
-  if (user.passwordHash !== fakeHash(password)) return { ok:false, message:'パスワードが違います。' };
-  setAuthSession({ userId: user.id, email: user.email, loggedInAt: authNowIso() });
-  ensureWallet();
-  return { ok:true, user };
-}
-
-function logoutAuthUser(){ clearAuthSession(); }
-function getCurrentAuthUser(){
-  const session = getAuthSession();
-  if (!session || !session.userId) return null;
-  return getAuthUsers().find(u => u.id === session.userId) || null;
-}
-function requireAuthPage(){
-  const user = getCurrentAuthUser();
-  if (!user) {
-    const next = encodeURIComponent(location.pathname.split('/').pop() + location.search + location.hash);
-    location.href = `login.html?next=${next}`;
+// ─── 現在のユーザー情報取得 ──────────────────────────────────────────────────
+function getCurrentUser() {
+  try {
+    return JSON.parse(sessionStorage.getItem('tamsic_user') || 'null');
+  } catch {
     return null;
   }
-  return user;
 }
-function getQueryParam(name){ return new URLSearchParams(location.search).get(name); }
-function getPostLoginTarget(){ return getQueryParam('next') || 'mypage.html'; }
-function goAfterAuth(){ location.href = getPostLoginTarget(); }
-function ensureWallet(){
-  const user = getCurrentAuthUser();
-  if (!user) return;
-  const store = getWalletStore();
-  if (!store[user.id]) {
-    store[user.id] = defaultWalletState();
-    saveWalletStore(store);
-  }
+
+// ─── JWT デコード（ローカル、署名検証なし） ──────────────────────────────────
+function _parseJwt(token) {
+  const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+  return JSON.parse(atob(base64));
 }
-function createResetFlow(email){
-  const user = findUserByEmail(email);
-  if (!user) return { ok:false, message:'登録済みのメールアドレスが見つかりません。' };
-  const items = getResetTokens().filter(x => x.userId !== user.id);
-  const token = authUid('reset');
-  items.push({ token, userId: user.id, email: user.email, createdAt: authNowIso(), used:false });
-  saveResetTokens(items);
-  return { ok:true, token, link:`reset-password.html?token=${encodeURIComponent(token)}` };
+
+// ─── コイン管理（DynamoDB 連携 — 後フェーズで実装） ─────────────────────────
+// ※ 現在は localStorage から移行期間のため sessionStorage を暫定使用
+function getCoins() {
+  return parseInt(sessionStorage.getItem('tamsic_coins') || '0', 10);
 }
-function resetPasswordWithToken(token, password){
-  const items = getResetTokens();
-  const row = items.find(x => x.token === token && !x.used);
-  if (!row) return { ok:false, message:'この再設定リンクは無効です。' };
-  const users = getAuthUsers();
-  const user = users.find(u => u.id === row.userId);
-  if (!user) return { ok:false, message:'ユーザーが見つかりません。' };
-  user.passwordHash = fakeHash(password);
-  user.updatedAt = authNowIso();
-  row.used = true;
-  row.usedAt = authNowIso();
-  saveAuthUsers(users);
-  saveResetTokens(items);
-  return { ok:true };
+function setCoins(n) {
+  sessionStorage.setItem('tamsic_coins', String(n));
 }
-function createPurchaseIntent(pack){
-  const user = getCurrentAuthUser();
-  if (!user) return null;
-  const items = getPurchaseIntents();
-  const intent = {
-    id: authUid('intent'),
-    userId: user.id,
-    email: user.email,
-    packId: pack.id,
-    title: pack.title,
-    coins: Number(pack.coins || 0),
-    priceYen: Number(pack.priceYen || 0),
-    squareUrl: pack.url,
-    status: 'pending',
-    createdAt: authNowIso()
-  };
-  items.unshift(intent);
-  savePurchaseIntents(items);
-  return intent;
+function addCoins(n) {
+  setCoins(getCoins() + n);
 }
-function getCurrentUserPurchaseIntents(){
-  const user = getCurrentAuthUser();
-  if (!user) return [];
-  return getPurchaseIntents().filter(x => x.userId === user.id);
+function useCoins(n) {
+  const current = getCoins();
+  if (current < n) return false;
+  setCoins(current - n);
+  return true;
 }
-function markIntentNoted(intentId){
-  const items = getPurchaseIntents();
-  const row = items.find(x => x.id === intentId);
-  if (row && row.status === 'pending') {
-    row.notedAt = authNowIso();
-    savePurchaseIntents(items);
-  }
-}
-function formatYen(v){ return `¥${Number(v||0).toLocaleString('ja-JP')}`; }
-function formatDate(v){
-  try { return new Date(v).toLocaleString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }); }
-  catch(e){ return v || ''; }
-}
-window.TAMSICAuth = {
-  getUsers:getAuthUsers,
-  getSession:getAuthSession,
-  getCurrentUser:getCurrentAuthUser,
-  isLoggedIn:() => !!getCurrentAuthUser(),
-  register:registerAuthUser,
-  login:loginAuthUser,
-  logout:logoutAuthUser,
-  requireAuth:requireAuthPage,
-  getPostLoginTarget,
-  goAfterAuth,
-  createResetFlow,
-  resetPasswordWithToken,
-  createPurchaseIntent,
-  getPurchaseIntents:getCurrentUserPurchaseIntents,
-  markIntentNoted,
-  getCoinState,
-  setCoinState,
-  formatYen,
-  formatDate
+
+// ─── 既存コードとの互換ラッパー ──────────────────────────────────────────────
+// 既存の auth.js が使っていた関数名に合わせてエイリアスを作成
+const Auth = {
+  login:       cognitoLogin,
+  signup:      cognitoSignup,
+  logout:      cognitoLogout,
+  isLoggedIn,
+  getCurrentUser,
+  getCoins,
+  addCoins,
+  useCoins,
 };

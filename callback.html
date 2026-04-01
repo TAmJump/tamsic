@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>TAMSIC — ログイン処理中</title>
+<style>
+  body{margin:0;background:#FAFAF7;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Jost',sans-serif;}
+  .box{text-align:center;color:#7A7A72;}
+  .spinner{width:32px;height:32px;border:2px solid #E6E6E0;border-top-color:#C4960E;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  p{font-size:13px;letter-spacing:.1em;}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="spinner"></div>
+  <p>ログイン処理中...</p>
+</div>
+<script src="auth.js"></script>
+<script>
+  cognitoHandleCallback();
+</script>
+</body>
+</html>
