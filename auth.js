@@ -125,6 +125,7 @@ async function cognitoLogin() {
   sessionStorage.setItem(STORAGE_KEYS.verifier, verifier);
   sessionStorage.setItem(STORAGE_KEYS.state,    state);
 
+  const _lang = localStorage.getItem('tamsic_lang') || 'ja';
   const params = new URLSearchParams({
     response_type:         'code',
     client_id:             AUTH_CONFIG.clientId,
@@ -133,6 +134,7 @@ async function cognitoLogin() {
     state:                 state,
     code_challenge:        challenge,
     code_challenge_method: 'S256',
+    ui_locales:            _lang,
   });
 
   window.location.href =
@@ -161,7 +163,7 @@ async function cognitoSignup() {
   });
 
   window.location.href =
-    `https://${AUTH_CONFIG.domain}/signup?${params}`;
+    `https://${AUTH_CONFIG.domain}/signup?${params}&ui_locales=${localStorage.getItem('tamsic_lang')||'ja'}`;
 }
 
 /**
