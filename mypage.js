@@ -7,7 +7,7 @@ function _L(ja, en){ return (window.TAMSICLang && window.TAMSICLang.get()==='en'
  */
 
 /* ─── 認証チェック ─── */
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
     window.location.href = 'login.html';
     return;
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('tamsic:coins-updated', renderMypage);
 
 /* ─── メイン描画 ─── */
-function renderMypage() {
+async function renderMypage() {
   // ユーザー情報
   if (typeof getUserInfo === 'function') {
     const info = getUserInfo();
@@ -29,8 +29,9 @@ function renderMypage() {
     }
   }
 
-  // コイン残高
-  const balance = typeof TAMSICCoins !== 'undefined' ? TAMSICCoins.getBalance() : 0;
+  // Cognitoからウォレット読み込み
+  const wallet = typeof loadWallet === 'function' ? await loadWallet() : { balance: 0, purchases: [], listens: [] };
+  const balance = wallet.balance || 0;
   document.querySelectorAll('[data-wallet-balance]').forEach(el => {
     el.textContent = balance.toLocaleString('ja-JP');
   });
@@ -55,7 +56,7 @@ function renderMypage() {
 function renderPurchaseHistory() {
   const tbody = document.getElementById('purchase-history-body');
   if (!tbody) return;
-  const purchases = typeof TAMSICCoins !== 'undefined' ? TAMSICCoins.getPurchases() : [];
+  const purchases = wallet.purchases || [];
   if (!purchases.length) {
     tbody.innerHTML = `<tr><td colspan="4"><div class="inline-empty">${_L("購入履歴はまだありません。","No purchase history yet.")}</div></td></tr>`;
     return;
@@ -72,7 +73,7 @@ function renderPurchaseHistory() {
 function renderListenHistory() {
   const tbody = document.getElementById('listen-history-body');
   if (!tbody) return;
-  const listens = typeof TAMSICCoins !== 'undefined' ? TAMSICCoins.getListens() : [];
+  const listens = wallet.listens || [];
   if (!listens.length) {
     tbody.innerHTML = `<tr><td colspan="3"><div class="inline-empty">${_L("再生履歴はまだありません。","No play history yet.")}</div></td></tr>`;
     return;
@@ -159,13 +160,16 @@ function startPurchase(packId) {
   renderPending();
 }
 
-/* ─── 購入確定（コイン加算 + 履歴保存） ─── */
-function confirmPurchase() {
+/* ─── 購入確定（Cognitoカスタム属性に保存） ─── */
+async function confirmPurchase() {
   const pending = JSON.parse(localStorage.getItem('tamsic_pending_purchase') || 'null');
   if (!pending) return;
 
-  // コイン加算
-  const newBalance = TAMSICCoins.addCoins(pending.coins, {
+  const btn = document.querySelector('button[onclick="confirmPurchase()"]');
+  if (btn) { btn.disabled = true; btn.textContent = _L('保存中...', 'Saving...'); }
+
+  // Cognitoに保存（localStorageにも同期される）
+  const newBalance = await addCoinsToCognito(pending.coins, {
     packId:   pending.packId,
     title:    pending.title,
     priceYen: pending.priceYen,
@@ -182,7 +186,8 @@ function confirmPurchase() {
 
   const note = document.getElementById('purchase-note');
   if (note) {
-    note.innerHTML = `<strong style="color:#2a8a2a;">${_L("✓ "+pending.coins+" coin を残高に反映しました！","✓ "+pending.coins+" coins added to your balance!")}</strong> ${_L("現在の残高:","Balance:")} ${newBalance.toLocaleString("ja-JP")} coin`;
+    const bal = newBalance !== null ? newBalance : '?';
+    note.innerHTML = `<strong style="color:#2a8a2a;">${_L("✓ "+pending.coins+" coin を残高に反映しました！","✓ "+pending.coins+" coins added to your balance!")}</strong> ${_L("現在の残高:","Balance:")} ${String(bal).replace(/\B(?=(\d{3})+(?!\d))/g, ",")} coin`;
     note.style.display = 'block';
   }
 
