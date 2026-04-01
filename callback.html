@@ -1,24 +1,118 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>TAMSIC — ログイン処理中</title>
-<style>
-  body{margin:0;background:#FAFAF7;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Jost',sans-serif;}
-  .box{text-align:center;color:#7A7A72;}
-  .spinner{width:32px;height:32px;border:2px solid #E6E6E0;border-top-color:#C4960E;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  p{font-size:13px;letter-spacing:.1em;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAMSIC — ログイン処理中</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:     #FAFAF7;
+      --text:   #0E0E0E;
+      --accent: #C4960E;
+      --light:  #E6E6E0;
+      --mid:    #7A7A72;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Jost', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      text-align: center;
+      padding: 2rem;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      color: var(--text);
+      margin-bottom: 2rem;
+    }
+    .logo span { color: var(--accent); }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--light);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1.5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .message {
+      font-size: 0.9rem;
+      color: var(--mid);
+      letter-spacing: 0.05em;
+    }
+    .error-box {
+      display: none;
+      background: #fff0f0;
+      border: 1px solid #f5c6c6;
+      border-radius: 8px;
+      padding: 1.5rem 2rem;
+      margin-top: 1.5rem;
+      max-width: 360px;
+    }
+    .error-box p { color: #c00; font-size: 0.9rem; margin-bottom: 1rem; }
+    .error-box a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--accent);
+    }
+  </style>
 </head>
 <body>
-<div class="box">
-  <div class="spinner"></div>
-  <p>ログイン処理中...</p>
-</div>
-<script src="auth.js"></script>
-<script>
-  cognitoHandleCallback();
-</script>
+  <div class="container">
+    <div class="logo">T<span>A</span>MSIC</div>
+    <div class="spinner" id="spinner"></div>
+    <p class="message" id="msg">ログイン処理中...</p>
+    <div class="error-box" id="errorBox">
+      <p id="errorMsg">認証に失敗しました。もう一度お試しください。</p>
+      <a href="/login.html">ログインページへ戻る</a>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    (async () => {
+      const msgEl      = document.getElementById('msg');
+      const spinner    = document.getElementById('spinner');
+      const errorBox   = document.getElementById('errorBox');
+      const errorMsg   = document.getElementById('errorMsg');
+
+      // URLにerrorパラメータがある場合
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('error')) {
+        spinner.style.display = 'none';
+        errorMsg.textContent  = `エラー: ${params.get('error_description') || params.get('error')}`;
+        errorBox.style.display = 'block';
+        msgEl.style.display    = 'none';
+        return;
+      }
+
+      const success = await handleCallback();
+
+      if (success) {
+        msgEl.textContent = 'ログイン成功！リダイレクト中...';
+        setTimeout(() => {
+          window.location.href = '/mypage.html';
+        }, 800);
+      } else {
+        spinner.style.display  = 'none';
+        errorBox.style.display = 'block';
+        msgEl.style.display    = 'none';
+      }
+    })();
+  </script>
 </body>
 </html>

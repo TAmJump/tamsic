@@ -1,179 +1,237 @@
-// ─── TAMSIC Auth — Amazon Cognito (ap-northeast-1) ───────────────────────────
-// User Pool ID : ap-northeast-1_vozRgCY5k
-// Client ID    : 62e35ra0h4s2dr657euorlm5bu
-// ─────────────────────────────────────────────────────────────────────────────
+/**
+ * auth.js — TAMSIC Cognito認証ライブラリ（PKCE対応）
+ * User Pool ID : ap-northeast-1_vozRgCY5k
+ * Client ID    : 62e35ra0h4s2dr657euorlm5bu
+ */
 
-const COGNITO = {
-  region:      'ap-northeast-1',
-  userPoolId:  'ap-northeast-1_vozRgCY5k',
-  clientId:    '62e35ra0h4s2dr657euorlm5bu',
-  domain:      'ap-northeast-1vozrgcy5k.auth.ap-northeast-1.amazoncognito.com',
-  redirectUri: 'https://tamsic.tamjump.com/callback.html',
-  logoutUri:   'https://tamsic.tamjump.com/',
+const AUTH_CONFIG = {
+  region:       'ap-northeast-1',
+  userPoolId:   'ap-northeast-1_vozRgCY5k',
+  clientId:     '62e35ra0h4s2dr657euorlm5bu',
+  domain:       'ap-northeast-1vozrgcy5k.auth.ap-northeast-1.amazoncognito.com',
+  redirectUri:  'https://tamsic.tamjump.com/callback.html',
+  logoutUri:    'https://tamsic.tamjump.com/',
+  scopes:       'openid email profile',
 };
 
-// ─── PKCE ヘルパー ────────────────────────────────────────────────────────────
-function _base64url(buf) {
-  return btoa(String.fromCharCode(...new Uint8Array(buf)))
+/* ─── PKCE helpers ─── */
+function _generateRandom(length = 64) {
+  const arr = new Uint8Array(length);
+  crypto.getRandomValues(arr);
+  return btoa(String.fromCharCode(...arr))
     .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
-async function _generatePKCE() {
-  const verifier = _base64url(crypto.getRandomValues(new Uint8Array(32)));
-  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
-  return { verifier, challenge: _base64url(digest) };
+
+async function _sha256(plain) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(plain);
+  return crypto.subtle.digest('SHA-256', data);
 }
 
-// ─── ログイン（Cognito Hosted UI へリダイレクト） ─────────────────────────────
-async function cognitoLogin() {
-  const { verifier, challenge } = await _generatePKCE();
-  const state = _base64url(crypto.getRandomValues(new Uint8Array(16)));
-  sessionStorage.setItem('pkce_verifier', verifier);
-  sessionStorage.setItem('pkce_state',    state);
-
-  const params = new URLSearchParams({
-    response_type:         'code',
-    client_id:             COGNITO.clientId,
-    redirect_uri:          COGNITO.redirectUri,
-    scope:                 'openid email profile',
-    state,
-    code_challenge:        challenge,
-    code_challenge_method: 'S256',
-  });
-  window.location.href = `https://${COGNITO.domain}/oauth2/authorize?${params}`;
+async function _generateCodeChallenge(verifier) {
+  const hashed = await _sha256(verifier);
+  return btoa(String.fromCharCode(...new Uint8Array(hashed)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
 
-// ─── サインアップ（Hosted UI のサインアップ画面へ） ──────────────────────────
-async function cognitoSignup() {
-  const { verifier, challenge } = await _generatePKCE();
-  const state = _base64url(crypto.getRandomValues(new Uint8Array(16)));
-  sessionStorage.setItem('pkce_verifier', verifier);
-  sessionStorage.setItem('pkce_state',    state);
+/* ─── Token storage ─── */
+const STORAGE_KEYS = {
+  accessToken:  'tamsic_access_token',
+  idToken:      'tamsic_id_token',
+  refreshToken: 'tamsic_refresh_token',
+  expiry:       'tamsic_token_expiry',
+  coins:        'tamsic_coins',
+  verifier:     'tamsic_pkce_verifier',
+  state:        'tamsic_oauth_state',
+};
 
-  const params = new URLSearchParams({
-    response_type:         'code',
-    client_id:             COGNITO.clientId,
-    redirect_uri:          COGNITO.redirectUri,
-    scope:                 'openid email profile',
-    state,
-    code_challenge:        challenge,
-    code_challenge_method: 'S256',
-  });
-  window.location.href = `https://${COGNITO.domain}/signup?${params}`;
-}
-
-// ─── コールバック処理（callback.html から呼ぶ） ───────────────────────────────
-async function cognitoHandleCallback() {
-  const params   = new URLSearchParams(window.location.search);
-  const code     = params.get('code');
-  const state    = params.get('state');
-  const verifier = sessionStorage.getItem('pkce_verifier');
-  const savedState = sessionStorage.getItem('pkce_state');
-
-  if (!code || state !== savedState) {
-    console.error('Auth error: invalid state or missing code');
-    window.location.href = '/';
-    return;
+function _saveTokens(tokenResponse) {
+  sessionStorage.setItem(STORAGE_KEYS.accessToken,  tokenResponse.access_token  || '');
+  sessionStorage.setItem(STORAGE_KEYS.idToken,      tokenResponse.id_token      || '');
+  sessionStorage.setItem(STORAGE_KEYS.refreshToken, tokenResponse.refresh_token || '');
+  const expiry = Date.now() + (tokenResponse.expires_in || 3600) * 1000;
+  sessionStorage.setItem(STORAGE_KEYS.expiry, String(expiry));
+  // コイン初期値（DynamoDB未実装時の暫定）
+  if (!sessionStorage.getItem(STORAGE_KEYS.coins)) {
+    sessionStorage.setItem(STORAGE_KEYS.coins, '0');
   }
-
-  const res = await fetch(`https://${COGNITO.domain}/oauth2/token`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      grant_type:    'authorization_code',
-      client_id:     COGNITO.clientId,
-      redirect_uri:  COGNITO.redirectUri,
-      code,
-      code_verifier: verifier,
-    }),
-  });
-
-  if (!res.ok) {
-    console.error('Token exchange failed');
-    window.location.href = '/';
-    return;
-  }
-
-  const tokens = await res.json();
-  sessionStorage.setItem('id_token',      tokens.id_token);
-  sessionStorage.setItem('access_token',  tokens.access_token);
-  sessionStorage.setItem('refresh_token', tokens.refresh_token);
-  sessionStorage.removeItem('pkce_verifier');
-  sessionStorage.removeItem('pkce_state');
-
-  // ユーザー情報を取得して保存
-  const user = _parseJwt(tokens.id_token);
-  sessionStorage.setItem('tamsic_user', JSON.stringify({
-    email: user.email,
-    sub:   user.sub,
-  }));
-
-  window.location.href = '/';
 }
 
-// ─── ログアウト ───────────────────────────────────────────────────────────────
-function cognitoLogout() {
-  sessionStorage.clear();
-  const params = new URLSearchParams({
-    client_id:  COGNITO.clientId,
-    logout_uri: COGNITO.logoutUri,
-  });
-  window.location.href = `https://${COGNITO.domain}/logout?${params}`;
+function _clearTokens() {
+  Object.values(STORAGE_KEYS).forEach(k => sessionStorage.removeItem(k));
 }
 
-// ─── ログイン状態チェック ─────────────────────────────────────────────────────
+/* ─── 公開API ─── */
+
+/**
+ * ログイン中かどうか（トークン有効期限チェック付き）
+ */
 function isLoggedIn() {
-  const token = sessionStorage.getItem('id_token');
-  if (!token) return false;
-  try {
-    const payload = _parseJwt(token);
-    return payload.exp * 1000 > Date.now();
-  } catch {
-    return false;
-  }
+  const token  = sessionStorage.getItem(STORAGE_KEYS.accessToken);
+  const expiry = Number(sessionStorage.getItem(STORAGE_KEYS.expiry) || 0);
+  return !!(token && Date.now() < expiry);
 }
 
-// ─── 現在のユーザー情報取得 ──────────────────────────────────────────────────
-function getCurrentUser() {
+/**
+ * 保存済みトークンを返す
+ */
+function getTokens() {
+  return {
+    accessToken:  sessionStorage.getItem(STORAGE_KEYS.accessToken),
+    idToken:      sessionStorage.getItem(STORAGE_KEYS.idToken),
+    refreshToken: sessionStorage.getItem(STORAGE_KEYS.refreshToken),
+  };
+}
+
+/**
+ * IDトークンからユーザー情報を取得
+ */
+function getUserInfo() {
+  const idToken = sessionStorage.getItem(STORAGE_KEYS.idToken);
+  if (!idToken) return null;
   try {
-    return JSON.parse(sessionStorage.getItem('tamsic_user') || 'null');
+    const payload = idToken.split('.')[1];
+    return JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
   } catch {
     return null;
   }
 }
 
-// ─── JWT デコード（ローカル、署名検証なし） ──────────────────────────────────
-function _parseJwt(token) {
-  const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-  return JSON.parse(atob(base64));
+/**
+ * コイン残高取得（暫定: sessionStorage）
+ */
+function getCoins() {
+  return parseInt(sessionStorage.getItem(STORAGE_KEYS.coins) || '0', 10);
 }
 
-// ─── コイン管理（DynamoDB 連携 — 後フェーズで実装） ─────────────────────────
-// ※ 現在は localStorage から移行期間のため sessionStorage を暫定使用
-function getCoins() {
-  return parseInt(sessionStorage.getItem('tamsic_coins') || '0', 10);
-}
-function setCoins(n) {
-  sessionStorage.setItem('tamsic_coins', String(n));
-}
-function addCoins(n) {
-  setCoins(getCoins() + n);
-}
-function useCoins(n) {
+/**
+ * コイン消費（暫定: sessionStorage）
+ */
+function spendCoins(amount) {
   const current = getCoins();
-  if (current < n) return false;
-  setCoins(current - n);
+  if (current < amount) return false;
+  sessionStorage.setItem(STORAGE_KEYS.coins, String(current - amount));
   return true;
 }
 
-// ─── 既存コードとの互換ラッパー ──────────────────────────────────────────────
-// 既存の auth.js が使っていた関数名に合わせてエイリアスを作成
-const Auth = {
-  login:       cognitoLogin,
-  signup:      cognitoSignup,
-  logout:      cognitoLogout,
-  isLoggedIn,
-  getCurrentUser,
-  getCoins,
-  addCoins,
-  useCoins,
-};
+/**
+ * Cognito Hosted UI へリダイレクト（ログイン）
+ */
+async function cognitoLogin() {
+  const verifier   = _generateRandom(64);
+  const state      = _generateRandom(16);
+  const challenge  = await _generateCodeChallenge(verifier);
+
+  sessionStorage.setItem(STORAGE_KEYS.verifier, verifier);
+  sessionStorage.setItem(STORAGE_KEYS.state,    state);
+
+  const params = new URLSearchParams({
+    response_type:         'code',
+    client_id:             AUTH_CONFIG.clientId,
+    redirect_uri:          AUTH_CONFIG.redirectUri,
+    scope:                 AUTH_CONFIG.scopes,
+    state:                 state,
+    code_challenge:        challenge,
+    code_challenge_method: 'S256',
+  });
+
+  window.location.href =
+    `https://${AUTH_CONFIG.domain}/oauth2/authorize?${params}`;
+}
+
+/**
+ * Cognito Hosted UI へリダイレクト（新規登録）
+ */
+async function cognitoSignup() {
+  const verifier   = _generateRandom(64);
+  const state      = _generateRandom(16);
+  const challenge  = await _generateCodeChallenge(verifier);
+
+  sessionStorage.setItem(STORAGE_KEYS.verifier, verifier);
+  sessionStorage.setItem(STORAGE_KEYS.state,    state);
+
+  const params = new URLSearchParams({
+    response_type:         'code',
+    client_id:             AUTH_CONFIG.clientId,
+    redirect_uri:          AUTH_CONFIG.redirectUri,
+    scope:                 AUTH_CONFIG.scopes,
+    state:                 state,
+    code_challenge:        challenge,
+    code_challenge_method: 'S256',
+  });
+
+  window.location.href =
+    `https://${AUTH_CONFIG.domain}/signup?${params}`;
+}
+
+/**
+ * ログアウト
+ */
+function cognitoLogout() {
+  _clearTokens();
+  const params = new URLSearchParams({
+    client_id:  AUTH_CONFIG.clientId,
+    logout_uri: AUTH_CONFIG.logoutUri,
+  });
+  window.location.href =
+    `https://${AUTH_CONFIG.domain}/logout?${params}`;
+}
+
+/**
+ * callback.html から呼ぶ: 認証コードをトークンに交換
+ * @returns {Promise<boolean>} 成功/失敗
+ */
+async function handleCallback() {
+  const params   = new URLSearchParams(window.location.search);
+  const code     = params.get('code');
+  const state    = params.get('state');
+  const error    = params.get('error');
+
+  if (error) {
+    console.error('Cognito error:', error, params.get('error_description'));
+    return false;
+  }
+
+  const savedState    = sessionStorage.getItem(STORAGE_KEYS.state);
+  const codeVerifier  = sessionStorage.getItem(STORAGE_KEYS.verifier);
+
+  if (!code || !codeVerifier) return false;
+  if (state !== savedState)   return false;
+
+  const body = new URLSearchParams({
+    grant_type:    'authorization_code',
+    client_id:     AUTH_CONFIG.clientId,
+    code:          code,
+    redirect_uri:  AUTH_CONFIG.redirectUri,
+    code_verifier: codeVerifier,
+  });
+
+  try {
+    const res = await fetch(
+      `https://${AUTH_CONFIG.domain}/oauth2/token`,
+      {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:    body.toString(),
+      }
+    );
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('Token exchange failed:', err);
+      return false;
+    }
+
+    const tokenResponse = await res.json();
+    _saveTokens(tokenResponse);
+
+    // 使い捨て値をクリア
+    sessionStorage.removeItem(STORAGE_KEYS.verifier);
+    sessionStorage.removeItem(STORAGE_KEYS.state);
+
+    return true;
+  } catch (e) {
+    console.error('Token exchange error:', e);
+    return false;
+  }
+}

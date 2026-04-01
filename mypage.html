@@ -1,105 +1,350 @@
-<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="auth.css">
-<script src="purchase-config.js"></script>
-<script src="auth.js"></script>
-<title>My Page | TAMSIC</title><script src="mypage.js"></script></head><body>
-<nav><a class="nav-logo" href="index.html">TAMSIC</a><ul class="nav-links"><li><a href="releases.html">Releases</a></li><li><a href="nono.html">no-no</a></li><li><a href="kiki.html">kiki</a></li><li><a class="active" href="mypage.html">My Page</a></li><li><a href="javascript:void(0)" onclick="handleLogout()">Logout</a></li></ul></nav>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAMSIC — MY PAGE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:     #FAFAF7;
+      --text:   #0E0E0E;
+      --accent: #C4960E;
+      --light:  #E6E6E0;
+      --mid:    #7A7A72;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Jost', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-<main class="page-shell mypage-shell">
-  <div class="mypage-topline">
-    <div class="mypage-intro">
-      <div class="page-kicker">Member lounge</div>
-      <h1 class="page-title">My Page</h1>
-      <p class="page-copy">購入・残高・再生履歴を、TAMSICらしい静かな会員空間にまとめています。コイン管理とフル試聴の起点はこのページです。</p>
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2rem;
+      border-bottom: 1px solid var(--light);
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .logo span { color: var(--accent); }
+    nav a {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--mid);
+      margin-left: 1.8rem;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--text); }
+
+    main {
+      flex: 1;
+      max-width: 700px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    /* ─── ページタイトル ─── */
+    .page-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--light);
+    }
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+    }
+    .page-header .user-email {
+      font-size: 0.8rem;
+      color: var(--mid);
+    }
+
+    /* ─── コインカード ─── */
+    .coin-card {
+      background: var(--text);
+      color: #fff;
+      border-radius: 8px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+    .coin-info {}
+    .coin-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-bottom: 0.4rem;
+    }
+    .coin-balance {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 400;
+      line-height: 1;
+    }
+    .coin-balance span {
+      font-size: 1rem;
+      color: var(--accent);
+      margin-left: 0.4rem;
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+    }
+    .coin-icon {
+      font-size: 3rem;
+      opacity: 0.2;
+    }
+
+    /* ─── コイン購入 ─── */
+    .section-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 1rem;
+    }
+    .coin-plans {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    @media (max-width: 500px) {
+      .coin-plans { grid-template-columns: 1fr; }
+    }
+    .plan-card {
+      border: 1px solid var(--light);
+      border-radius: 6px;
+      padding: 1.2rem;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      display: block;
+    }
+    .plan-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 2px 12px rgba(196,150,14,0.1);
+    }
+    .plan-card.popular {
+      border-color: var(--accent);
+      position: relative;
+    }
+    .plan-badge {
+      position: absolute;
+      top: -0.6rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      padding: 0.15rem 0.6rem;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+    .plan-coins {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--accent);
+    }
+    .plan-coin-label {
+      font-size: 0.7rem;
+      color: var(--mid);
+      letter-spacing: 0.08em;
+    }
+    .plan-price {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-top: 0.6rem;
+    }
+
+    /* ─── 先行試聴リンク ─── */
+    .artist-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    @media (max-width: 500px) {
+      .artist-links { grid-template-columns: 1fr; }
+    }
+    .artist-link {
+      display: block;
+      padding: 1.2rem 1.5rem;
+      border: 1px solid var(--light);
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .artist-link:hover { border-color: var(--text); }
+    .artist-link .name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+    .artist-link .desc {
+      font-size: 0.75rem;
+      color: var(--mid);
+      letter-spacing: 0.06em;
+    }
+    .artist-link.nono .name { color: #0099CC; }
+    .artist-link.kiki .name { color: #C85A72; }
+
+    /* ─── ログアウト ─── */
+    .logout-section {
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--light);
+    }
+    .btn-logout {
+      background: transparent;
+      color: var(--mid);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid var(--light);
+      padding: 0.65rem 1.5rem;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-logout:hover { border-color: #c00; color: #c00; }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.72rem;
+      color: var(--mid);
+      letter-spacing: 0.08em;
+      border-top: 1px solid var(--light);
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/index.html">T<span>A</span>MSIC</a>
+  <nav>
+    <a href="/index.html">Home</a>
+    <a href="/nono.html">no-no</a>
+    <a href="/kiki.html">kiki</a>
+  </nav>
+</header>
+
+<main>
+  <!-- ページヘッダー -->
+  <div class="page-header">
+    <div>
+      <h1>My Page</h1>
+      <p class="user-email" id="userEmail">読み込み中...</p>
     </div>
-    <div class="member-chip">member <strong data-user-email>—</strong></div>
   </div>
 
-  <section class="mypage-lounge">
-    <div class="vault-card">
-      <div class="vault-header">
-        <div class="vault-label">current balance</div>
-        <div class="vault-status">member lounge</div>
-      </div>
-      <div class="vault-balance"><strong data-wallet-balance>0</strong><span>coin</span></div>
-      <div class="vault-meta">
-        <span>full listen only</span>
-        <span>no download</span>
-        <span>unlimited validity</span>
-      </div>
-      <div class="vault-note">音楽の体験は、ここで静かに積み上がります。残高・購入・再生の管理を、会員ページに集約しています。</div>
-    </div>
-
-    <div class="member-side">
-      <div class="member-panel">
-        <div class="mini-kicker">first visit bonus</div>
-        <div class="member-value" data-wallet-bonus>付与済み</div>
-        <div class="member-sub">初回付与の状態を表示します。今後は決済反映と同じ画面の中で確認できます。</div>
-      </div>
-      <div class="member-panel">
-        <div class="mini-kicker">quick actions</div>
-        <div class="member-actions">
-          <a class="btn-primary" href="releases.html">Go to releases</a>
-          <a class="btn-secondary" href="index.html">Back to top</a>
-        </div>
+  <!-- コイン残高 -->
+  <div class="coin-card">
+    <div class="coin-info">
+      <div class="coin-label">Coin Balance</div>
+      <div class="coin-balance">
+        <span id="coinBalance">0</span><span>coins</span>
       </div>
     </div>
-  </section>
-
-  <div class="section-block">
-    <div id="purchase-note" class="muted-banner"></div>
+    <div class="coin-icon">🪙</div>
   </div>
 
-  <div class="section-block">
-    <div class="section-card purchase-section">
-      <div class="purchase-hero">
-        <div>
-          <div class="section-title">Buy coin</div>
-          <div class="purchase-hero-copy">Square決済ページへ移動します。購入後はこの会員を基準に残高を管理します。価格は税込、コインの有効期限は無期限です。</div>
-        </div>
-        <a class="ghost-link" href="releases.html">Go to releases</a>
-      </div>
-      <div id="purchase-grid" class="purchase-grid"></div>
-    </div>
+  <!-- コイン購入 -->
+  <p class="section-title">コインを購入する</p>
+  <div class="coin-plans">
+    <a class="plan-card" href="https://square.link/u/ooAT7lXM" target="_blank" rel="noopener">
+      <div class="plan-coins">100</div>
+      <div class="plan-coin-label">Starter</div>
+      <div class="plan-price">¥200</div>
+    </a>
+    <a class="plan-card popular" href="https://square.link/u/ze3xiMxQ" target="_blank" rel="noopener">
+      <div class="plan-badge">人気</div>
+      <div class="plan-coins">300</div>
+      <div class="plan-coin-label">Standard</div>
+      <div class="plan-price">¥500</div>
+    </a>
+    <a class="plan-card" href="https://square.link/u/4Qs8fs2U" target="_blank" rel="noopener">
+      <div class="plan-coins">500</div>
+      <div class="plan-coin-label">Premium</div>
+      <div class="plan-price">¥800</div>
+    </a>
   </div>
 
-  <div class="section-block">
-    <div class="accordion-group">
-      <div class="accordion" data-accordion="pending">
-        <button class="accordion-toggle" type="button" onclick="toggleAccordion('pending')">
-          <span><span class="accordion-title">Pending purchase intent</span><span class="accordion-copy">決済ページへ遷移した購入リクエストの反映待ち一覧。</span></span>
-          <span class="accordion-icon">+</span>
-        </button>
-        <div class="accordion-content"><div id="pending-intents"></div></div>
-      </div>
-
-      <div class="accordion" data-accordion="purchase">
-        <button class="accordion-toggle" type="button" onclick="toggleAccordion('purchase')">
-          <span><span class="accordion-title">Purchase history</span><span class="accordion-copy">購入履歴を必要な時だけ開いて確認できます。</span></span>
-          <span class="accordion-icon">+</span>
-        </button>
-        <div class="accordion-content">
-          <div class="table-wrap flush"><table class="table"><thead><tr><th>日時</th><th>内容</th><th>金額</th><th>状態</th></tr></thead><tbody id="purchase-history-body"></tbody></table></div>
-        </div>
-      </div>
-
-      <div class="accordion" data-accordion="play">
-        <button class="accordion-toggle" type="button" onclick="toggleAccordion('play')">
-          <span><span class="accordion-title">Play history</span><span class="accordion-copy">フル再生時の消費履歴をまとめて確認できます。</span></span>
-          <span class="accordion-icon">+</span>
-        </button>
-        <div class="accordion-content">
-          <div class="table-wrap flush"><table class="table"><thead><tr><th>日時</th><th>Track</th><th>Coins</th></tr></thead><tbody id="listen-history-body"></tbody></table></div>
-        </div>
-      </div>
-    </div>
+  <!-- アーティストページ -->
+  <p class="section-title">先行試聴を楽しむ</p>
+  <div class="artist-links">
+    <a class="artist-link nono" href="/nono.html">
+      <div class="name">no-no</div>
+      <div class="desc">先行試聴 → アンロック</div>
+    </a>
+    <a class="artist-link kiki" href="/kiki.html">
+      <div class="name">kiki</div>
+      <div class="desc">先行試聴 → アンロック</div>
+    </a>
   </div>
 
-  <div class="section-block">
-    <div class="mypage-footer-note">Square決済後の自動残高反映は、今後の webhook / API 連携で本番化できます。この版では会員導線・購入導線・表示制御を先に完成させています。</div>
+  <!-- ログアウト -->
+  <div class="logout-section">
+    <button class="btn-logout" onclick="handleLogout()">Logout</button>
   </div>
 </main>
 
-<footer><div>© TAMSIC</div><div>Member lounge / Coin / History</div></footer></body></html>
+<footer>© 2026 TAMSIC — All rights reserved</footer>
+
+<script src="auth.js"></script>
+<script>
+  // 未ログインならログインページへ
+  if (!isLoggedIn()) {
+    window.location.href = '/login.html';
+  }
+
+  // ユーザー情報表示
+  const userInfo = getUserInfo();
+  if (userInfo) {
+    document.getElementById('userEmail').textContent =
+      userInfo.email || userInfo.sub || 'ゲスト';
+  }
+
+  // コイン残高表示
+  document.getElementById('coinBalance').textContent = getCoins();
+
+  // ログアウト処理
+  function handleLogout() {
+    if (confirm('ログアウトしますか？')) {
+      cognitoLogout();
+    }
+  }
+</script>
+
+</body>
+</html>
