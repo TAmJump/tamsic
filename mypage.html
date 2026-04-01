@@ -23,28 +23,28 @@
     <div class="vault-card">
       <div class="vault-header">
         <div class="vault-label" data-ja="現在の残高" data-en="current balance">現在の残高</div>
-        <div class="vault-status">member lounge</div>
+        <div class="vault-status" data-ja="会員ラウンジ" data-en="member lounge">会員ラウンジ</div>
       </div>
       <div class="vault-balance"><strong data-wallet-balance>0</strong><span>coin</span></div>
       <div class="vault-meta">
-        <span>full listen only</span>
-        <span>no download</span>
-        <span>unlimited validity</span>
+        <span data-ja="フル試聴のみ" data-en="full listen only">フル試聴のみ</span>
+        <span data-ja="DL不可" data-en="no download">DL不可</span>
+        <span data-ja="有効期限なし" data-en="unlimited validity">有効期限なし</span>
       </div>
-      <div class="vault-note">音楽の体験は、ここで静かに積み上がります。残高・購入・再生の管理を、会員ページに集約しています。</div>
+      <div class="vault-note"><span data-ja="音楽の体験は、ここで静かに積み上がります。残高・購入・再生の管理を、会員ページに集約しています。" data-en="Your music experience accumulates here. Balance, purchases, and play history — all in one place.">音楽の体験は、ここで静かに積み上がります。残高・購入・再生の管理を、会員ページに集約しています。</span></div>
     </div>
 
     <div class="member-side">
       <div class="member-panel">
-        <div class="mini-kicker">first visit bonus</div>
-        <div class="member-value" data-wallet-bonus>付与済み</div>
-        <div class="member-sub">初回付与の状態を表示します。今後は決済反映と同じ画面の中で確認できます。</div>
+        <div class="mini-kicker" data-ja="初回ボーナス" data-en="first visit bonus">初回ボーナス</div>
+        <div class="member-value" data-wallet-bonus data-ja="付与済み" data-en="Granted">付与済み</div>
+        <div class="member-sub"><span data-ja="初回付与の状態を表示します。" data-en="Shows your first-visit bonus status.">初回付与の状態を表示します。</span></div>
       </div>
       <div class="member-panel">
-        <div class="mini-kicker">quick actions</div>
+        <div class="mini-kicker" data-ja="クイックアクション" data-en="quick actions">クイックアクション</div>
         <div class="member-actions">
           
-          <a class="btn-secondary" href="index.html">Back to top</a>
+          <a class="btn-secondary" href="index.html" data-ja="トップへ戻る" data-en="Back to top">トップへ戻る</a>
         </div>
       </div>
     </div>
@@ -59,7 +59,7 @@
       <div class="purchase-hero">
         <div>
           <div class="section-title" data-ja="コインを購入" data-en="Buy coin">コインを購入</div>
-          <div class="purchase-hero-copy">Square決済ページへ移動します。購入後はこの会員を基準に残高を管理します。価格は税込、コインの有効期限は無期限です。</div>
+          <div class="purchase-hero-copy"><span data-ja="Square決済ページへ移動します。価格は税込、コインの有効期限は無期限です。" data-en="You will be redirected to Square. Prices include tax. Coins never expire.">Square決済ページへ移動します。価格は税込、コインの有効期限は無期限です。</span></div>
         </div>
         
       </div>
@@ -71,7 +71,7 @@
     <div class="accordion-group">
       <div class="accordion" data-accordion="pending">
         <button class="accordion-toggle" type="button" onclick="toggleAccordion('pending')">
-          <span><span class="accordion-title" data-ja="反映待ち購入" data-en="Pending purchase intent">反映待ち購入</span><span class="accordion-copy">決済ページへ遷移した購入リクエストの反映待ち一覧。</span></span>
+          <span><span class="accordion-title" data-ja="反映待ち購入" data-en="Pending purchase intent">反映待ち購入</span><span class="accordion-copy"><span data-ja="決済ページへ遷移した購入リクエストの反映待ち一覧。" data-en="Purchases awaiting confirmation.">決済ページへ遷移した購入リクエストの反映待ち一覧。</span></span></span>
           <span class="accordion-icon">+</span>
         </button>
         <div class="accordion-content"><div id="pending-intents"></div></div>
@@ -79,7 +79,7 @@
 
       <div class="accordion" data-accordion="purchase">
         <button class="accordion-toggle" type="button" onclick="toggleAccordion('purchase')">
-          <span><span class="accordion-title" data-ja="購入履歴" data-en="Purchase history">購入履歴</span><span class="accordion-copy">購入履歴を必要な時だけ開いて確認できます。</span></span>
+          <span><span class="accordion-title" data-ja="購入履歴" data-en="Purchase history">購入履歴</span><span class="accordion-copy"><span data-ja="購入履歴を必要な時だけ開いて確認できます。" data-en="Open when needed to review your purchase history.">購入履歴を必要な時だけ開いて確認できます。</span></span></span>
           <span class="accordion-icon">+</span>
         </button>
         <div class="accordion-content">
@@ -89,7 +89,7 @@
 
       <div class="accordion" data-accordion="play">
         <button class="accordion-toggle" type="button" onclick="toggleAccordion('play')">
-          <span><span class="accordion-title" data-ja="再生履歴" data-en="Play history">再生履歴</span><span class="accordion-copy">フル再生時の消費履歴をまとめて確認できます。</span></span>
+          <span><span class="accordion-title" data-ja="再生履歴" data-en="Play history">再生履歴</span><span class="accordion-copy"><span data-ja="フル再生時の消費履歴をまとめて確認できます。" data-en="Review your full-play coin usage.">フル再生時の消費履歴をまとめて確認できます。</span></span></span>
           <span class="accordion-icon">+</span>
         </button>
         <div class="accordion-content">
@@ -100,7 +100,7 @@
   </div>
 
   <div class="section-block">
-    <div class="mypage-footer-note">Square決済後は「Pending purchase intent」の「購入を反映する」ボタンで残高に即時反映されます。将来的にはwebhook / API連携で完全自動化予定。</div>
+    <div class="mypage-footer-note"><span data-ja="Square決済後は「反映待ち」の「購入を反映する」ボタンで残高に即時反映されます。" data-en="After Square checkout, click &quot;Confirm purchase&quot; in Pending to update your balance instantly.">Square決済後は「反映待ち」の「購入を反映する」ボタンで残高に即時反映されます。</span></div>
   </div>
 </main>
 
