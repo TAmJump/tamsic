@@ -72,22 +72,6 @@ nav {
 
 .nav-links a:hover { color: var(--accent); }
 
-.nav-login-btn {
-  border: 1px solid var(--accent) !important;
-  color: var(--accent) !important;
-  padding: 6px 18px !important;
-  border-radius: 2px;
-  transition: background 0.2s, color 0.2s !important;
-}
-.nav-login-btn:hover {
-  background: var(--accent) !important;
-  color: #fff !important;
-}
-.nav-mypage-btn {
-  color: var(--accent) !important;
-  font-weight: 500 !important;
-}
-
 /* ─── HERO ─── */
 .hero {
   min-height: 100vh;
@@ -115,10 +99,10 @@ nav {
 .hero-bg-logo {
   position: absolute;
   top: 50%;
-  left: 62%;
+  left: 68%;
   transform: translate(-50%, -50%);
-  width: min(88vw, 1160px);
-  opacity: 0.11;
+  width: min(72vw, 1040px);
+  opacity: 0.09;
   user-select: none;
   pointer-events: none;
   animation: heroLogoSpin 42s linear infinite;
@@ -135,59 +119,59 @@ nav {
   to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
 .hero-content {
   position: relative;
   z-index: 1;
-  max-width: 700px;
+  max-width: 340px;
   padding-top: 84px;
   padding-left: 8px;
 }
 
-.hero-label {
+.hero-tagline {
   font-size: 11px;
-  letter-spacing: 0.5em;
-  text-transform: uppercase;
-  color: var(--accent);
+  font-weight: 300;
+  color: #9a9a9a;
+  line-height: 1.9;
+  max-width: 260px;
   margin-bottom: 10px;
   opacity: 0;
   animation: riseUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards 0.1s;
 }
 
-.hero-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 13px;
-  font-weight: 900;
-  line-height: 1.2;
-  letter-spacing: 0.35em;
+.hero-label {
+  font-size: 11px;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
+  color: #caa43b;
+  margin-bottom: 8px;
   opacity: 0;
   animation: riseUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards 0.25s;
 }
 
-.hero-title em {
-  color: var(--accent);
-  font-style: normal;
-}
-
-.hero-rule {
-  width: 24px;
-  height: 1px;
-  background: var(--accent);
-  margin: 14px 0 12px;
+.hero-title {
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #111111;
   opacity: 0;
   animation: riseUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards 0.4s;
 }
 
-.hero-tagline {
-  font-size: 10px;
-  font-weight: 300;
-  color: var(--mid);
-  line-height: 2;
-  letter-spacing: 0.05em;
-  max-width: 260px;
-  opacity: 0;
-  animation: riseUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards 0.5s;
+.hero-title em {
+  color: inherit;
+  font-style: normal;
 }
+
+.hero-rule {
+  display: none;
+}
+
 
 .hero-scroll {
   position: absolute;
@@ -212,208 +196,6 @@ nav {
   height: 48px;
   background: var(--mid);
 }
-
-/* ─── BGM PLAY BUTTON (hero) ─── */
-.hero-bgm-btn {
-  position: absolute;
-  bottom: 88px;
-  left: 64px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  opacity: 0;
-  animation: riseUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards 0.9s;
-  z-index: 2;
-}
-.hero-bgm-ring {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 1px solid rgba(196,150,14,.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  transition: border-color .3s, transform .3s;
-  flex-shrink: 0;
-}
-.hero-bgm-ring::before {
-  content: '';
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 1px solid rgba(196,150,14,.15);
-  animation: bgmPulse 3s ease-in-out infinite;
-  opacity: 0;
-}
-.hero-bgm-btn.playing .hero-bgm-ring::before { opacity: 1; }
-@keyframes bgmPulse {
-  0%   { transform: scale(1);    opacity: .5; }
-  50%  { transform: scale(1.3);  opacity: 0; }
-  100% { transform: scale(1),    opacity: 0; }
-}
-.hero-bgm-btn:hover .hero-bgm-ring {
-  border-color: var(--accent);
-  transform: scale(1.08);
-}
-.hero-bgm-icon {
-  width: 0; height: 0;
-  border-style: solid;
-  border-width: 7px 0 7px 13px;
-  border-color: transparent transparent transparent var(--accent);
-  margin-left: 3px;
-  transition: all .2s;
-  flex-shrink: 0;
-}
-.hero-bgm-btn.playing .hero-bgm-icon {
-  width: 13px; height: 14px;
-  border: none;
-  background: linear-gradient(to right, var(--accent) 0 4px, transparent 4px 9px, var(--accent) 9px 13px);
-  border-radius: 1px;
-  margin-left: 0;
-}
-.hero-bgm-label {
-  font-size: 9px;
-  letter-spacing: .35em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,.4);
-  transition: color .3s;
-  white-space: nowrap;
-}
-.hero-bgm-btn:hover .hero-bgm-label,
-.hero-bgm-btn.playing .hero-bgm-label { color: var(--accent); }
-
-/* ─── FLOATING PLAYER (bottom-right) ─── */
-.bgm-player {
-  position: fixed;
-  bottom: 32px;
-  right: 32px;
-  z-index: 300;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: rgba(14,14,14,.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(196,150,14,.25);
-  padding: 14px 20px 14px 18px;
-  transform: translateY(100px);
-  opacity: 0;
-  transition: transform .5s cubic-bezier(.22,1,.36,1), opacity .5s;
-  pointer-events: none;
-  min-width: 240px;
-}
-.bgm-player.visible {
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: all;
-}
-.bgm-player-play {
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  border: 1px solid rgba(196,150,14,.5);
-  background: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: border-color .2s, background .2s;
-}
-.bgm-player-play:hover { border-color: var(--accent); background: rgba(196,150,14,.08); }
-.bgm-play-icon {
-  width: 0; height: 0;
-  border-style: solid;
-  border-width: 5px 0 5px 9px;
-  border-color: transparent transparent transparent var(--accent);
-  margin-left: 2px;
-  transition: all .2s;
-  flex-shrink: 0;
-}
-.bgm-player.playing .bgm-play-icon {
-  width: 9px; height: 10px;
-  border: none;
-  background: linear-gradient(to right, var(--accent) 0 3px, transparent 3px 6px, var(--accent) 6px 9px);
-  border-radius: 1px;
-  margin-left: 0;
-}
-.bgm-player-info { flex: 1; min-width: 0; }
-.bgm-player-title {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .12em;
-  color: rgba(255,255,255,.9);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 6px;
-}
-.bgm-player-bar {
-  height: 2px;
-  background: rgba(255,255,255,.12);
-  position: relative;
-  cursor: pointer;
-}
-.bgm-player-bar-fill {
-  height: 100%;
-  background: var(--accent);
-  width: 0%;
-  transition: width .1s linear;
-}
-.bgm-player-vol {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-.vol-icon {
-  font-size: 13px;
-  color: rgba(255,255,255,.35);
-  cursor: pointer;
-  transition: color .2s;
-  user-select: none;
-  line-height: 1;
-}
-.vol-icon:hover { color: var(--accent); }
-.vol-slider {
-  -webkit-appearance: none;
-  width: 56px; height: 2px;
-  background: rgba(255,255,255,.15);
-  outline: none;
-  cursor: pointer;
-}
-.vol-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--accent);
-  cursor: pointer;
-}
-.bgm-equalizer {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 16px;
-  flex-shrink: 0;
-}
-.eq-bar {
-  width: 3px;
-  background: var(--accent);
-  border-radius: 1px;
-  opacity: 0;
-  transform-origin: bottom;
-}
-.bgm-player.playing .eq-bar { opacity: 1; }
-.eq-bar:nth-child(1) { animation: eq1 .8s ease-in-out infinite alternate; }
-.eq-bar:nth-child(2) { animation: eq2 .6s ease-in-out infinite alternate; animation-delay: .1s; }
-.eq-bar:nth-child(3) { animation: eq3 .9s ease-in-out infinite alternate; animation-delay: .2s; }
-@keyframes eq1 { from { height: 4px; } to { height: 14px; } }
-@keyframes eq2 { from { height: 10px; } to { height: 5px; } }
-@keyframes eq3 { from { height: 6px; } to { height: 12px; } }
 
 @keyframes riseUp {
   from { opacity: 0; transform: translateY(40px); }
@@ -666,114 +448,6 @@ nav {
   white-space: nowrap;
 }
 
-/* ─── MUSIC SECTION ─── */
-.music-section {
-  padding: 100px 64px;
-  border-top: 1px solid var(--light);
-}
-.music-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 48px;
-}
-.music-artist-tabs {
-  display: flex;
-  gap: 0;
-  margin-bottom: 40px;
-  border-bottom: 1px solid var(--light);
-}
-.music-tab {
-  padding: 10px 28px;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  cursor: pointer;
-  border: none;
-  background: none;
-  color: var(--mid);
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-  transition: color 0.2s, border-color 0.2s;
-  font-family: 'Jost', sans-serif;
-  font-weight: 400;
-}
-.music-tab.active { color: var(--text); border-bottom-color: var(--accent); }
-.music-tab.tab-nono.active { border-bottom-color: #0099CC; color: #0099CC; }
-.music-tab.tab-kiki.active { border-bottom-color: #C85A72; color: #C85A72; }
-
-.music-tracks { display: none; }
-.music-tracks.active { display: block; }
-
-.track-item {
-  display: grid;
-  grid-template-columns: 40px 1fr auto auto;
-  align-items: center;
-  gap: 20px;
-  padding: 18px 0;
-  border-bottom: 1px solid var(--light);
-  transition: background 0.15s;
-}
-.track-item:last-child { border-bottom: none; }
-.track-num {
-  font-size: 12px;
-  color: var(--mid);
-  text-align: center;
-  font-weight: 300;
-}
-.track-info {}
-.track-title {
-  font-size: 15px;
-  font-weight: 400;
-  letter-spacing: 0.05em;
-  margin-bottom: 3px;
-}
-.track-meta {
-  font-size: 11px;
-  color: var(--mid);
-  letter-spacing: 0.08em;
-}
-.track-badge {
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 99px;
-  white-space: nowrap;
-}
-.badge-preview {
-  background: rgba(196,150,14,0.1);
-  color: var(--accent);
-  border: 1px solid rgba(196,150,14,0.3);
-}
-.badge-locked {
-  background: rgba(122,122,114,0.1);
-  color: var(--mid);
-  border: 1px solid var(--light);
-}
-.badge-open {
-  background: rgba(0,180,0,0.08);
-  color: #2a8a2a;
-  border: 1px solid rgba(0,180,0,0.2);
-}
-.track-action a {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: var(--mid);
-  border-bottom: 1px solid var(--light);
-  padding-bottom: 1px;
-  transition: color 0.2s, border-color 0.2s;
-}
-.track-action a:hover { color: var(--accent); border-color: var(--accent); }
-
-@media (max-width: 768px) {
-  .music-section { padding: 80px 24px; }
-  .track-item { grid-template-columns: 32px 1fr auto; }
-  .track-action { display: none; }
-}
-
 /* ─── FOOTER ─── */
 footer {
   padding: 48px 64px;
@@ -817,7 +491,171 @@ footer {
   letter-spacing: 0.1em;
 }
 
+
+.hero-audio {
+  margin-top: 28px;
+  width: min(360px, 82vw);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  animation: riseUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards 0.55s;
+}
+
+.hero-audio-row {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  align-items: start;
+  gap: 12px;
+  padding: 14px 14px 16px;
+  border: 1px solid rgba(202, 164, 59, 0.28);
+  border-radius: 36px;
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(8px);
+}
+
+.hero-audio-play {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid #caa43b;
+  background: transparent;
+  color: #111111;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.hero-audio-play:hover {
+  transform: scale(1.04);
+  background: rgba(202, 164, 59, 0.08);
+}
+
+.hero-audio-meta {
+  min-width: 0;
+  width: 100%;
+}
+
+.hero-audio-title {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #111111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hero-audio-sub {
+  font-size: 10px;
+  color: #9a9a9a;
+  margin-top: 2px;
+}
+
+
+.hero-audio-note {
+  font-size: 10px;
+  color: #9a9a9a;
+  margin-top: 4px;
+  padding-left: 8px;
+}
+
+.hero-audio audio {
+  display: none;
+}
+
+
+.hero-audio-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.hero-audio-seek {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  flex: 1;
+  height: 18px;
+  background: transparent;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
+.hero-audio-seek::-webkit-slider-runnable-track {
+  height: 2px;
+  background: rgba(202, 164, 59, 0.42);
+  border-radius: 999px;
+}
+
+.hero-audio-seek::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #caa43b;
+  border: 0;
+}
+
+.hero-audio-seek::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #caa43b;
+  border: 0;
+}
+
+.hero-audio-seek::-moz-range-track {
+  height: 2px;
+  background: rgba(202, 164, 59, 0.32);
+  border-radius: 999px;
+}
+
+.hero-audio-current {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: #9a9a9a;
+  min-width: 32px;
+  text-align: right;
+}
+
 @media (max-width: 768px) {
+  .hero {
+    padding: 120px 24px 56px;
+    align-items: center;
+  }
+  .hero-bg-logo {
+    left: 50%;
+    width: min(92vw, 520px);
+    opacity: 0.08;
+  }
+  .hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 340px;
+  padding-top: 84px;
+  padding-left: 8px;
+}
+  .hero-tagline,
+  .hero-label,
+  .hero-title {
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #111111;
+  opacity: 0;
+  animation: riseUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards 0.4s;
+}
+
   nav { padding: 18px 24px; }
   .nav-links { display: none; }
   .hero { padding: 0 24px 60px; }
@@ -829,24 +667,178 @@ footer {
   footer { padding: 32px 24px; flex-direction: column; gap: 16px; text-align: center; }
 }
 
-.footer-logo-img {
-  height:44px; width:44px; object-fit:contain; opacity:.55;
-  transition:opacity .3s, transform .3s;
+
+
+
+
+.artist-card .media,
+.artist-panel .media,
+.artist-photo-frame,
+.artist-image-frame,
+.artist-visual-frame {
+  background: #efefec;
 }
-.footer-logo-img:hover { opacity:.95; transform:scale(1.06); }
+
+
+/* refined top artists section only */
+.artists {
+  padding: 120px 72px;
+}
+
+.artists-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 34px;
+  align-items: stretch;
+}
+
+.artist-card {
+  border: 1px solid rgba(17,17,17,0.06);
+  background: #f4f2ee;
+}
+
+.artist-card:nth-child(1) {
+  background:
+    linear-gradient(180deg, rgba(186,205,229,0.28) 0%, rgba(186,205,229,0.16) 100%),
+    #f4f2ee;
+}
+
+.artist-card:nth-child(2) {
+  background:
+    linear-gradient(180deg, rgba(205,120,142,0.18) 0%, rgba(205,120,142,0.10) 100%),
+    #f4f2ee;
+}
+
+.artist-photo {
+  width: 100%;
+  aspect-ratio: 5 / 6;
+  background: transparent;
+  padding: 18px 18px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.artist-photo::after {
+  display: none;
+}
+
+.artist-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.10);
+}
+
+.artist-card:nth-child(1) .artist-photo img {
+  object-position: center 42%;
+}
+
+.artist-card:nth-child(2) .artist-photo img {
+  object-position: center 26%;
+}
+
+.photo-placeholder-text {
+  display: none !important;
+}
+
+.artist-bar {
+  height: 2px;
+  margin: 0 18px;
+  background: rgba(17,17,17,0.06);
+}
+
+.artist-card:nth-child(1) .artist-bar::after {
+  background: #7ca1c8;
+}
+
+.artist-card:nth-child(2) .artist-bar::after {
+  background: #c76580;
+}
+
+.artist-info {
+  padding: 26px 28px 30px;
+}
+
+.artist-number {
+  margin-bottom: 12px;
+}
+
+.artist-name {
+  margin-bottom: 10px;
+  line-height: 0.95;
+}
+
+.artist-meta {
+  letter-spacing: 0.18em;
+}
+
+@media (max-width: 980px) {
+  .artists {
+    padding: 96px 24px;
+  }
+  .artists-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .artist-photo {
+    aspect-ratio: 4 / 5;
+    padding: 16px 16px 0;
+  }
+  .artist-bar {
+    margin: 0 16px;
+  }
+  .artist-info {
+    padding: 22px 22px 26px;
+  }
+}
+
+
+/* ===== FINAL ARTIST IMAGE FIX ===== */
+.artist-photo {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  padding: 0;
+  background: #f4f2ee;
+}
+
+.artist-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* no-no */
+.artist-card:nth-child(1) .artist-photo img {
+  object-position: center 30%;
+  transform: scale(1.15);
+}
+
+/* kiki */
+.artist-card:nth-child(2) .artist-photo img {
+  object-position: center 35%;
+  transform: scale(1.05);
+}
+
 </style>
+<script src="tamsic-content.js"></script>
+<script src="tamsic.js"></script>
+<script src="auth.js"></script>
 </head>
 <body>
 
 <nav>
   <ul class="nav-links">
     <li><a href="index.html#artists">Artists</a></li>
-    <li><a href="index.html#music">Music</a></li>
+    <li><a href="releases.html">Music</a></li>
     <li><a href="news.html">News</a></li>
     <li><a href="about.html">About</a></li>
     <li><a href="https://tamjump.com/contact" target="_blank">Contact</a></li>
-    <li id="nav-mypage-li" style="display:none"><a href="mypage.html" class="nav-mypage-btn">My Page</a></li>
-    <li id="nav-login-li"><a href="login.html" class="nav-login-btn">Login</a></li>
+    <li id="nav-mypage-li" style="display:none"><a href="mypage.html" style="color:var(--accent);font-weight:500">My Page</a></li>
+    <li id="nav-login-li"><a href="login.html" style="border:1px solid var(--accent);color:var(--accent);padding:6px 16px;border-radius:2px;transition:background .2s,color .2s" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='var(--accent)'">Login</a></li>
   </ul>
   <a href="index.html" class="nav-logo">TAMSIC</a>
 </nav>
@@ -859,7 +851,7 @@ footer {
     <div class="hgl"></div>
     <div class="hgl"></div>
   </div>
-  <div class="hero-bg-logo"><img src="tamsic_logo2.png" alt="TAMSIC"></div>
+  <div class="hero-bg-logo"><img src="./tamsic_logo2.png" alt="TAMSIC rotating logo"></div>
 
   <div class="hero-content">
     <p class="hero-tagline">音楽の未来を創る。<br>次世代のアーティストとともに、<br>新しい時代のサウンドを。</p>
@@ -867,19 +859,51 @@ footer {
     <h1 class="hero-title">TAM<em>S</em>IC</h1>
     <div class="hero-rule"></div>
   </div>
+  <div class="hero-scroll">Scroll
+      <div class="hero-audio">
+        <div class="hero-audio-row">
+          <button class="hero-audio-play" data-audio-btn="heroTrack1" type="button">▶</button>
+          <div class="hero-audio-meta">
+            <div class="hero-audio-title">TAMSIC TRACK 01</div>
+            <div class="hero-audio-sub">Opening Theme</div>
+            <div class="hero-audio-progress">
+              <input class="hero-audio-seek" type="range" min="0" max="100" value="0" data-audio="heroTrack1" aria-label="seek bar for TAMSIC TRACK 01">
+              <span class="hero-audio-current" data-time="heroTrack1">0:00</span>
+            </div>
+          </div>
+          <audio id="heroTrack1" preload="metadata" src="T+111.mp3"></audio>
+        </div>
 
-  <!-- BGM再生ボタン（ヒーロー左下） -->
-  <button class="hero-bgm-btn" id="heroBgmBtn" aria-label="BGMを再生">
-    <span class="hero-bgm-ring">
-      <span class="hero-bgm-icon"></span>
-    </span>
-    <span class="hero-bgm-label" id="heroBgmLabel">Play Music</span>
-  </button>
+        <div class="hero-audio-row">
+          <button class="hero-audio-play" data-audio-btn="heroTrack2" type="button">▶</button>
+          <div class="hero-audio-meta">
+            <div class="hero-audio-title">TAMSIC TRACK 02</div>
+            <div class="hero-audio-sub">Label Sound</div>
+            <div class="hero-audio-progress">
+              <input class="hero-audio-seek" type="range" min="0" max="100" value="0" data-audio="heroTrack2" aria-label="seek bar for TAMSIC TRACK 02">
+              <span class="hero-audio-current" data-time="heroTrack2">0:00</span>
+            </div>
+          </div>
+          <audio id="heroTrack2" preload="metadata" src="T+101.mp3"></audio>
+        </div>
 
-  <div class="hero-scroll">Scroll</div>
+        <div class="hero-audio-row">
+          <button class="hero-audio-play" data-audio-btn="heroTrack3" type="button">▶</button>
+          <div class="hero-audio-meta">
+            <div class="hero-audio-title">TAMSIC TRACK 03</div>
+            <div class="hero-audio-sub">New Single Mood</div>
+            <div class="hero-audio-progress">
+              <input class="hero-audio-seek" type="range" min="0" max="100" value="0" data-audio="heroTrack3" aria-label="seek bar for TAMSIC TRACK 03">
+              <span class="hero-audio-current" data-time="heroTrack3">0:00</span>
+            </div>
+          </div>
+          <audio id="heroTrack3" preload="metadata" src="T+110.mp3"></audio>
+        </div>
 
-  <!-- audio要素 -->
-  <audio id="bgmAudio" src="tamsic_music.mp3" loop preload="metadata"></audio>
+        <div class="hero-audio-note">TAMSIC sound selection</div>
+      </div>
+
+</div>
 </section>
 
 <section class="artists" id="artists">
@@ -893,147 +917,32 @@ footer {
   <div class="artists-grid">
     <a href="nono.html" class="artist-card">
       <div class="artist-photo">
-        <img id="artist-photo-nono" src="assets/images/nono_main.png" alt="no-no" style="width:100%;height:100%;object-fit:cover;object-position:top;" onerror="this.style.display='none';document.getElementById('artist-photo-nono-ph').style.display='flex'">
-        <span id="artist-photo-nono-ph" class="photo-placeholder-text" style="display:none">no-no</span>
+        <img src="assets/images/nono_main.png" alt="no-no">
       </div>
       <div class="artist-bar"></div>
       <div class="artist-info">
         <p class="artist-number">TAMSIC Artist 001</p>
         <h3 class="artist-name">no-no</h3>
-        <p class="artist-meta">AI Idol · 5 Tracks</p>
+        <p class="artist-meta" id="artist-meta-nono">AI Idol · 5 Tracks</p>
       </div>
     </a>
     <a href="kiki.html" class="artist-card">
       <div class="artist-photo">
-        <img id="artist-photo-kiki" src="assets/images/kiki_main.png" alt="kiki" style="width:100%;height:100%;object-fit:cover;object-position:top;" onerror="this.style.display='none';document.getElementById('artist-photo-kiki-ph').style.display='flex'">
-        <span id="artist-photo-kiki-ph" class="photo-placeholder-text" style="display:none">kiki</span>
+        <img src="assets/images/kiki_main.png" alt="kiki">
       </div>
       <div class="artist-bar"></div>
       <div class="artist-info">
         <p class="artist-number">TAMSIC Artist 002</p>
         <h3 class="artist-name">kiki</h3>
-        <p class="artist-meta">AI Idol · 4 Tracks</p>
+        <p class="artist-meta" id="artist-meta-kiki">AI Idol · 5 Tracks</p>
       </div>
     </a>
   </div>
 </section>
-
-<div id="music"></div>
-
-<section class="music-section">
-  <div class="music-header">
-    <div>
-      <p class="sec-label">Tracks</p>
-      <h2 class="sec-title">Music</h2>
-    </div>
-  </div>
-
-  <div class="music-artist-tabs">
-    <button class="music-tab tab-nono active" onclick="switchTab('nono')">no-no</button>
-    <button class="music-tab tab-kiki" onclick="switchTab('kiki')">kiki</button>
-  </div>
-
-  <!-- no-no トラックリスト -->
-  <div class="music-tracks active" id="tracks-nono">
-    <div class="track-item">
-      <div class="track-num">01</div>
-      <div class="track-info">
-        <div class="track-title">ぎりぎりだよ。</div>
-        <div class="track-meta">no-no · 2026.04.15 Release</div>
-      </div>
-      <div class="track-badge badge-preview" id="badge-nono-01">Member Preview</div>
-      <div class="track-action"><a href="nono.html">試聴する →</a></div>
-    </div>
-    <div class="track-item">
-      <div class="track-num">02</div>
-      <div class="track-info">
-        <div class="track-title">RE+</div>
-        <div class="track-meta">no-no · 2026.05.15 Release</div>
-      </div>
-      <div class="track-badge badge-locked">Coming Soon</div>
-      <div class="track-action"><a href="nono.html">詳しく →</a></div>
-    </div>
-    <div class="track-item">
-      <div class="track-num">03</div>
-      <div class="track-info">
-        <div class="track-title">to Walk</div>
-        <div class="track-meta">no-no · 2026.06.15 Release</div>
-      </div>
-      <div class="track-badge badge-locked">Coming Soon</div>
-      <div class="track-action"><a href="nono.html">詳しく →</a></div>
-    </div>
-    <div class="track-item">
-      <div class="track-num">04</div>
-      <div class="track-info">
-        <div class="track-title">シグナル●</div>
-        <div class="track-meta">no-no · 2026.07.15 Release</div>
-      </div>
-      <div class="track-badge badge-locked">Coming Soon</div>
-      <div class="track-action"><a href="nono.html">詳しく →</a></div>
-    </div>
-    <div class="track-item">
-      <div class="track-num">05</div>
-      <div class="track-info">
-        <div class="track-title">BREATHLESS</div>
-        <div class="track-meta">no-no · 2026.08.15 Release</div>
-      </div>
-      <div class="track-badge badge-locked">Coming Soon</div>
-      <div class="track-action"><a href="nono.html">詳しく →</a></div>
-    </div>
-  </div>
-
-  <!-- kiki トラックリスト -->
-  <div class="music-tracks" id="tracks-kiki">
-    <div class="track-item">
-      <div class="track-num">01</div>
-      <div class="track-info">
-        <div class="track-title">Critical point</div>
-        <div class="track-meta">kiki · 2026.09.15 Release</div>
-      </div>
-      <div class="track-badge badge-locked">Coming Soon</div>
-      <div class="track-action"><a href="kiki.html">詳しく →</a></div>
-    </div>
-    <div class="track-item">
-      <div class="track-num">02</div>
-      <div class="track-info">
-        <div class="track-title">Burn bright</div>
-        <div class="track-meta">kiki · 2026.10.15 Release</div>
-      </div>
-      <div class="track-badge badge-locked">Coming Soon</div>
-      <div class="track-action"><a href="kiki.html">詳しく →</a></div>
-    </div>
-    <div class="track-item">
-      <div class="track-num">03</div>
-      <div class="track-info">
-        <div class="track-title">No Stop</div>
-        <div class="track-meta">kiki · 2026.11.15 Release</div>
-      </div>
-      <div class="track-badge badge-locked">Coming Soon</div>
-      <div class="track-action"><a href="kiki.html">詳しく →</a></div>
-    </div>
-    <div class="track-item">
-      <div class="track-num">04</div>
-      <div class="track-info">
-        <div class="track-title">エンジン</div>
-        <div class="track-meta">kiki · 2026.12.15 Release</div>
-      </div>
-      <div class="track-badge badge-locked">Coming Soon</div>
-      <div class="track-action"><a href="kiki.html">詳しく →</a></div>
-    </div>
-    <div class="track-item">
-      <div class="track-num">05</div>
-      <div class="track-info">
-        <div class="track-title">KIKI rising</div>
-        <div class="track-meta">kiki · 2027.01.15 Release</div>
-      </div>
-      <div class="track-badge badge-locked">Coming Soon</div>
-      <div class="track-action"><a href="kiki.html">詳しく →</a></div>
-    </div>
-  </div>
-</section>
+<section class="news" id="news">
   <p class="sec-label">News</p>
   <h2 class="sec-title">Latest News</h2>
-  <div class="news-list">
+  <div class="news-list" id="home-news-list">
     <div class="news-item">
       <span class="news-date">—</span>
       <div class="news-body">
@@ -1062,150 +971,177 @@ footer {
 </section>
 
 <footer id="contact">
+  
   <div class="footer-legal"><a href="https://tamjump.com/" target="_blank">プライバシーポリシー</a><a href="https://tamjump.com/" target="_blank">利用規約</a><a href="https://tamjump.com/" target="_blank">特定商取引法</a><a href="https://tamjump.com/contact" target="_blank">お問い合わせ</a></div><span class="footer-copy">© 2025 TAMSIC. All Rights Reserved.</span>
 </footer>
 
-<!-- ─── フローティング BGM プレイヤー ─── -->
-<div class="bgm-player" id="bgmPlayer">
-  <button class="bgm-player-play" id="bgmPlayerBtn" aria-label="再生/停止">
-    <span class="bgm-play-icon"></span>
-  </button>
-  <div class="bgm-player-info">
-    <div class="bgm-player-title">TAMSIC — Label Sound</div>
-    <div class="bgm-player-bar" id="bgmBar">
-      <div class="bgm-player-bar-fill" id="bgmBarFill"></div>
-    </div>
-  </div>
-  <div class="bgm-player-vol">
-    <span class="vol-icon" id="volIcon" title="ミュート切替">♪</span>
-    <input class="vol-slider" id="volSlider" type="range" min="0" max="1" step="0.05" value="0.7">
-  </div>
-  <div class="bgm-equalizer">
-    <div class="eq-bar"></div>
-    <div class="eq-bar"></div>
-    <div class="eq-bar"></div>
-  </div>
-</div>
 
-<script src="auth.js"></script>
 <script>
+async function initHome(){
+  const allTracks = await TAMSICDB.getAllTracks();
+  const news = await TAMSICDB.getNews();
+  const photos = { nono: getArtistPhotos('nono')[0], kiki: getArtistPhotos('kiki')[0] };
+
+  if (photos.nono) {
+    document.getElementById('artist-photo-nono').src = photos.nono;
+    document.getElementById('artist-photo-nono').style.display = 'block';
+    document.getElementById('artist-photo-nono-ph').style.display = 'none';
+  }
+  if (photos.kiki) {
+    document.getElementById('artist-photo-kiki').src = photos.kiki;
+    document.getElementById('artist-photo-kiki').style.display = 'block';
+    document.getElementById('artist-photo-kiki-ph').style.display = 'none';
+  }
+
+  const nonoCount = allTracks.filter(t => t.artist === 'nono').length;
+  const kikiCount = allTracks.filter(t => t.artist === 'kiki').length;
+  document.getElementById('artist-meta-nono').textContent = `AI Idol · ${nonoCount} Tracks`;
+  document.getElementById('artist-meta-kiki').textContent = `AI Idol · ${kikiCount} Tracks`;
+
+  const latest = [...allTracks].sort((a,b)=> String(b.id).localeCompare(String(a.id))).slice(0,4);
+  if (latest.length) {
+    const art = getTrackCoverSrc(latest[0]);
+    const artWrap = document.getElementById('latest-artwork');
+    if (art) artWrap.innerHTML = `<img src="${art}" alt="${escapeHtml(latest[0].title)}" style="width:100%;height:100%;object-fit:contain; background:#efefec;">`;
+    document.getElementById('latest-tracks').innerHTML = latest.map((t,idx)=>`
+      <div class="latest-track" onclick="window.location='${t.artist}.html#track-${t.id}'" style="cursor:pointer">
+        <span class="lt-num">${String(idx+1).padStart(2,'0')}</span>
+        <span class="lt-name">${escapeHtml(t.title)}</span>
+        <span class="lt-artist">${t.artist === 'nono' ? 'no-no' : 'kiki'} · sample無料 / フル ${t.price||30}コイン</span>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('home-news-list').innerHTML = news.slice(0,3).map(n=>`
+    <div class="news-item">
+      <span class="news-date">${escapeHtml(n.date || '—')}</span>
+      <div class="news-body">
+        <p class="news-headline">${escapeHtml(n.title || '')}</p>
+        <p class="news-sub">${escapeHtml(n.titleEn || '')}</p>
+      </div>
+      <span class="news-tag">${escapeHtml(n.tag || 'Info')}</span>
+    </div>
+  `).join('');
+}
 // ── ナビのログイン状態切り替え ──
 (function() {
-  const loginLi  = document.getElementById('nav-login-li');
-  const mypageLi = document.getElementById('nav-mypage-li');
   if (typeof isLoggedIn === 'function' && isLoggedIn()) {
-    loginLi.style.display  = 'none';
-    mypageLi.style.display = 'list-item';
+    const loginLi  = document.getElementById('nav-login-li');
+    const mypageLi = document.getElementById('nav-mypage-li');
+    if (loginLi)  loginLi.style.display  = 'none';
+    if (mypageLi) mypageLi.style.display = 'list-item';
   }
 })();
-
-// ── MUSICタブ切り替え ──
-function switchTab(artist) {
-  document.querySelectorAll('.music-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.music-tracks').forEach(t => t.classList.remove('active'));
-  document.querySelector('.tab-' + artist).classList.add('active');
-  document.getElementById('tracks-' + artist).classList.add('active');
-}
+initHome();
 </script>
+
+
+
+
+
 <script>
-(function () {
-  const audio       = document.getElementById('bgmAudio');
-  const heroBgmBtn  = document.getElementById('heroBgmBtn');
-  const heroBgmLabel= document.getElementById('heroBgmLabel');
-  const bgmPlayer   = document.getElementById('bgmPlayer');
-  const bgmPlayerBtn= document.getElementById('bgmPlayerBtn');
-  const bgmBarFill  = document.getElementById('bgmBarFill');
-  const bgmBar      = document.getElementById('bgmBar');
-  const volSlider   = document.getElementById('volSlider');
-  const volIcon     = document.getElementById('volIcon');
+(function(){
+  const ids = ['heroTrack1','heroTrack2','heroTrack3'];
 
-  audio.volume = 0.7;
-  let isPlaying = false;
-
-  /* ── フェード ── */
-  function fadeIn(el, to, ms) {
-    el.volume = 0;
-    const steps = 40, dv = to / steps;
-    let i = 0;
-    const t = setInterval(() => {
-      i++;
-      el.volume = Math.min(to, el.volume + dv);
-      if (i >= steps) clearInterval(t);
-    }, ms / steps);
-  }
-  function fadeOut(el, ms, done) {
-    const from = el.volume;
-    const steps = 40, dv = from / steps;
-    let i = 0;
-    const t = setInterval(() => {
-      i++;
-      el.volume = Math.max(0, el.volume - dv);
-      if (i >= steps) { clearInterval(t); el.pause(); done && done(); }
-    }, ms / steps);
+  function formatTime(sec){
+    if (!isFinite(sec)) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
   }
 
-  /* ── 再生/停止トグル ── */
-  function togglePlay() {
-    if (isPlaying) {
-      fadeOut(audio, 800, () => {
-        isPlaying = false;
-        setUI(false);
+  function buttonFor(id){
+    return document.querySelector(`.hero-audio-play[data-audio-btn="${id}"]`);
+  }
+
+  function seekFor(id){
+    return document.querySelector(`.hero-audio-seek[data-audio="${id}"]`);
+  }
+
+  function timeFor(id){
+    return document.querySelector(`.hero-audio-current[data-time="${id}"]`);
+  }
+
+  function syncTrackUI(audio){
+    const seek = seekFor(audio.id);
+    const time = timeFor(audio.id);
+    if (!seek || !time) return;
+
+    if (isFinite(audio.duration) && audio.duration > 0) {
+      seek.value = String((audio.currentTime / audio.duration) * 100);
+    } else {
+      seek.value = "0";
+    }
+    time.textContent = formatTime(audio.currentTime);
+  }
+
+  function resetOtherTracks(activeId){
+    ids.forEach(id => {
+      const audio = document.getElementById(id);
+      const btn = buttonFor(id);
+      if (!audio) return;
+      if (id !== activeId) {
+        audio.pause();
+        audio.currentTime = 0;
+        if (btn) btn.textContent = '▶';
+        syncTrackUI(audio);
+      }
+    });
+  }
+
+  function toggleHeroTrack(id){
+    const current = document.getElementById(id);
+    const btn = buttonFor(id);
+    if (!current) return;
+
+    if (current.paused) {
+      resetOtherTracks(id);
+      current.play().then(() => {
+        if (btn) btn.textContent = '❚❚';
+      }).catch(() => {
+        if (btn) btn.textContent = '▶';
       });
     } else {
-      audio.play().then(() => {
-        fadeIn(audio, parseFloat(volSlider.value), 1200);
-        isPlaying = true;
-        setUI(true);
-        bgmPlayer.classList.add('visible');
-      }).catch(e => console.warn('BGM play error:', e));
+      current.pause();
+      if (btn) btn.textContent = '▶';
     }
   }
 
-  /* ── UI 同期 ── */
-  function setUI(playing) {
-    if (playing) {
-      heroBgmBtn.classList.add('playing');
-      bgmPlayer.classList.add('playing');
-      bgmPlayerBtn.classList.add('playing');
-      heroBgmLabel.textContent = 'Now Playing';
-    } else {
-      heroBgmBtn.classList.remove('playing');
-      bgmPlayer.classList.remove('playing');
-      bgmPlayerBtn.classList.remove('playing');
-      heroBgmLabel.textContent = 'Play Music';
-    }
-  }
+  ids.forEach(id => {
+    const audio = document.getElementById(id);
+    const seek = seekFor(id);
+    const btn = buttonFor(id);
+    if (!audio || !seek || !btn) return;
 
-  /* ── イベント ── */
-  heroBgmBtn.addEventListener('click', togglePlay);
-  bgmPlayerBtn.addEventListener('click', togglePlay);
+    btn.addEventListener('click', () => toggleHeroTrack(id));
 
-  /* プログレスバー更新 */
-  audio.addEventListener('timeupdate', () => {
-    if (!audio.duration) return;
-    bgmBarFill.style.width = (audio.currentTime / audio.duration * 100).toFixed(2) + '%';
-  });
+    audio.addEventListener('timeupdate', () => syncTrackUI(audio));
+    audio.addEventListener('loadedmetadata', () => syncTrackUI(audio));
+    audio.addEventListener('ended', () => {
+      btn.textContent = '▶';
+      audio.currentTime = 0;
+      syncTrackUI(audio);
+    });
 
-  /* バークリックでシーク */
-  bgmBar.addEventListener('click', e => {
-    if (!audio.duration) return;
-    const pct = e.offsetX / bgmBar.offsetWidth;
-    audio.currentTime = pct * audio.duration;
-  });
+    const scrub = () => {
+      if (!isFinite(audio.duration) || audio.duration <= 0) return;
+      audio.currentTime = (Number(seek.value) / 100) * audio.duration;
+      syncTrackUI(audio);
+    };
 
-  /* 音量スライダー */
-  volSlider.addEventListener('input', () => {
-    audio.volume = parseFloat(volSlider.value);
-    audio.muted = false;
-    volIcon.textContent = audio.volume === 0 ? '🔇' : '♪';
-  });
+    seek.addEventListener('input', scrub);
+    seek.addEventListener('change', scrub);
+    seek.addEventListener('pointerup', scrub);
+    seek.addEventListener('mouseup', scrub);
+    seek.addEventListener('touchend', scrub, { passive: true });
 
-  /* ミュート切替 */
-  volIcon.addEventListener('click', () => {
-    audio.muted = !audio.muted;
-    volIcon.textContent = audio.muted ? '🔇' : '♪';
+    syncTrackUI(audio);
   });
 })();
 </script>
+
+
+
+
 </body>
 </html>
