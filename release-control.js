@@ -15,9 +15,10 @@ const config={tracks:{
 function parseDate(str){const [y,m,d]=String(str).split("-").map(Number);return new Date(y,(m||1)-1,d||1,0,0,0,0);}
 
 // auth.js(Cognito版)のisLoggedIn()を優先、なければlocalStorage(旧)にフォールバック
-function isLoggedIn(){
+function _checkMemberLogin(){
   try{
-    if(typeof window.isLoggedIn==="function") return !!window.isLoggedIn();
+    // auth.js(Cognito)のグローバルisLoggedIn()を直接呼ぶ
+    try{ if(typeof isLoggedIn!=="undefined" && isLoggedIn !== _checkMemberLogin) return !!isLoggedIn(); }catch(e){}
     if(window.TAMSICAuth&&typeof window.TAMSICAuth.isLoggedIn==="function") return !!window.TAMSICAuth.isLoggedIn();
     return !!localStorage.getItem("tamsic_current_user");
   }catch(e){return false;}
@@ -33,7 +34,7 @@ function getState(title){
   // release日以降 → 全員公開
   if(now>=release) return"full";
   // sample日〜release前: 会員ならsample可、非会員はpreview(ロック)
-  if(isLoggedIn()) return"member";
+  if(_checkMemberLogin()) return"member";
   return"preview";
 }
 
