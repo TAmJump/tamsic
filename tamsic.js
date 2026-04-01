@@ -8,7 +8,13 @@ function getDefaultTracks() {
   return deepClone(TAMSIC_DEFAULTS.tracks || []);
 }
 function getDefaultNews() {
-  return deepClone(TAMSIC_DEFAULTS.news || []);
+  const now = new Date();
+  const all = deepClone(TAMSIC_DEFAULTS.news || []);
+  // showAfterが設定されている場合は公開日以降のみ表示
+  return all.filter(n => {
+    if (!n.showAfter) return true;
+    return new Date(n.showAfter) <= now;
+  }).sort((a, b) => new Date(b.addedAt||0) - new Date(a.addedAt||0));
 }
 function getArtistPhotos(artist) {
   return deepClone((TAMSIC_DEFAULTS.photos && TAMSIC_DEFAULTS.photos[artist]) || []);
