@@ -1,7 +1,6 @@
 /**
- * auth.js — TAMSIC Cognito認証ライブラリ（PKCE + カスタム属性コイン管理）
- * User Pool ID : ap-northeast-1_vozRgCY5k
- * Client ID    : 62e35ra0h4s2dr657euorlm5bu
+ * auth.js — TAMSIC Cognito認証ライブラリ（PKCE + SDK カスタム属性コイン管理）
+ * CDN: amazon-cognito-identity-js
  */
 
 const AUTH_CONFIG = {
@@ -14,6 +13,7 @@ const AUTH_CONFIG = {
   scopes:       'openid email profile',
 };
 
+/* ─── PKCE helpers ─── */
 function _generateRandom(length = 64) {
   const arr = new Uint8Array(length);
   crypto.getRandomValues(arr);
@@ -27,6 +27,7 @@ async function _generateCodeChallenge(verifier) {
   return btoa(String.fromCharCode(...new Uint8Array(h))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
 }
 
+/* ─── Token storage ─── */
 const STORAGE_KEYS = {
   accessToken:  'tamsic_access_token',
   idToken:      'tamsic_id_token',
@@ -47,6 +48,7 @@ function _clearTokens() {
   localStorage.removeItem('tamsic_wallet_cache');
 }
 
+/* ─── 認証状態 ─── */
 function isLoggedIn() {
   const token  = localStorage.getItem(STORAGE_KEYS.accessToken);
   const expiry = Number(localStorage.getItem(STORAGE_KEYS.expiry) || 0);
@@ -65,43 +67,62 @@ function getUserInfo() {
   try { return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); } catch { return null; }
 }
 
-/* ─── Cognito UserInfo / UpdateUserAttributes ─── */
-async function _fetchUserAttributes() {
-  const token = localStorage.getItem(STORAGE_KEYS.accessToken);
-  if (!token) return null;
-  try {
-    const res = await fetch(`https://${AUTH_CONFIG.domain}/oauth2/userInfo`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    return res.ok ? await res.json() : null;
-  } catch { return null; }
+/* ─── Cognito SDK: カスタム属性更新 ─── */
+function _getCognitoUser() {
+  if (!window.AmazonCognitoIdentity) return null;
+  const poolData = { UserPoolId: AUTH_CONFIG.userPoolId, ClientId: AUTH_CONFIG.clientId };
+  const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+  const accessToken = localStorage.getItem(STORAGE_KEYS.accessToken);
+  const idToken     = localStorage.getItem(STORAGE_KEYS.idToken);
+  const refreshToken= localStorage.getItem(STORAGE_KEYS.refreshToken);
+  if (!accessToken) return null;
+  // ユーザー情報からemailを取得
+  const info = getUserInfo();
+  if (!info || !info.email) return null;
+  const cognitoUser = new AmazonCognitoIdentity.CognitoUser({
+    Username: info.email,
+    Pool: userPool
+  });
+  // 既存のセッションをセット
+  const session = new AmazonCognitoIdentity.CognitoUserSession({
+    IdToken:      new AmazonCognitoIdentity.CognitoIdToken({ IdToken: idToken }),
+    AccessToken:  new AmazonCognitoIdentity.CognitoAccessToken({ AccessToken: accessToken }),
+    RefreshToken: new AmazonCognitoIdentity.CognitoRefreshToken({ RefreshToken: refreshToken }),
+  });
+  cognitoUser.setSignInUserSession(session);
+  return cognitoUser;
 }
 
 async function _updateUserAttributes(attrs) {
-  const token = localStorage.getItem(STORAGE_KEYS.accessToken);
-  if (!token) return false;
-  try {
-    const res = await fetch(
-      `https://cognito-idp.${AUTH_CONFIG.region}.amazonaws.com/`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-amz-json-1.1',
-          'X-Amz-Target': 'AmazonCognitoIdentityProvider.UpdateUserAttributes',
-        },
-        body: JSON.stringify({
-          AccessToken: token,
-          UserAttributes: Object.entries(attrs).map(([Name, Value]) => ({ Name, Value })),
-        }),
-      }
+  return new Promise((resolve) => {
+    const cognitoUser = _getCognitoUser();
+    if (!cognitoUser) { resolve(false); return; }
+    const attributeList = Object.entries(attrs).map(([Name, Value]) =>
+      new AmazonCognitoIdentity.CognitoUserAttribute({ Name, Value })
     );
-    return res.ok;
-  } catch { return false; }
+    cognitoUser.updateAttributes(attributeList, (err, result) => {
+      if (err) { console.error('updateAttributes error:', err); resolve(false); }
+      else { resolve(true); }
+    });
+  });
 }
 
-/* ─── ウォレット同期 ─── */
+async function _fetchUserAttributesFromSDK() {
+  return new Promise((resolve) => {
+    const cognitoUser = _getCognitoUser();
+    if (!cognitoUser) { resolve(null); return; }
+    cognitoUser.getUserAttributes((err, attrs) => {
+      if (err || !attrs) { resolve(null); return; }
+      const obj = {};
+      attrs.forEach(a => { obj[a.getName()] = a.getValue(); });
+      resolve(obj);
+    });
+  });
+}
+
+/* ─── ウォレット管理 ─── */
 async function _syncWalletFromCognito() {
-  const attrs = await _fetchUserAttributes();
+  const attrs = await _fetchUserAttributesFromSDK();
   if (!attrs) return;
   let balance = 0, purchases = [];
   try { balance = parseInt(attrs['custom:coins'] || '0', 10); } catch {}
@@ -117,25 +138,19 @@ async function _syncWalletFromCognito() {
 async function loadWallet() {
   const cached = localStorage.getItem('tamsic_wallet_cache');
   if (cached) { try { return JSON.parse(cached); } catch {} }
-  const attrs = await _fetchUserAttributes();
-  if (!attrs) {
-    const local = JSON.parse(localStorage.getItem('tamsic_wallet') || '{}');
-    return { balance: local.balance||0, purchases: local.purchases||[], listens: local.listens||[] };
-  }
-  let balance = 0, purchases = [];
-  try { balance = parseInt(attrs['custom:coins'] || '0', 10); } catch {}
-  try { purchases = JSON.parse(attrs['custom:purchases'] || '[]'); } catch {}
+  // SDKが使えない場合はlocalStorageから
   const local = JSON.parse(localStorage.getItem('tamsic_wallet') || '{}');
-  const wallet = { balance, purchases, listens: local.listens||[] };
-  localStorage.setItem('tamsic_wallet_cache', JSON.stringify(wallet));
-  return wallet;
+  return { balance: local.balance||0, purchases: local.purchases||[], listens: local.listens||[] };
 }
 
 async function addCoinsToCognito(coins, meta) {
   const wallet = await loadWallet();
   wallet.balance = (wallet.balance||0) + coins;
   wallet.purchases = wallet.purchases || [];
-  wallet.purchases.unshift({ at: new Date().toISOString(), coins, packId: meta.packId||'', title: meta.title||'', priceYen: meta.priceYen||0 });
+  wallet.purchases.unshift({
+    at: new Date().toISOString(), coins,
+    packId: meta.packId||'', title: meta.title||'', priceYen: meta.priceYen||0
+  });
   const ok = await _updateUserAttributes({
     'custom:coins':     String(wallet.balance),
     'custom:purchases': JSON.stringify(wallet.purchases),
@@ -145,7 +160,7 @@ async function addCoinsToCognito(coins, meta) {
   local.balance = wallet.balance; local.purchases = wallet.purchases;
   localStorage.setItem('tamsic_wallet', JSON.stringify(local));
   window.dispatchEvent(new CustomEvent('tamsic:coins-updated', { detail: wallet }));
-  return ok ? wallet.balance : null;
+  return ok ? wallet.balance : wallet.balance; // 失敗してもlocalには保存
 }
 
 async function spendCoinsOnCognito(cost, meta) {
@@ -153,7 +168,10 @@ async function spendCoinsOnCognito(cost, meta) {
   if ((wallet.balance||0) < cost) return false;
   wallet.balance -= cost;
   wallet.listens = wallet.listens || [];
-  wallet.listens.unshift({ at: new Date().toISOString(), trackId: meta.trackId||'', trackTitle: meta.trackTitle||'', coins: cost });
+  wallet.listens.unshift({
+    at: new Date().toISOString(),
+    trackId: meta.trackId||'', trackTitle: meta.trackTitle||'', coins: cost
+  });
   await _updateUserAttributes({ 'custom:coins': String(wallet.balance) });
   localStorage.setItem('tamsic_wallet_cache', JSON.stringify(wallet));
   const local = JSON.parse(localStorage.getItem('tamsic_wallet') || '{}');
@@ -170,7 +188,11 @@ async function cognitoLogin() {
   localStorage.setItem(STORAGE_KEYS.verifier, verifier);
   localStorage.setItem(STORAGE_KEYS.state, state);
   const _lang = localStorage.getItem('tamsic_lang') || 'ja';
-  const params = new URLSearchParams({ response_type:'code', client_id: AUTH_CONFIG.clientId, redirect_uri: AUTH_CONFIG.redirectUri, scope: AUTH_CONFIG.scopes, state, code_challenge: challenge, code_challenge_method:'S256', ui_locales: _lang });
+  const params = new URLSearchParams({
+    response_type:'code', client_id: AUTH_CONFIG.clientId,
+    redirect_uri: AUTH_CONFIG.redirectUri, scope: AUTH_CONFIG.scopes,
+    state, code_challenge: challenge, code_challenge_method:'S256', ui_locales: _lang
+  });
   window.location.href = `https://${AUTH_CONFIG.domain}/oauth2/authorize?${params}`;
 }
 async function cognitoSignup() {
@@ -179,7 +201,11 @@ async function cognitoSignup() {
   localStorage.setItem(STORAGE_KEYS.verifier, verifier);
   localStorage.setItem(STORAGE_KEYS.state, state);
   const _lang = localStorage.getItem('tamsic_lang') || 'ja';
-  const params = new URLSearchParams({ response_type:'code', client_id: AUTH_CONFIG.clientId, redirect_uri: AUTH_CONFIG.redirectUri, scope: AUTH_CONFIG.scopes, state, code_challenge: challenge, code_challenge_method:'S256' });
+  const params = new URLSearchParams({
+    response_type:'code', client_id: AUTH_CONFIG.clientId,
+    redirect_uri: AUTH_CONFIG.redirectUri, scope: AUTH_CONFIG.scopes,
+    state, code_challenge: challenge, code_challenge_method:'S256'
+  });
   window.location.href = `https://${AUTH_CONFIG.domain}/signup?${params}&ui_locales=${_lang}`;
 }
 function cognitoLogout() {
@@ -194,14 +220,20 @@ async function handleCallback() {
   const savedState = localStorage.getItem(STORAGE_KEYS.state);
   const codeVerifier = localStorage.getItem(STORAGE_KEYS.verifier);
   if (!code || !codeVerifier || state !== savedState) return false;
-  const body = new URLSearchParams({ grant_type:'authorization_code', client_id: AUTH_CONFIG.clientId, code, redirect_uri: AUTH_CONFIG.redirectUri, code_verifier: codeVerifier });
+  const body = new URLSearchParams({
+    grant_type:'authorization_code', client_id: AUTH_CONFIG.clientId,
+    code, redirect_uri: AUTH_CONFIG.redirectUri, code_verifier: codeVerifier
+  });
   try {
-    const res = await fetch(`https://${AUTH_CONFIG.domain}/oauth2/token`, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: body.toString() });
+    const res = await fetch(`https://${AUTH_CONFIG.domain}/oauth2/token`, {
+      method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: body.toString()
+    });
     if (!res.ok) return false;
     _saveTokens(await res.json());
     localStorage.removeItem(STORAGE_KEYS.verifier);
     localStorage.removeItem(STORAGE_KEYS.state);
-    await _syncWalletFromCognito();
+    // SDKロード後に同期
+    setTimeout(() => _syncWalletFromCognito(), 1000);
     return true;
   } catch { return false; }
 }
