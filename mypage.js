@@ -1,3 +1,6 @@
+// 言語ヘルパー
+function _L(ja, en){ return (window.TAMSICLang && window.TAMSICLang.get()==='en') ? en : ja; }
+
 /**
  * mypage.js — TAMSIC マイページ制御
  * coins.js（localStorage）+ auth.js（Cognito）対応版
@@ -54,14 +57,14 @@ function renderPurchaseHistory() {
   if (!tbody) return;
   const purchases = typeof TAMSICCoins !== 'undefined' ? TAMSICCoins.getPurchases() : [];
   if (!purchases.length) {
-    tbody.innerHTML = `<tr><td colspan="4"><div class="inline-empty">購入履歴はまだありません。</div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4"><div class="inline-empty">${_L("購入履歴はまだありません。","No purchase history yet.")}</div></td></tr>`;
     return;
   }
   tbody.innerHTML = purchases.map(item => `<tr>
     <td>${TAMSICCoins.formatDate(item.at)}</td>
     <td>${item.title || item.packId} / ${item.coins} coin</td>
     <td>${TAMSICCoins.formatYen(item.priceYen)}</td>
-    <td><span class="badge ok">反映済み</span></td>
+    <td><span class="badge ok">${_L("反映済み","Reflected")}</span></td>
   </tr>`).join('');
 }
 
@@ -71,7 +74,7 @@ function renderListenHistory() {
   if (!tbody) return;
   const listens = typeof TAMSICCoins !== 'undefined' ? TAMSICCoins.getListens() : [];
   if (!listens.length) {
-    tbody.innerHTML = `<tr><td colspan="3"><div class="inline-empty">再生履歴はまだありません。</div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="3"><div class="inline-empty">${_L("再生履歴はまだありません。","No play history yet.")}</div></td></tr>`;
     return;
   }
   tbody.innerHTML = listens.map(item => `<tr>
@@ -103,7 +106,7 @@ function renderPending() {
   if (!wrap) return;
   const pending = JSON.parse(localStorage.getItem('tamsic_pending_purchase') || 'null');
   if (!pending) {
-    wrap.innerHTML = `<div class="inline-empty">現在、反映待ちの購入はありません。</div>`;
+    wrap.innerHTML = `<div class="inline-empty">${_L("現在、反映待ちの購入はありません。","No purchases awaiting confirmation.")}</div>`;
     return;
   }
   wrap.innerHTML = `
@@ -114,10 +117,10 @@ function renderPending() {
       </p>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button class="btn-primary" onclick="confirmPurchase()" style="background:#C4960E;">
-          ✓ 購入を反映する
+          ${_L("✓ 購入を反映する","✓ Confirm purchase")}
         </button>
         <button onclick="cancelPurchase()" style="background:none;border:1px solid #ccc;padding:8px 16px;cursor:pointer;font-size:12px;border-radius:4px;color:#7A7A72;">
-          キャンセル
+          ${_L("キャンセル","Cancel")}
         </button>
       </div>
     </div>
@@ -149,7 +152,7 @@ function startPurchase(packId) {
 
   const note = document.getElementById('purchase-note');
   if (note) {
-    note.innerHTML = `<strong>Squareの決済ページを新しいタブで開きました。</strong><br>決済完了後、「Pending purchase intent」の「購入を反映する」ボタンを押してください。`;
+    note.innerHTML = `${_L("<strong>Squareの決済ページを新しいタブで開きました。</strong><br>決済完了後、\u300cPending purchase intent\u300dの\u300c購入を反映する\u300dボタンを押してください。","<strong>Square checkout opened in a new tab.</strong><br>After payment, click \"Confirm purchase\" in Pending.")}`;
     note.style.display = 'block';
   }
 
@@ -179,7 +182,7 @@ function confirmPurchase() {
 
   const note = document.getElementById('purchase-note');
   if (note) {
-    note.innerHTML = `<strong style="color:#2a8a2a;">✓ ${pending.coins} coin を残高に反映しました！</strong> 現在の残高: ${newBalance.toLocaleString('ja-JP')} coin`;
+    note.innerHTML = `<strong style="color:#2a8a2a;">${_L("✓ "+pending.coins+" coin を残高に反映しました！","✓ "+pending.coins+" coins added to your balance!")}</strong> ${_L("現在の残高:","Balance:")} ${newBalance.toLocaleString("ja-JP")} coin`;
     note.style.display = 'block';
   }
 
@@ -188,7 +191,7 @@ function confirmPurchase() {
 
 /* ─── 購入キャンセル ─── */
 function cancelPurchase() {
-  if (confirm('購入リクエストをキャンセルしますか？（決済済みの場合は反映されません）')) {
+  if (confirm(_L('購入リクエストをキャンセルしますか？（決済済みの場合は反映されません）','Cancel this purchase request?'))) {
     localStorage.removeItem('tamsic_pending_purchase');
     renderPending();
   }
