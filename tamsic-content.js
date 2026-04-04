@@ -1,3 +1,4 @@
+// TAMSIC Content v2.1 - 2026-04-04
 window.TAMSIC_CONTENT = {
   "tracks": [
     {
@@ -174,8 +175,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-nono-001-sample",
       "date": "2026.04.01",
-      "title": "no-no「ぎりぎりだよ。」会員先行視聴スタート",
-      "titleEn": "no-no "ぎりぎりだよ。" — Member Early Access Now Live",
+      "title": "no-no 「ぎりぎりだよ。」会員先行視聴スタート",
+      "titleEn": "no-no \"girigiri dayo.\" — Member Early Access Now Live",
       "tag": "Release",
       "showAfter": "2026-04-01",
       "addedAt": "2026-04-01T00:00:00+09:00"
@@ -183,8 +184,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-nono-001-release",
       "date": "2026.04.15",
-      "title": "no-no「ぎりぎりだよ。」一般公開",
-      "titleEn": "no-no "ぎりぎりだよ。" — Now Available to Everyone",
+      "title": "no-no 「ぎりぎりだよ。」一般公開",
+      "titleEn": "no-no \"girigiri dayo.\" — Now Available to Everyone",
       "tag": "Release",
       "showAfter": "2026-04-15",
       "addedAt": "2026-04-15T00:00:00+09:00"
@@ -192,8 +193,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-nono-002-sample",
       "date": "2026.05.01",
-      "title": "no-no「RE+」会員先行視聴スタート",
-      "titleEn": "no-no "RE+" — Member Early Access Now Live",
+      "title": "no-no 「RE+」会員先行視聴スタート",
+      "titleEn": "no-no \"RE+\" — Member Early Access Now Live",
       "tag": "Release",
       "showAfter": "2026-05-01",
       "addedAt": "2026-05-01T00:00:00+09:00"
@@ -201,8 +202,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-nono-002-release",
       "date": "2026.05.15",
-      "title": "no-no「RE+」一般公開",
-      "titleEn": "no-no "RE+" — Now Available to Everyone",
+      "title": "no-no 「RE+」一般公開",
+      "titleEn": "no-no \"RE+\" — Now Available to Everyone",
       "tag": "Release",
       "showAfter": "2026-05-15",
       "addedAt": "2026-05-15T00:00:00+09:00"
@@ -210,8 +211,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-nono-003-sample",
       "date": "2026.06.01",
-      "title": "no-no「to Walk」会員先行視聴スタート",
-      "titleEn": "no-no "to Walk" — Member Early Access Now Live",
+      "title": "no-no 「to Walk」会員先行視聴スタート",
+      "titleEn": "no-no \"to Walk\" — Member Early Access Now Live",
       "tag": "Release",
       "showAfter": "2026-06-01",
       "addedAt": "2026-06-01T00:00:00+09:00"
@@ -219,8 +220,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-nono-003-release",
       "date": "2026.06.15",
-      "title": "no-no「to Walk」一般公開",
-      "titleEn": "no-no "to Walk" — Now Available to Everyone",
+      "title": "no-no 「to Walk」一般公開",
+      "titleEn": "no-no \"to Walk\" — Now Available to Everyone",
       "tag": "Release",
       "showAfter": "2026-06-15",
       "addedAt": "2026-06-15T00:00:00+09:00"
@@ -228,8 +229,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-nono-004-sample",
       "date": "2026.07.01",
-      "title": "no-no「シグナル●」会員先行視聴スタート",
-      "titleEn": "no-no "シグナル●" — Member Early Access Now Live",
+      "title": "no-no 「シグナル●」会員先行視聴スタート",
+      "titleEn": "no-no \"Signal\" — Member Early Access Now Live",
       "tag": "Release",
       "showAfter": "2026-07-01",
       "addedAt": "2026-07-01T00:00:00+09:00"
@@ -237,8 +238,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-nono-004-release",
       "date": "2026.07.15",
-      "title": "no-no「シグナル●」一般公開",
-      "titleEn": "no-no "シグナル●" — Now Available to Everyone",
+      "title": "no-no 「シグナル●」一般公開",
+      "titleEn": "no-no \"Signal\" — Now Available to Everyone",
       "tag": "Release",
       "showAfter": "2026-07-15",
       "addedAt": "2026-07-15T00:00:00+09:00"
@@ -246,8 +247,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-nono-005-sample",
       "date": "2026.08.01",
-      "title": "no-no「Breathless」会員先行視聴スタート",
-      "titleEn": "no-no "Breathless" — Member Early Access Now Live",
+      "title": "no-no 「Breathless」会員先行視聴スタート",
+      "titleEn": "no-no \"Breathless\" — Member Early Access Now Live",
       "tag": "Release",
       "showAfter": "2026-08-01",
       "addedAt": "2026-08-01T00:00:00+09:00"
@@ -255,8 +256,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-nono-005-release",
       "date": "2026.08.15",
-      "title": "no-no「Breathless」一般公開",
-      "titleEn": "no-no "Breathless" — Now Available to Everyone",
+      "title": "no-no 「Breathless」一般公開",
+      "titleEn": "no-no \"Breathless\" — Now Available to Everyone",
       "tag": "Release",
       "showAfter": "2026-08-15",
       "addedAt": "2026-08-15T00:00:00+09:00"
@@ -264,8 +265,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-kiki-001-sample",
       "date": "2026.09.01",
-      "title": "kiki「Critical point」会員先行視聴スタート",
-      "titleEn": "kiki "Critical point" — Member Early Access Now Live",
+      "title": "kiki 「Critical point」会員先行視聴スタート",
+      "titleEn": "kiki \"Critical point\" — Member Early Access Now Live",
       "tag": "Release",
       "showAfter": "2026-09-01",
       "addedAt": "2026-09-01T00:00:00+09:00"
@@ -273,8 +274,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-kiki-001-release",
       "date": "2026.09.15",
-      "title": "kiki「Critical point」一般公開",
-      "titleEn": "kiki "Critical point" — Now Available to Everyone",
+      "title": "kiki 「Critical point」一般公開",
+      "titleEn": "kiki \"Critical point\" — Now Available to Everyone",
       "tag": "Release",
       "showAfter": "2026-09-15",
       "addedAt": "2026-09-15T00:00:00+09:00"
@@ -282,8 +283,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-kiki-002-sample",
       "date": "2026.10.01",
-      "title": "kiki「Burn bright」会員先行視聴スタート",
-      "titleEn": "kiki "Burn bright" — Member Early Access Now Live",
+      "title": "kiki 「Burn bright」会員先行視聴スタート",
+      "titleEn": "kiki \"Burn bright\" — Member Early Access Now Live",
       "tag": "Release",
       "showAfter": "2026-10-01",
       "addedAt": "2026-10-01T00:00:00+09:00"
@@ -291,8 +292,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-kiki-002-release",
       "date": "2026.10.15",
-      "title": "kiki「Burn bright」一般公開",
-      "titleEn": "kiki "Burn bright" — Now Available to Everyone",
+      "title": "kiki 「Burn bright」一般公開",
+      "titleEn": "kiki \"Burn bright\" — Now Available to Everyone",
       "tag": "Release",
       "showAfter": "2026-10-15",
       "addedAt": "2026-10-15T00:00:00+09:00"
@@ -300,8 +301,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-kiki-003-sample",
       "date": "2026.11.01",
-      "title": "kiki「No Stop」会員先行視聴スタート",
-      "titleEn": "kiki "No Stop" — Member Early Access Now Live",
+      "title": "kiki 「No Stop」会員先行視聴スタート",
+      "titleEn": "kiki \"No Stop\" — Member Early Access Now Live",
       "tag": "Release",
       "showAfter": "2026-11-01",
       "addedAt": "2026-11-01T00:00:00+09:00"
@@ -309,8 +310,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-kiki-003-release",
       "date": "2026.11.15",
-      "title": "kiki「No Stop」一般公開",
-      "titleEn": "kiki "No Stop" — Now Available to Everyone",
+      "title": "kiki 「No Stop」一般公開",
+      "titleEn": "kiki \"No Stop\" — Now Available to Everyone",
       "tag": "Release",
       "showAfter": "2026-11-15",
       "addedAt": "2026-11-15T00:00:00+09:00"
@@ -318,8 +319,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-kiki-004-sample",
       "date": "2026.12.01",
-      "title": "kiki「エンジン」会員先行視聴スタート",
-      "titleEn": "kiki "エンジン" — Member Early Access Now Live",
+      "title": "kiki 「エンジン」会員先行視聴スタート",
+      "titleEn": "kiki \"エンジン\" — Member Early Access Now Live",
       "tag": "Release",
       "showAfter": "2026-12-01",
       "addedAt": "2026-12-01T00:00:00+09:00"
@@ -327,8 +328,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-kiki-004-release",
       "date": "2026.12.15",
-      "title": "kiki「エンジン」一般公開",
-      "titleEn": "kiki "エンジン" — Now Available to Everyone",
+      "title": "kiki 「エンジン」一般公開",
+      "titleEn": "kiki \"エンジン\" — Now Available to Everyone",
       "tag": "Release",
       "showAfter": "2026-12-15",
       "addedAt": "2026-12-15T00:00:00+09:00"
@@ -336,8 +337,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-kiki-005-sample",
       "date": "2027.01.01",
-      "title": "kiki「KIKI rising」会員先行視聴スタート",
-      "titleEn": "kiki "KIKI rising" — Member Early Access Now Live",
+      "title": "kiki 「KIKI rising」会員先行視聴スタート",
+      "titleEn": "kiki \"KIKI rising\" — Member Early Access Now Live",
       "tag": "Release",
       "showAfter": "2027-01-01",
       "addedAt": "2027-01-01T00:00:00+09:00"
@@ -345,8 +346,8 @@ window.TAMSIC_CONTENT = {
     {
       "id": "news-kiki-005-release",
       "date": "2027.01.15",
-      "title": "kiki「KIKI rising」一般公開",
-      "titleEn": "kiki "KIKI rising" — Now Available to Everyone",
+      "title": "kiki 「KIKI rising」一般公開",
+      "titleEn": "kiki \"KIKI rising\" — Now Available to Everyone",
       "tag": "Release",
       "showAfter": "2027-01-15",
       "addedAt": "2027-01-15T00:00:00+09:00"
