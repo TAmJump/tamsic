@@ -368,20 +368,11 @@ My Page でコインを追加してください。`);
 
 async function init(){
   injectCommerceStyles();
-  // IndexedDBではなくtamsic-content.jsから直接読み込む（全デバイスで表示）
-  // tamsic.jsが読み込まれていない場合はwindow.TAMSIC_CONTENTを直接参照
-  let _defaultTracks = [];
-  if (typeof getDefaultTracks === 'function') {
-    _defaultTracks = getDefaultTracks();
-  } else if (window.TAMSIC_CONTENT && window.TAMSIC_CONTENT.tracks) {
-    _defaultTracks = window.TAMSIC_CONTENT.tracks;
-  }
-  _tracks = _defaultTracks.filter(t => t.artist === 'kiki');
-  // IndexedDBにカスタムデータがあればそちらを優先
+  // tamsic-content.jsから直接読み込む（全デバイスで表示）
   try {
-    const dbTracks = await TAMSICDB.getTracks('kiki');
-    if (dbTracks && dbTracks.length > 0) _tracks = dbTracks;
-  } catch(e) {}
+    const _ct = window.TAMSIC_CONTENT && window.TAMSIC_CONTENT.tracks ? window.TAMSIC_CONTENT.tracks : [];
+    _tracks = _ct.filter(t => t.artist === 'kiki');
+  } catch(e) { _tracks = []; }
   const n=_tracks.length||'—';
   document.getElementById('track-count').textContent=n;
   
