@@ -71,14 +71,6 @@ nav {
 }
 
 .nav-links a:hover { color: var(--accent); }
-.nav-login-btn {
-  border: 1px solid var(--accent) !important;
-  color: var(--accent) !important;
-  padding: 6px 16px !important;
-  border-radius: 2px;
-  transition: background 0.2s, color 0.2s !important;
-}
-.nav-login-btn:hover { background: var(--accent) !important; color: #fff !important; }
 
 /* ─── HERO ─── */
 .hero {
@@ -501,102 +493,86 @@ footer {
 
 
 .hero-audio {
-  margin-top: 28px;
-  width: min(360px, 82vw);
+  writing-mode: horizontal-tb;
+  margin-top: 16px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 10px;
   opacity: 0;
   animation: riseUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards 0.55s;
 }
 
 .hero-audio-row {
-  display: grid;
-  grid-template-columns: 54px 1fr;
-  align-items: start;
-  gap: 12px;
-  padding: 14px 14px 16px;
-  border: 1px solid rgba(202, 164, 59, 0.28);
-  border-radius: 36px;
-  background: rgba(255,255,255,0.72);
-  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 8px 16px;
+  width: 72px;
+  border: 0.5px solid rgba(196,150,14,0.5);
+  border-radius: 999px;
+  background: rgba(250,250,247,0.55);
+  backdrop-filter: blur(10px);
+  transition: border-color 0.25s;
 }
+.hero-audio-row:hover { border-color: rgba(196,150,14,0.9); }
 
 .hero-audio-play {
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  border: 1px solid #caa43b;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 0.5px solid rgba(196,150,14,0.65);
   background: transparent;
-  color: #111111;
-  font-size: 13px;
+  color: #5a4800;
+  font-size: 11px;
   cursor: pointer;
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: background 0.2s;
 }
-
-.hero-audio-play:hover {
-  transform: scale(1.04);
-  background: rgba(202, 164, 59, 0.08);
-}
+.hero-audio-play:hover { background: rgba(196,150,14,0.07); }
 
 .hero-audio-meta {
-  min-width: 0;
-  width: 100%;
-}
-
-.hero-audio-title {
-  font-size: 11px;
-  letter-spacing: 0.18em;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  font-weight: 300;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #111111;
+  color: #7a7268;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.hero-audio-sub {
-  font-size: 10px;
-  color: #9a9a9a;
-  margin-top: 2px;
-}
+.hero-audio-title { display: none; }
+.hero-audio-sub { display: none; }
+.hero-audio-sep { display: none; }
 
+.hero-audio-note { display: none; }
 
-.hero-audio-note {
-  font-size: 10px;
-  color: #9a9a9a;
-  margin-top: 4px;
-  padding-left: 8px;
-}
-
-.hero-audio audio {
-  display: none;
-}
-
+.hero-audio audio { display: none; }
 
 .hero-audio-progress {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-  width: 100%;
+  height: 70px;
+  width: 16px;
 }
 
 .hero-audio-seek {
   -webkit-appearance: none;
   appearance: none;
-  width: 100%;
-  flex: 1;
-  height: 18px;
+  width: 72px;
+  height: 4px;
+  transform: rotate(-90deg);
   background: transparent;
-  border-radius: 999px;
   outline: none;
   cursor: pointer;
-  touch-action: pan-y;
 }
 
 .hero-audio-seek::-webkit-slider-runnable-track {
-  height: 2px;
-  background: rgba(202, 164, 59, 0.42);
+  height: 1px;
+  background: rgba(196, 150, 14, 0.22);
   border-radius: 999px;
 }
 
@@ -604,16 +580,16 @@ footer {
   -webkit-appearance: none;
   appearance: none;
   margin-top: -5px;
-  width: 12px;
-  height: 12px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  background: #caa43b;
+  background: #C4960E;
   border: 0;
 }
 
 .hero-audio-seek::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: #caa43b;
   border: 0;
@@ -626,11 +602,10 @@ footer {
 }
 
 .hero-audio-current {
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  color: #9a9a9a;
-  min-width: 32px;
-  text-align: right;
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  color: #b8b0a4;
+  font-weight: 300;
 }
 
 @media (max-width: 768px) {
@@ -834,26 +809,19 @@ footer {
 </style>
 <script src="tamsic-content.js"></script>
 <script src="tamsic.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js"></script>
 <script src="auth.js"></script>
-<script src="lang.js"></script>
 </head>
 <body>
 
 <nav>
   <ul class="nav-links">
-    <li><a href="index.html#artists" data-ja="アーティスト" data-en="Artists">アーティスト</a></li>
-    <li></li>
-    <li><a href="news.html" data-ja="ニュース" data-en="News">ニュース</a></li>
-    <li><a href="about.html" data-ja="レーベル紹介" data-en="About">レーベル紹介</a></li>
-    <li><a href="https://tamjump.com/contact" target="_blank" data-ja="お問い合わせ" data-en="Contact">お問い合わせ</a></li>
-    <li><a href="https://tamjump.com/" target="_blank" data-ja="TAmJ.Corp" data-en="TAmJ.Corp" style="color:var(--accent) !important;">TAmJ.Corp ↗</a></li>
-    <!-- ログイン済み -->
-    <li id="nav-mypage-li" style="display:none"><a href="mypage.html" style="color:var(--accent);font-weight:500" data-ja="マイページ" data-en="My Page">マイページ</a></li>
-    <li id="nav-logout-li" style="display:none"><a href="#" id="nav-logout-btn" style="color:var(--mid)" data-ja="ログアウト" data-en="Logout">ログアウト</a></li>
-    <!-- 未ログイン -->
-    <li id="nav-login-li"><a href="login.html" class="nav-login-btn" data-ja="ログイン" data-en="Login">ログイン</a></li>
-    <li><button data-lang-toggle style="background:none;border:1px solid var(--light);color:var(--mid);font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.1em;padding:5px 12px;cursor:pointer;border-radius:2px;transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--light)';this.style.color='var(--mid)'">EN</button></li>
+    <li><a href="index.html#artists">Artists</a></li>
+    <li><a href="releases.html">Music</a></li>
+    <li><a href="news.html">News</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="https://tamjump.com/contact" target="_blank">Contact</a></li>
+    <li id="nav-mypage-li" style="display:none"><a href="mypage.html" style="color:var(--accent);font-weight:500">My Page</a></li>
+    <li id="nav-login-li"><a href="login.html" style="border:1px solid var(--accent);color:var(--accent);padding:6px 16px;border-radius:2px;transition:background .2s,color .2s" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='var(--accent)'">Login</a></li>
   </ul>
   <a href="index.html" class="nav-logo">TAMSIC</a>
 </nav>
@@ -869,53 +837,40 @@ footer {
   <div class="hero-bg-logo"><img src="./tamsic_logo2.png" alt="TAMSIC rotating logo"></div>
 
   <div class="hero-content">
-    <p class="hero-tagline" data-ja="音楽の未来を創る。<br>次世代のアーティストとともに、<br>新しい時代のサウンドを。" data-en="Creating the future of music.<br>Together with the next generation<br>of artists.">音楽の未来を創る。<br>次世代のアーティストとともに、<br>新しい時代のサウンドを。</p>
-    <p class="hero-label" data-ja="Music Label &amp; Entertainment" data-en="Music Label &amp; Entertainment">Music Label &amp; Entertainment</p>
+    <p class="hero-tagline">音楽の未来を創る。<br>次世代のアーティストとともに、<br>新しい時代のサウンドを。</p>
+    <p class="hero-label">Music Label &amp; Entertainment</p>
     <h1 class="hero-title">TAM<em>S</em>IC</h1>
     <div class="hero-rule"></div>
   </div>
-  <div class="hero-scroll" data-ja="スクロール" data-en="Scroll">スクロール
+  <div class="hero-scroll">Scroll
       <div class="hero-audio">
         <div class="hero-audio-row">
           <button class="hero-audio-play" data-audio-btn="heroTrack1" type="button">▶</button>
-          <div class="hero-audio-meta">
-            <div class="hero-audio-title" data-ja="TAMSIC TRACK 01" data-en="TAMSIC TRACK 01">TAMSIC TRACK 01</div>
-            <div class="hero-audio-sub" data-ja="オープニングテーマ" data-en="Opening Theme">オープニングテーマ</div>
-            <div class="hero-audio-progress">
-              <input class="hero-audio-seek" type="range" min="0" max="100" value="0" data-audio="heroTrack1" aria-label="seek bar for TAMSIC TRACK 01">
-              <span class="hero-audio-current" data-time="heroTrack1">0:00</span>
-            </div>
+          <div class="hero-audio-progress">
+            <input class="hero-audio-seek" type="range" min="0" max="100" value="0" data-audio="heroTrack1" aria-label="seek bar 1">
           </div>
+          <div class="hero-audio-meta">TAMSIC TRACK T+111</div>
+          <span class="hero-audio-current" data-time="heroTrack1">0:00</span>
           <audio id="heroTrack1" preload="metadata" src="T+111.mp3"></audio>
         </div>
-
         <div class="hero-audio-row">
           <button class="hero-audio-play" data-audio-btn="heroTrack2" type="button">▶</button>
-          <div class="hero-audio-meta">
-            <div class="hero-audio-title" data-ja="TAMSIC TRACK 02" data-en="TAMSIC TRACK 02">TAMSIC TRACK 02</div>
-            <div class="hero-audio-sub" data-ja="レーベルサウンド" data-en="Label Sound">レーベルサウンド</div>
-            <div class="hero-audio-progress">
-              <input class="hero-audio-seek" type="range" min="0" max="100" value="0" data-audio="heroTrack2" aria-label="seek bar for TAMSIC TRACK 02">
-              <span class="hero-audio-current" data-time="heroTrack2">0:00</span>
-            </div>
+          <div class="hero-audio-progress">
+            <input class="hero-audio-seek" type="range" min="0" max="100" value="0" data-audio="heroTrack2" aria-label="seek bar 2">
           </div>
+          <div class="hero-audio-meta">TAMSIC TRACK T+101</div>
+          <span class="hero-audio-current" data-time="heroTrack2">0:00</span>
           <audio id="heroTrack2" preload="metadata" src="T+101.mp3"></audio>
         </div>
-
         <div class="hero-audio-row">
           <button class="hero-audio-play" data-audio-btn="heroTrack3" type="button">▶</button>
-          <div class="hero-audio-meta">
-            <div class="hero-audio-title" data-ja="TAMSIC TRACK 03" data-en="TAMSIC TRACK 03">TAMSIC TRACK 03</div>
-            <div class="hero-audio-sub" data-ja="ニューシングル" data-en="New Single Mood">ニューシングル</div>
-            <div class="hero-audio-progress">
-              <input class="hero-audio-seek" type="range" min="0" max="100" value="0" data-audio="heroTrack3" aria-label="seek bar for TAMSIC TRACK 03">
-              <span class="hero-audio-current" data-time="heroTrack3">0:00</span>
-            </div>
+          <div class="hero-audio-progress">
+            <input class="hero-audio-seek" type="range" min="0" max="100" value="0" data-audio="heroTrack3" aria-label="seek bar 3">
           </div>
+          <div class="hero-audio-meta">TAMSIC TRACK T+110</div>
+          <span class="hero-audio-current" data-time="heroTrack3">0:00</span>
           <audio id="heroTrack3" preload="metadata" src="T+110.mp3"></audio>
         </div>
-
-        <div class="hero-audio-note" data-ja="TAMSICサウンドセレクション" data-en="TAMSIC sound selection">TAMSICサウンドセレクション</div>
       </div>
 
 </div>
@@ -924,7 +879,7 @@ footer {
 <section class="artists" id="artists">
   <div class="artists-header">
     <div>
-      <p class="sec-label" data-ja="アーティスト" data-en="Our Artists">アーティスト</p>
+      <p class="sec-label">Our Artists</p>
       <h2 class="sec-title">Artists</h2>
     </div>
     <div class="artists-count">02</div>
@@ -936,9 +891,9 @@ footer {
       </div>
       <div class="artist-bar"></div>
       <div class="artist-info">
-        <p class="artist-number" data-ja="TAMSICアーティスト 001" data-en="TAMSIC Artist 001">TAMSICアーティスト 001</p>
+        <p class="artist-number">TAMSIC Artist 001</p>
         <h3 class="artist-name">no-no</h3>
-        <p class="artist-meta" id="artist-meta-nono" data-ja="AIアイドル · 5曲" data-en="AI Idol · 5 Tracks">AIアイドル · 5曲</p>
+        <p class="artist-meta" id="artist-meta-nono">AI Idol · 5 Tracks</p>
       </div>
     </a>
     <a href="kiki.html" class="artist-card">
@@ -947,38 +902,38 @@ footer {
       </div>
       <div class="artist-bar"></div>
       <div class="artist-info">
-        <p class="artist-number" data-ja="TAMSICアーティスト 002" data-en="TAMSIC Artist 002">TAMSICアーティスト 002</p>
+        <p class="artist-number">TAMSIC Artist 002</p>
         <h3 class="artist-name">kiki</h3>
-        <p class="artist-meta" id="artist-meta-kiki" data-ja="AIアイドル · 5曲" data-en="AI Idol · 5 Tracks">AIアイドル · 5曲</p>
+        <p class="artist-meta" id="artist-meta-kiki">AI Idol · 5 Tracks</p>
       </div>
     </a>
   </div>
 </section>
 <section class="news" id="news">
-  <p class="sec-label" data-ja="最新情報" data-en="News">最新情報</p>
-  <h2 class="sec-title" data-ja="最新ニュース" data-en="Latest News">最新ニュース</h2>
+  <p class="sec-label">News</p>
+  <h2 class="sec-title">Latest News</h2>
   <div class="news-list" id="home-news-list">
     <div class="news-item">
       <span class="news-date">—</span>
       <div class="news-body">
-        <p class="news-headline" data-ja="TAMSIC 公式サイト オープン" data-en="Official Website Now Live">TAMSIC 公式サイト オープン</p>
-        <p class="news-sub" data-ja="Official website now live" data-en="tamsic.tamjump.com is now open">Official website now live</p>
+        <p class="news-headline">TAMSIC 公式サイト オープン</p>
+        <p class="news-sub">Official website now live</p>
       </div>
-      <span class="news-tag" data-ja="お知らせ" data-en="Info">Info</span>
+      <span class="news-tag">Info</span>
     </div>
     <div class="news-item">
       <span class="news-date">—</span>
       <div class="news-body">
-        <p class="news-headline" data-ja="no-no — デビューシングル リリース予定" data-en="no-no — Debut Single Coming Soon">no-no — デビューシングル リリース予定</p>
-        <p class="news-sub" data-ja="Debut single coming soon" data-en="First track releasing April 15">Debut single coming soon</p>
+        <p class="news-headline">no-no — デビューシングル リリース予定</p>
+        <p class="news-sub">Debut single coming soon</p>
       </div>
-      <span class="news-tag" data-ja="リリース" data-en="Release">Release</span>
+      <span class="news-tag">Release</span>
     </div>
     <div class="news-item">
       <span class="news-date">—</span>
       <div class="news-body">
-        <p class="news-headline" data-ja="kiki — デビューシングル リリース予定" data-en="kiki — Debut Single Coming Soon">kiki — デビューシングル リリース予定</p>
-        <p class="news-sub" data-ja="Debut single coming soon" data-en="First track releasing September 15">Debut single coming soon</p>
+        <p class="news-headline">kiki — デビューシングル リリース予定</p>
+        <p class="news-sub">Debut single coming soon</p>
       </div>
       <span class="news-tag">Release</span>
     </div>
@@ -986,10 +941,8 @@ footer {
 </section>
 
 <footer id="contact">
-  <div style="text-align:center;padding-bottom:20px;">
-    <a href="https://tamjump.com/" target="_blank" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--mid);font-size:11px;letter-spacing:.15em;text-transform:uppercase;border:1px solid var(--light);padding:8px 20px;border-radius:2px;transition:color .2s,border-color .2s;" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--mid)';this.style.borderColor='var(--light)'" data-ja="TAmJ.Corp 公式サイト" data-en="TAmJ.Corp Official Site">TAmJ.Corp 公式サイト</a>
-  </div>
-  <div class="footer-legal"><a href="https://tamjump.com/" target="_blank" data-ja="プライバシーポリシー" data-en="Privacy Policy">プライバシーポリシー</a><a href="https://tamjump.com/" target="_blank" data-ja="利用規約" data-en="Terms of Service">利用規約</a><a href="https://tamjump.com/" target="_blank" data-ja="特定商取引法" data-en="Commercial Transactions">特定商取引法</a><a href="https://tamjump.com/contact" target="_blank" data-ja="お問い合わせ" data-en="Contact">お問い合わせ</a></div><span class="footer-copy" data-ja="© 2025 TAMSIC. All Rights Reserved." data-en="© 2025 TAMSIC. All Rights Reserved.">© 2025 TAMSIC. All Rights Reserved.</span>
+  
+  <div class="footer-legal"><a href="https://tamjump.com/" target="_blank">プライバシーポリシー</a><a href="https://tamjump.com/" target="_blank">利用規約</a><a href="https://tamjump.com/" target="_blank">特定商取引法</a><a href="https://tamjump.com/contact" target="_blank">お問い合わせ</a></div><span class="footer-copy">© 2025 TAMSIC. All Rights Reserved.</span>
 </footer>
 
 
@@ -1042,28 +995,11 @@ async function initHome(){
 }
 // ── ナビのログイン状態切り替え ──
 (function() {
-  const loginLi  = document.getElementById('nav-login-li');
-  const mypageLi = document.getElementById('nav-mypage-li');
-  const logoutLi = document.getElementById('nav-logout-li');
-  const logoutBtn= document.getElementById('nav-logout-btn');
-
   if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+    const loginLi  = document.getElementById('nav-login-li');
+    const mypageLi = document.getElementById('nav-mypage-li');
     if (loginLi)  loginLi.style.display  = 'none';
     if (mypageLi) mypageLi.style.display = 'list-item';
-    if (logoutLi) logoutLi.style.display = 'list-item';
-  }
-
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      if (typeof cognitoLogout === 'function') {
-        cognitoLogout();
-      } else {
-        // フォールバック：sessionStorageをクリアしてTOPへ
-        sessionStorage.clear();
-        window.location.reload();
-      }
-    });
   }
 })();
 initHome();
