@@ -205,10 +205,10 @@ ul.styled li strong{color:var(--black)}
       <div class="sc-title">ログイン／登録の実装経路</div>
       <div class="sc-desc">Cognito Hosted UI へのリダイレクトをやめ、SDK でインライン認証に切り替え。</div>
     </div>
-    <div class="status-card sc-red">
-      <div class="sc-label">書き換え</div>
+    <div class="status-card sc-green">
+      <div class="sc-label">維持</div>
       <div class="sc-title">サンプル試聴秒数</div>
-      <div class="sc-desc">60 秒 → 30 秒。短い方が「続きが欲しい」を強く作れる。</div>
+      <div class="sc-desc">全トラック既に 30 秒運用（mm:ss 形式）。曲ごとに「Bメロ直前」に合わせる微調整を推奨。</div>
     </div>
     <div class="status-card sc-gold">
       <div class="sc-label">追加</div>
@@ -226,7 +226,7 @@ ul.styled li strong{color:var(--black)}
   <div class="funnel">
     <div class="funnel-step bad"><div class="funnel-phase">ISSUE 01</div><div class="funnel-label">登録する理由が弱い</div><div class="funnel-action">「会員登録できます」の説明はあるが、触る前に登録させる動機が立ち上がっていない。</div></div>
     <div class="funnel-step bad"><div class="funnel-phase">ISSUE 02</div><div class="funnel-label">課金トリガーがない</div><div class="funnel-action">フル試聴ボタンを押した瞬間に「買う」判断をさせていない。不足時にようやく誘導。</div></div>
-    <div class="funnel-step bad"><div class="funnel-phase">ISSUE 03</div><div class="funnel-label">無料で満足できる</div><div class="funnel-action">60 秒サンプルで曲の核が伝わりきる。続きを欲する前に気持ちが満足する。</div></div>
+    <div class="funnel-step bad"><div class="funnel-phase">ISSUE 03</div><div class="funnel-label">無料で満足できる</div><div class="funnel-action">サンプル区間（30秒）の選び方によっては曲の核が伝わりきる。曲ごとに「Bメロ直前で止める」切り方の最適化が必要。</div></div>
     <div class="funnel-step bad"><div class="funnel-phase">ISSUE 04</div><div class="funnel-label">Cognito Hosted UI が別世界</div><div class="funnel-action">ログイン時に AWS ドメインの白背景フォームへ飛ぶ。ブランドが一瞬で切れる。</div></div>
     <div class="funnel-step bad"><div class="funnel-phase">ISSUE 05</div><div class="funnel-label">歌詞が無防備</div><div class="funnel-action">コピー・右クリック・スクショのいずれもできる。無料で持ち出せてしまう。</div></div>
   </div>
@@ -246,7 +246,7 @@ ul.styled li strong{color:var(--black)}
     <div class="funnel-step good"><div class="funnel-phase">01 見る</div><div class="funnel-label">曲一覧・カバーが目に入る</div><div class="funnel-action">モザイク・ロックアイコンで「今触れない何か」を認識させる。</div></div>
     <div class="funnel-step good"><div class="funnel-phase">02 気になる</div><div class="funnel-label">再生ボタンを押す</div><div class="funnel-action">未公開 or 先行曲 → 即座に「会員限定です」ポップアップ。</div></div>
     <div class="funnel-step good"><div class="funnel-phase">03 登録</div><div class="funnel-label">TAMSIC 内でログイン／登録</div><div class="funnel-action">AWS ドメインに飛ばず、同じページ内のフォームで完結。</div></div>
-    <div class="funnel-step good"><div class="funnel-phase">04 サンプル解放</div><div class="funnel-label">30 秒サンプルが聴ける</div><div class="funnel-action">60 秒ではなく 30 秒。「もう少し」で止める。</div></div>
+    <div class="funnel-step good"><div class="funnel-phase">04 サンプル解放</div><div class="funnel-label">30 秒サンプルが聴ける</div><div class="funnel-action">全トラック既に30秒運用。「もう少し」で止める切り方を曲ごとに詰める。</div></div>
     <div class="funnel-step good"><div class="funnel-phase">05 フル欲求</div><div class="funnel-label">「フル試聴」ボタン（コイン数表示）</div><div class="funnel-action">押す前からコイン数と残高が見える。不足ならその場で購入導線。</div></div>
     <div class="funnel-step good"><div class="funnel-phase">06 コイン購入</div><div class="funnel-label">My Page の購入パネル</div><div class="funnel-action">Square 外部リンク → 戻って「反映する」→ フル解放。</div></div>
     <div class="funnel-step good"><div class="funnel-phase">07 継続</div><div class="funnel-label">次の先行曲を待つ</div><div class="funnel-action">My Page が「次に何が来るか」を見せる場所になる。</div></div>
