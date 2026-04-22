@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAMSIC 設計書 v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0E0E0E;--g6:#555;--g4:#999;--g2:#e6e6e0;--g1:#f5f5f0;
+  --gold:#C4960E;--gold-lt:#FFF8E8;
+  --red:#C94040;--red-lt:#FFF0F0;
+  --green:#16a34a;--green-lt:#f0fdf4;
+  --blue:#2563eb;--blue-lt:#eff6ff;
+  --charco:#2C2A26;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans JP',sans-serif;background:#fff;color:var(--black);line-height:1.85;font-size:15px;max-width:860px;margin:0 auto;padding:0 28px}
+@media print{body{padding:0}section{break-inside:avoid}}
+
+header{padding:64px 0 48px;border-bottom:2px solid var(--black)}
+.h-label{font-size:.72rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+header h1{font-size:2rem;font-weight:700;letter-spacing:-.01em}
+header h1 em{color:var(--gold);font-style:normal}
+header p{color:var(--g6);font-size:.9rem;margin-top:6px}
+header .meta{color:var(--g4);font-size:.8rem;margin-top:12px}
+
+nav{padding:28px 0;border-bottom:1px solid var(--g2)}
+nav h2{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--g4);margin-bottom:14px}
+nav ol{list-style:none;columns:2;column-gap:32px}
+nav a{text-decoration:none;color:var(--g6);font-size:.85rem;transition:color .15s}
+nav a:hover{color:var(--gold)}
+.num{display:inline-block;width:24px;color:var(--g4);font-size:.8rem}
+
+section{padding:44px 0;border-bottom:1px solid var(--g2)}
+section:last-of-type{border-bottom:none}
+.st{font-size:1.15rem;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.sn{font-size:.72rem;font-weight:700;color:var(--gold);width:28px;height:28px;border:1.5px solid var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+
+.hint{border-radius:4px;padding:14px 18px;font-size:.85rem;color:var(--g6);margin:14px 0;border-left:3px solid var(--g2)}
+.hint strong{color:var(--black)}
+.hint-gold{background:var(--gold-lt);border-left-color:var(--gold);color:#5A4500}
+.hint-red{background:var(--red-lt);border-left-color:var(--red);color:#7A0000}
+.hint-green{background:var(--green-lt);border-left-color:var(--green);color:#14532d}
+.hint-blue{background:var(--blue-lt);border-left-color:var(--blue);color:#1e3a8a}
+
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.84rem}
+th{text-align:left;padding:10px 14px;border-bottom:2px solid var(--black);font-weight:600;font-size:.78rem;letter-spacing:.05em}
+td{padding:9px 14px;border-bottom:1px solid var(--g2);vertical-align:top;line-height:1.6}
+tr:nth-child(even) td{background:var(--g1)}
+.mono{font-family:'JetBrains Mono',monospace;font-size:.78rem;background:var(--g1);padding:1px 6px;border-radius:3px}
+pre.code{font-family:'JetBrains Mono',monospace;font-size:.78rem;background:var(--charco);color:#e6e6e0;padding:18px 20px;border-radius:6px;margin:12px 0;overflow-x:auto;line-height:1.7;white-space:pre}
+pre.code .c{color:#888}
+pre.code .k{color:#C4960E}
+pre.code .s{color:#7ec8a0}
+pre.code .v{color:#9dc8f7}
+
+.tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:.7rem;font-weight:600}
+.tag-done{background:#dcfce7;color:#166534}
+.tag-todo{background:#fef3c7;color:#92400e}
+.tag-warn{background:#fff7ed;color:#c2410c}
+.tag-gold{background:var(--gold-lt);color:#7A5800}
+.tag-ng{background:var(--red-lt);color:var(--red)}
+.tag-new{background:var(--blue-lt);color:var(--blue)}
+
+.status-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.status-card{border:1px solid var(--g2);border-radius:6px;padding:16px}
+.sc-label{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--g4);margin-bottom:6px}
+.sc-title{font-weight:700;margin-bottom:4px}
+.sc-desc{font-size:.82rem;color:var(--g6);line-height:1.6}
+.sc-green{border-left:3px solid var(--green)}
+.sc-gold{border-left:3px solid var(--gold)}
+.sc-red{border-left:3px solid var(--red)}
+.sc-gray{border-left:3px solid var(--g2)}
+.sc-blue{border-left:3px solid var(--blue)}
+@media(max-width:600px){.status-grid{grid-template-columns:1fr}}
+
+.flow{margin:16px 0}
+.fs{display:flex;gap:14px;position:relative;padding:8px 0 8px 28px}
+.fs:not(:last-child)::before{content:'';position:absolute;left:7px;top:24px;bottom:-8px;width:2px;background:var(--g2)}
+.fs::after{content:'';position:absolute;left:1px;top:14px;width:14px;height:14px;border-radius:50%;background:var(--gold);border:2px solid #fff;box-shadow:0 0 0 1px var(--gold)}
+.fs.done::after{background:var(--green)}
+.fs.todo::after{background:var(--g2)}
+.fs .ft{font-weight:600;font-size:.9rem;line-height:1.4}
+.fs .fd{font-size:.82rem;color:var(--g6);margin-top:2px}
+
+h3{font-size:.95rem;font-weight:700;margin:28px 0 10px;color:var(--charco)}
+h4{font-size:.88rem;font-weight:700;margin:18px 0 8px;color:var(--g6)}
+ul.styled{list-style:none;margin:8px 0 16px}
+ul.styled li{padding:5px 0 5px 16px;position:relative;font-size:.88rem;color:var(--g6);border-bottom:1px solid var(--g1)}
+ul.styled li::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:5px;height:5px;border-radius:50%;background:var(--gold)}
+ul.styled li:last-child{border-bottom:none}
+ul.styled li strong{color:var(--black)}
+
+.step-box{background:var(--g1);border-radius:6px;padding:18px 20px;margin:12px 0;font-size:.85rem}
+.step-box ol{padding-left:20px;line-height:2}
+
+.funnel{margin:20px 0;display:grid;grid-template-columns:1fr;gap:10px}
+.funnel-step{display:grid;grid-template-columns:80px 1fr 1fr;gap:14px;padding:14px 18px;border:1px solid var(--g2);border-radius:6px;background:#fff;align-items:center}
+.funnel-step.bad{border-left:3px solid var(--red)}
+.funnel-step.good{border-left:3px solid var(--green)}
+.funnel-phase{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--g4);letter-spacing:.1em}
+.funnel-label{font-weight:700;font-size:.92rem}
+.funnel-action{font-size:.82rem;color:var(--g6)}
+@media(max-width:600px){.funnel-step{grid-template-columns:1fr}}
+
+.priority-box{border-left:4px solid var(--gold);background:var(--gold-lt);padding:14px 18px;margin:14px 0;font-size:.88rem}
+.priority-box strong{color:#5A4500;display:block;margin-bottom:4px;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-label">System Design Document</div>
+  <h1>TAM<em>S</em>IC 設計書</h1>
+  <p>音楽レーベル・会員制試聴サイト — 課金導線完全版・歌詞保護・インライン認証対応</p>
+  <div class="meta">Version 3.0　／　2026.04.22　／　対象: 運用担当・開発担当・引継ぎ先　／　Confidential</div>
+</header>
+
+<nav>
+  <h2>目次（v3 更新範囲）</h2>
+  <ol>
+    <li><span class="num">01</span><a href="#s1">v3 の変更サマリ</a></li>
+    <li><span class="num">02</span><a href="#s2">現状診断（v2 からの棚卸し）</a></li>
+    <li><span class="num">03</span><a href="#s3">課金導線設計（収益化の核）</a></li>
+    <li><span class="num">04</span><a href="#s4">状態別 UX マトリクス</a></li>
+    <li><span class="num">05</span><a href="#s5">会員登録導線（壁の置き方）</a></li>
+    <li><span class="num">06</span><a href="#s6">コイン課金導線（解放の仕組み）</a></li>
+    <li><span class="num">07</span><a href="#s7">インライン認証（Cognito 直結）</a></li>
+    <li><span class="num">08</span><a href="#s8">歌詞保護モジュール</a></li>
+    <li><span class="num">09</span><a href="#s9">My Page の再定義</a></li>
+    <li><span class="num">10</span><a href="#s10">文言・UI 統一方針</a></li>
+    <li><span class="num">11</span><a href="#s11">他サービスとの統一事項</a></li>
+    <li><span class="num">12</span><a href="#s12">実装優先順位と残タスク</a></li>
+    <li><span class="num">13</span><a href="#s13">セキュリティ・運用ノート</a></li>
+    <li><span class="num">14</span><a href="#s14">v2 から継続の参照先</a></li>
+  </ol>
+</nav>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s1">
+  <div class="st"><span class="sn">01</span>v3 の変更サマリ</div>
+
+  <div class="hint hint-blue">
+    <strong>v3 の方針：</strong>TAMSIC を「かっこいい展示サイト」から「稼ぐ構造を持った会員制サイト」に転換する。デザインは一切崩さず、導線・状態制御・認証の 3 層のみ再設計する。
+  </div>
+
+  <h3>v2 → v3 の差分</h3>
+  <table>
+    <tr><th>領域</th><th>v2（現状）</th><th>v3（目指す状態）</th></tr>
+    <tr><td>会員登録</td><td>「登録してください」の説明があるだけ</td><td>触った瞬間に壁＝欲求が立ち上がった瞬間に誘導</td></tr>
+    <tr><td>課金タイミング</td><td>どこかにボタンがある</td><td>フル試聴ボタンを押した瞬間にコイン確認→不足なら即購入導線</td></tr>
+    <tr><td>ログイン UI</td><td>Cognito Hosted UI にリダイレクト（AWS ドメイン・デザインが崩れる）</td><td>TAMSIC 内のフォームで完結（SDK 直接呼び出し・ドメインもデザインも一貫）</td></tr>
+    <tr><td>歌詞</td><td>表示のみ。コピー・スクショ可能</td><td>コピー・右クリック・主要ショートカット抑止＋透かし</td></tr>
+    <tr><td>サンプル時間</td><td>既に 30 秒で運用（v2 のコメント誤記を訂正）</td><td>30 秒は維持。曲ごとに「Bメロ直前で切る」ように sampleStart を微調整する余地あり</td></tr>
+    <tr><td>コイン価格表示</td><td>フル試聴パネル展開後にのみ見える</td><td>曲カード上に常時表示＋残高差分を可視化</td></tr>
+    <tr><td>My Page</td><td>管理画面的な見た目</td><td>会員だけのラウンジ（先行曲を主役に）</td></tr>
+  </table>
+
+  <h3>v3 で追加するファイル</h3>
+  <table>
+    <tr><th>ファイル</th><th>役割</th><th>状態</th></tr>
+    <tr><td class="mono">login.html</td><td>インライン認証フォーム（全置換）</td><td><span class="tag tag-new">v3 新設</span></td></tr>
+    <tr><td class="mono">signup.html</td><td>インライン登録＋確認コード入力（全置換）</td><td><span class="tag tag-new">v3 新設</span></td></tr>
+    <tr><td class="mono">forgot-password.html</td><td>Cognito 本物接続のパスワードリセット（全置換）</td><td><span class="tag tag-new">v3 新設</span></td></tr>
+    <tr><td class="mono">lyrics-guard.js</td><td>歌詞コピー・スクショ抑止モジュール</td><td><span class="tag tag-new">v3 新設</span></td></tr>
+    <tr><td class="mono">gate-modal.js</td><td>非会員ゲート・コイン不足ダイアログ統一コンポーネント</td><td><span class="tag tag-new">v3 新設</span></td></tr>
+    <tr><td class="mono">nono.html / kiki.html</td><td>lyrics-guard.js / gate-modal.js を読み込み、alert() をモーダル化、曲カードにコインピル追加</td><td><span class="tag tag-warn">部分修正</span></td></tr>
+    <tr><td class="mono">mypage.html</td><td>EARLY ACCESS NOW / COMING UP NEXT セクション追加</td><td><span class="tag tag-warn">部分修正</span></td></tr>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s2">
+  <div class="st"><span class="sn">02</span>現状診断（v2 からの棚卸し）</div>
+
+  <h3>保持するもの（触らない）</h3>
+  <div class="status-grid">
+    <div class="status-card sc-green">
+      <div class="sc-label">保持</div>
+      <div class="sc-title">全体デザイン・カラーパレット</div>
+      <div class="sc-desc">オフホワイト × ゴールド、Playfair Display / Jost / Bodoni Moda の組み合わせはそのまま。</div>
+    </div>
+    <div class="status-card sc-green">
+      <div class="sc-label">保持</div>
+      <div class="sc-title">Cognito カスタム属性構造</div>
+      <div class="sc-desc">custom:coins / custom:purchases はそのまま。v2 § 04 準拠。</div>
+    </div>
+    <div class="status-card sc-green">
+      <div class="sc-label">保持</div>
+      <div class="sc-title">release-control.js の日付制御</div>
+      <div class="sc-desc">COMING SOON / MEMBER EARLY ACCESS / NOW AVAILABLE の 3 状態ロジックは有効。</div>
+    </div>
+    <div class="status-card sc-green">
+      <div class="sc-label">保持</div>
+      <div class="sc-title">Square リンク決済</div>
+      <div class="sc-desc">100 / 300 / 500 coin の 3 パック・URL 構成はそのまま。</div>
+    </div>
+  </div>
+
+  <h3>v3 で書き換えるもの</h3>
+  <div class="status-grid">
+    <div class="status-card sc-red">
+      <div class="sc-label">書き換え</div>
+      <div class="sc-title">ログイン／登録の実装経路</div>
+      <div class="sc-desc">Cognito Hosted UI へのリダイレクトをやめ、SDK でインライン認証に切り替え。</div>
+    </div>
+    <div class="status-card sc-red">
+      <div class="sc-label">書き換え</div>
+      <div class="sc-title">サンプル試聴秒数</div>
+      <div class="sc-desc">60 秒 → 30 秒。短い方が「続きが欲しい」を強く作れる。</div>
+    </div>
+    <div class="status-card sc-gold">
+      <div class="sc-label">追加</div>
+      <div class="sc-title">歌詞保護モジュール</div>
+      <div class="sc-desc">lyrics-guard.js を新設。選択・右クリック・主要ショートカットを抑止。</div>
+    </div>
+    <div class="status-card sc-gold">
+      <div class="sc-label">追加</div>
+      <div class="sc-title">曲カード上のコイン表示</div>
+      <div class="sc-desc">展開前から cost を見せる。残高との差分を即座に可視化。</div>
+    </div>
+  </div>
+
+  <h3>現状の問題（ユーザー起点）</h3>
+  <div class="funnel">
+    <div class="funnel-step bad"><div class="funnel-phase">ISSUE 01</div><div class="funnel-label">登録する理由が弱い</div><div class="funnel-action">「会員登録できます」の説明はあるが、触る前に登録させる動機が立ち上がっていない。</div></div>
+    <div class="funnel-step bad"><div class="funnel-phase">ISSUE 02</div><div class="funnel-label">課金トリガーがない</div><div class="funnel-action">フル試聴ボタンを押した瞬間に「買う」判断をさせていない。不足時にようやく誘導。</div></div>
+    <div class="funnel-step bad"><div class="funnel-phase">ISSUE 03</div><div class="funnel-label">無料で満足できる</div><div class="funnel-action">60 秒サンプルで曲の核が伝わりきる。続きを欲する前に気持ちが満足する。</div></div>
+    <div class="funnel-step bad"><div class="funnel-phase">ISSUE 04</div><div class="funnel-label">Cognito Hosted UI が別世界</div><div class="funnel-action">ログイン時に AWS ドメインの白背景フォームへ飛ぶ。ブランドが一瞬で切れる。</div></div>
+    <div class="funnel-step bad"><div class="funnel-phase">ISSUE 05</div><div class="funnel-label">歌詞が無防備</div><div class="funnel-action">コピー・右クリック・スクショのいずれもできる。無料で持ち出せてしまう。</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s3">
+  <div class="st"><span class="sn">03</span>課金導線設計（収益化の核）</div>
+
+  <h3>基本思想</h3>
+  <div class="hint hint-gold">
+    <strong>説明ではなく欲求で動かす。</strong>「なぜ会員か」「なぜ課金か」を文章で説明するのではなく、触ろうとした瞬間に壁を置く。その壁が「欲しい」を立ち上げる。TAMSIC では会員登録＝入口の壁／コイン課金＝体験の拡張、という二層で設計する。
+  </div>
+
+  <h3>正解のユーザー動線</h3>
+  <div class="funnel">
+    <div class="funnel-step good"><div class="funnel-phase">01 見る</div><div class="funnel-label">曲一覧・カバーが目に入る</div><div class="funnel-action">モザイク・ロックアイコンで「今触れない何か」を認識させる。</div></div>
+    <div class="funnel-step good"><div class="funnel-phase">02 気になる</div><div class="funnel-label">再生ボタンを押す</div><div class="funnel-action">未公開 or 先行曲 → 即座に「会員限定です」ポップアップ。</div></div>
+    <div class="funnel-step good"><div class="funnel-phase">03 登録</div><div class="funnel-label">TAMSIC 内でログイン／登録</div><div class="funnel-action">AWS ドメインに飛ばず、同じページ内のフォームで完結。</div></div>
+    <div class="funnel-step good"><div class="funnel-phase">04 サンプル解放</div><div class="funnel-label">30 秒サンプルが聴ける</div><div class="funnel-action">60 秒ではなく 30 秒。「もう少し」で止める。</div></div>
+    <div class="funnel-step good"><div class="funnel-phase">05 フル欲求</div><div class="funnel-label">「フル試聴」ボタン（コイン数表示）</div><div class="funnel-action">押す前からコイン数と残高が見える。不足ならその場で購入導線。</div></div>
+    <div class="funnel-step good"><div class="funnel-phase">06 コイン購入</div><div class="funnel-label">My Page の購入パネル</div><div class="funnel-action">Square 外部リンク → 戻って「反映する」→ フル解放。</div></div>
+    <div class="funnel-step good"><div class="funnel-phase">07 継続</div><div class="funnel-label">次の先行曲を待つ</div><div class="funnel-action">My Page が「次に何が来るか」を見せる場所になる。</div></div>
+  </div>
+
+  <h3>核となる一行</h3>
+  <div class="priority-box">
+    <strong>設計原則</strong>
+    ユーザーが「触れそうで触れない」状態を作れているか？ ── これを全ページで成立させられているかを必ずレビューすること。
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s4">
+  <div class="st"><span class="sn">04</span>状態別 UX マトリクス</div>
+
+  <div class="hint hint-blue">
+    <strong>release-control.js の 3 状態 × ユーザー属性（非会員／会員）の 6 パターンを網羅する。</strong>各セルで「表示」「可能動作」「押した時の挙動」を固定する。
+  </div>
+
+  <h3>マトリクス（6 パターン）</h3>
+  <table>
+    <tr><th>日付状態</th><th>非会員</th><th>会員</th></tr>
+    <tr>
+      <td>① sample 公開日 <strong>前</strong>（locked）</td>
+      <td>カバー：モザイク<br>ラベル：<span class="mono">COMING SOON</span><br>再生押下：「会員なら先に聴ける」ポップアップ→登録導線</td>
+      <td>カバー：モザイク<br>ラベル：<span class="mono">COMING SOON</span><br>再生押下：公開予定日を表示（「{日付} から聴けます」）</td>
+    </tr>
+    <tr>
+      <td>② sample 期間（member early access）</td>
+      <td>カバー：モザイク<br>ラベル：<span class="mono">EARLY ACCESS</span><br>再生押下：「今、会員だけ聴けてます」→登録導線</td>
+      <td>カバー：通常<br>ラベル：<span class="mono">EARLY ACCESS</span><br>再生可：30 秒サンプル／フルはコイン</td>
+    </tr>
+    <tr>
+      <td>③ 一般公開（full）</td>
+      <td>カバー：通常<br>ラベル：<span class="mono">NOW AVAILABLE</span><br>再生可：30 秒サンプル／フルは会員登録＋コイン</td>
+      <td>カバー：通常<br>ラベル：<span class="mono">NOW AVAILABLE</span><br>再生可：30 秒サンプル／フルはコイン</td>
+    </tr>
+  </table>
+
+  <h3>モーダル文言（v3 統一版）</h3>
+  <table>
+    <tr><th>発火条件</th><th>表示文言（JP）</th><th>表示文言（EN）</th></tr>
+    <tr><td>① 非会員が未公開曲の再生を押す</td><td>この曲はまだ公開前です。会員は一般公開の 14 日前から先行視聴できます。</td><td>This track isn't out yet. Members listen 14 days before public release.</td></tr>
+    <tr><td>② 非会員が先行期間の曲の再生を押す</td><td>この曲は会員先行公開中です。ログインして視聴する。</td><td>Early access — members only. Log in to listen.</td></tr>
+    <tr><td>③ 非会員がフル試聴を押す</td><td>ここから先は会員限定です。</td><td>Members only beyond this point.</td></tr>
+    <tr><td>④ 会員がフル試聴を押す（コイン充足）</td><td>{N} コインで 1 回フル試聴します。</td><td>Unlock full listening for {N} coin.</td></tr>
+    <tr><td>⑤ 会員がフル試聴を押す（コイン不足）</td><td>残高が不足しています。この曲のフル試聴には {N} coin 必要です。</td><td>Not enough coins. This track requires {N} coin.</td></tr>
+  </table>
+
+  <div class="hint hint-red">
+    <strong>禁止文言：</strong>「登録はこちら」「お得な」「購入する」といった EC 調の語彙。TAMSIC の世界観を壊す。<strong>短く・端的に・命令形すぎない</strong>。
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s5">
+  <div class="st"><span class="sn">05</span>会員登録導線（壁の置き方）</div>
+
+  <h3>原則</h3>
+  <ul class="styled">
+    <li><strong>ページ上部に「会員登録はこちら」を置かない。</strong>必要性が立ち上がる前の登録 CTA はノイズ。</li>
+    <li><strong>壁は「触った瞬間」にだけ現れる。</strong>何も触っていない時はブランドが主役。</li>
+    <li><strong>壁は閉じるのではなく、解放の道筋を見せる。</strong>「閉じてます」ではなく「ログインすれば聴ける」。</li>
+  </ul>
+
+  <h3>登録動線が出る 4 ポイント</h3>
+  <table>
+    <tr><th>発火ポイント</th><th>出すもの</th></tr>
+    <tr><td>非会員が未公開曲の再生 / フルを押した</td><td>モーダル（§ 04 文言①② → ログイン／登録ボタン）</td></tr>
+    <tr><td>非会員がフル試聴ボタンを押した（公開済）</td><td>モーダル（§ 04 文言③ → ログイン／登録ボタン）</td></tr>
+    <tr><td>非会員が My Page を開いた</td><td>カード：「My Page は会員のラウンジです」→ログイン／登録</td></tr>
+    <tr><td>Cognito のセッション切れ</td><td>モーダル：「再ログインしてください」→同じログインフォーム</td></tr>
+  </table>
+
+  <h3>モーダル構造（共通コンポーネント）</h3>
+  <pre class="code"><span class="c">// gate-modal.js — v3 で新設する共通ゲートモーダル</span>
+TAMSICGate.<span class="v">show</span>({
+  title:   <span class="s">'ここから先は会員限定です'</span>,
+  message: <span class="s">'この曲は会員先行公開中です。ログインして視聴する。'</span>,
+  primary: { label: <span class="s">'ログイン'</span>, href: <span class="s">'login.html'</span> },
+  secondary:{ label: <span class="s">'新規登録'</span>, href: <span class="s">'signup.html'</span> }
+});</pre>
+
+  <div class="hint hint-gold">
+    <strong>redirect パラメータで戻す：</strong>モーダルから login.html / signup.html に遷移する際は <span class="mono">?redirect=</span>元のページ を必ず付与。ログイン完了後は元の曲ページに戻し、対象曲まで自動スクロールする。UX の連続性が切れない。
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s6">
+  <div class="st"><span class="sn">06</span>コイン課金導線（解放の仕組み）</div>
+
+  <h3>コイン表示の 3 箇所（すべて v3 で徹底）</h3>
+  <table>
+    <tr><th>場所</th><th>表示内容</th><th>v2 現状</th><th>v3 仕様</th></tr>
+    <tr><td>曲カード（展開前）</td><td>cost の数値とアイコン</td><td>展開しないと見えない</td><td>常時見える小さなピル表示：<span class="mono">⌘ 50 coin</span></td></tr>
+    <tr><td>フル試聴パネル（展開後）</td><td>cost・残高・差分</td><td>cost と残高を別々に表示</td><td>差分を主役に：<span class="mono">残高 30 / 必要 50 → 20 不足</span></td></tr>
+    <tr><td>My Page</td><td>残高・購入履歴・プラン比較</td><td>概ね OK</td><td>先行視聴対象曲を最上部に追加（§ 09）</td></tr>
+  </table>
+
+  <h3>コイン不足時のフロー</h3>
+  <div class="flow">
+    <div class="fs done"><div><div class="ft">会員がフル試聴ボタンを押す</div><div class="fd">TAMSICCoins.spendCoins() が残高を確認</div></div></div>
+    <div class="fs done"><div><div class="ft">残高 < cost の場合、モーダル表示</div><div class="fd">「残高が不足しています。この曲のフル試聴には {N} coin 必要です。」＋「コインを追加する」ボタン</div></div></div>
+    <div class="fs done"><div><div class="ft">My Page の #purchase-grid までスクロール</div><div class="fd">location.href = 'mypage.html#purchase-grid'</div></div></div>
+    <div class="fs done"><div><div class="ft">Square リンク決済で購入</div><div class="fd">v2 § 13 のフローのまま（Webhook 自動化は将来）</div></div></div>
+    <div class="fs done"><div><div class="ft">戻って「購入を反映する」→ 元の曲ページに戻る導線</div><div class="fd">pending_return_to に元 URL を保存しておき、反映完了後に戻す</div></div></div>
+  </div>
+
+  <h3>サンプル秒数の確認</h3>
+  <table>
+    <tr><th>項目</th><th>現状</th><th>v3</th><th>根拠</th></tr>
+    <tr><td>sampleEnd（全トラック）</td><td>既に 30 秒で運用中</td><td>30 秒を維持</td><td>v2 設計書のコード例に「sampleEnd: 60」と書かれていたため一律変更を予定していたが、実データ（tamsic-content.js）では各曲 30 秒幅で運用済み。変更不要。</td></tr>
+  </table>
+
+  <pre class="code"><span class="c">// tamsic-content.js 抜粋: すでに 30 秒幅</span>
+{ id: <span class="s">'nono-001'</span>, sampleStart: <span class="s">'0:42'</span>, sampleEnd: <span class="s">'1:12'</span>, ... }  <span class="c">// 30秒</span>
+{ id: <span class="s">'nono-002'</span>, sampleStart: <span class="s">'0:46'</span>, sampleEnd: <span class="s">'1:16'</span>, ... }  <span class="c">// 30秒</span>
+{ id: <span class="s">'kiki-001'</span>, sampleStart: <span class="s">'0:52'</span>, sampleEnd: <span class="s">'1:22'</span>, ... }  <span class="c">// 30秒</span></pre>
+
+  <div class="hint hint-red">
+    <strong>注意：</strong>「一番いい部分」をサンプルに含めないこと。Bメロ突入直前まで、または印象的なフレーズ一つだけ聴かせて止める。曲ごとに <span class="mono">sampleStart</span> を手動で調整する価値がある（現状は曲ごとに異なる値が設定されており概ね適切）。
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s7">
+  <div class="st"><span class="sn">07</span>インライン認証（Cognito 直結）</div>
+
+  <div class="hint hint-red">
+    <strong>v2 の問題：</strong>cognitoLogin() が <span class="mono">https://{domain}/oauth2/authorize</span> へリダイレクトする。その先は AWS Cognito Hosted UI で、白背景・汎用的なフォーム。TAMSIC の世界観が切れる。
+  </div>
+
+  <h3>v3 の方針</h3>
+  <div class="hint hint-gold">
+    <strong>amazon-cognito-identity-js SDK を使い、TAMSIC ドメイン内で認証フォームを完結させる。</strong>リダイレクトはしない。Cognito の <span class="mono">authenticateUser()</span>（SRP 認証）で JWT を受け取り、既存の localStorage 構造に保存する。
+  </div>
+
+  <h3>必要な Cognito 側の設定確認</h3>
+  <table>
+    <tr><th>設定項目</th><th>必要値</th><th>確認場所</th></tr>
+    <tr><td>App Client の認証フロー</td><td><span class="mono">ALLOW_USER_SRP_AUTH</span> を有効化</td><td>Cognito → User pool → App クライアント → 認証フロー</td></tr>
+    <tr><td>App Client シークレット</td><td><strong>なし</strong>（public client）</td><td>※ シークレットありだとブラウザから使えない</td></tr>
+    <tr><td>E メール属性</td><td>Alias としてサインインに使える</td><td>Cognito → Sign-in experience</td></tr>
+    <tr><td>E メール検証</td><td>有効（確認コード送信）</td><td>Cognito → Message customizations</td></tr>
+  </table>
+
+  <h3>auth.js に追加する関数</h3>
+  <pre class="code"><span class="c">// ─── v3 追加: SRP 認証でサインイン ───</span>
+<span class="k">async function</span> <span class="v">signInWithPassword</span>(email, password) {
+  <span class="k">const</span> pool = <span class="k">new</span> AmazonCognitoIdentity.<span class="v">CognitoUserPool</span>({
+    UserPoolId: AUTH_CONFIG.userPoolId,
+    ClientId:   AUTH_CONFIG.clientId
+  });
+  <span class="k">const</span> user = <span class="k">new</span> AmazonCognitoIdentity.<span class="v">CognitoUser</span>({ Username: email, Pool: pool });
+  <span class="k">const</span> auth = <span class="k">new</span> AmazonCognitoIdentity.<span class="v">AuthenticationDetails</span>({
+    Username: email, Password: password
+  });
+  <span class="k">return new</span> <span class="v">Promise</span>((resolve, reject) =&gt; {
+    user.<span class="v">authenticateUser</span>(auth, {
+      onSuccess: (session) =&gt; {
+        _saveTokens({
+          access_token:  session.<span class="v">getAccessToken</span>().<span class="v">getJwtToken</span>(),
+          id_token:      session.<span class="v">getIdToken</span>().<span class="v">getJwtToken</span>(),
+          refresh_token: session.<span class="v">getRefreshToken</span>().<span class="v">getToken</span>(),
+          expires_in:    <span class="v">3600</span>
+        });
+        <span class="v">_syncWalletFromCognito</span>();
+        resolve();
+      },
+      onFailure: reject,
+      newPasswordRequired: () =&gt; reject(<span class="k">new</span> <span class="v">Error</span>(<span class="s">'NEW_PASSWORD_REQUIRED'</span>))
+    });
+  });
+}
+
+<span class="c">// ─── v3 追加: サインアップ（メール認証コード付き） ───</span>
+<span class="k">async function</span> <span class="v">signUp</span>(email, password) { ... }
+<span class="k">async function</span> <span class="v">confirmSignUp</span>(email, code) { ... }
+<span class="k">async function</span> <span class="v">forgotPassword</span>(email) { ... }
+<span class="k">async function</span> <span class="v">confirmForgotPassword</span>(email, code, newPassword) { ... }</pre>
+
+  <h3>エラー文言マッピング（Cognito → 日本語）</h3>
+  <table>
+    <tr><th>Cognito エラーコード</th><th>表示文言（日）</th></tr>
+    <tr><td>NotAuthorizedException</td><td>メールアドレスまたはパスワードが正しくありません。</td></tr>
+    <tr><td>UserNotFoundException</td><td>このメールアドレスは登録されていません。</td></tr>
+    <tr><td>UserNotConfirmedException</td><td>メール認証が完了していません。受信したコードを入力してください。</td></tr>
+    <tr><td>CodeMismatchException</td><td>確認コードが正しくありません。</td></tr>
+    <tr><td>ExpiredCodeException</td><td>確認コードの有効期限が切れました。再送してください。</td></tr>
+    <tr><td>InvalidPasswordException</td><td>パスワードは 8 文字以上、大小英字・数字を含めてください。</td></tr>
+    <tr><td>UsernameExistsException</td><td>このメールアドレスはすでに登録されています。</td></tr>
+    <tr><td>LimitExceededException</td><td>試行回数が多すぎます。少し時間を置いてから再度お試しください。</td></tr>
+  </table>
+
+  <h3>フォールバック（SRP が無効なとき）</h3>
+  <div class="hint hint-blue">
+    <strong>Cognito App Client で ALLOW_USER_SRP_AUTH が有効になっていない場合、</strong>v3 のインラインフォームは機能しない。その場合は既存の <span class="mono">cognitoLogin()</span>（Hosted UI リダイレクト）を「詳細ログイン」として小さなリンクで残しておく。
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s8">
+  <div class="st"><span class="sn">08</span>歌詞保護モジュール</div>
+
+  <div class="hint hint-red">
+    <strong>前提：Web 上で「絶対に複製不可」は技術的に不可能。</strong>OS レベルのスクリーンショット、外部カメラ撮影は防げない。v3 の目的は「容易には持ち出せない」水準まで持ち上げることと、流出時の追跡可能性を担保すること。
+  </div>
+
+  <h3>保護の 5 層</h3>
+  <table>
+    <tr><th>層</th><th>技法</th><th>防げる範囲</th></tr>
+    <tr><td>CSS</td><td><span class="mono">user-select:none</span>, <span class="mono">-webkit-touch-callout:none</span>, <span class="mono">-webkit-user-drag:none</span></td><td>テキスト選択・モバイル長押し・ドラッグ</td></tr>
+    <tr><td>イベント</td><td>contextmenu / copy / cut / selectstart / dragstart を preventDefault</td><td>右クリックメニュー・コピー・ドラッグ</td></tr>
+    <tr><td>キー</td><td>Ctrl/⌘+C, Ctrl+A, Ctrl+S, Ctrl+P, PrintScreen を抑止（歌詞フォーカス時のみ）</td><td>ショートカットでのコピー・保存・印刷</td></tr>
+    <tr><td>透かし</td><td>ログイン中のメールアドレス（ハッシュ）を歌詞背面に 5% 不透明で繰り返し描画</td><td>流出元の特定・心理的抑止</td></tr>
+    <tr><td>難読化</td><td>歌詞テキストを innerHTML ではなく JS で 1 文字ずつ span に注入。DOM 上で連続文字列として取れない</td><td>単純な DOM スクレイピング</td></tr>
+  </table>
+
+  <h3>lyrics-guard.js の API</h3>
+  <pre class="code"><span class="c">// グローバルに 1 関数だけ公開</span>
+TAMSICLyrics.<span class="v">protect</span>(<span class="v">containerEl</span>, <span class="v">rawLyricsText</span>, <span class="v">options</span>);
+
+<span class="c">// options:</span>
+<span class="c">// {</span>
+<span class="c">//   watermark: 'user@example.com',  // 透かしに入れる文字列（メールのハッシュを推奨）</span>
+<span class="c">//   obfuscate: true,                 // 1文字1spanに分割（既定 true）</span>
+<span class="c">//   onPrintScreen: 'blur'            // PrintScreen 検知時の挙動（'blur' | 'hide'）</span>
+<span class="c">// }</span></pre>
+
+  <h3>既存の nono.html / kiki.html からの置換</h3>
+  <pre class="code"><span class="c">// 現在の innerHTML による歌詞レンダリングを置き換える</span>
+<span class="c">// Before:</span>
+lyricsEl.innerHTML = (t.lyrics||<span class="s">''</span>).<span class="v">split</span>(/\n\s*\n/).<span class="v">map</span>(...)
+
+<span class="c">// After:</span>
+TAMSICLyrics.<span class="v">protect</span>(lyricsEl, t.lyrics||<span class="s">''</span>, {
+  watermark: <span class="v">getUserInfo</span>()?.email || <span class="s">'guest'</span>,
+  obfuscate: <span class="v">true</span>
+});</pre>
+
+  <h3>実装すべきこと（チェックリスト）</h3>
+  <ul class="styled">
+    <li><strong>CSS:</strong> <span class="mono">.full-lyrics</span> に <span class="mono">user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;</span> を追加</li>
+    <li><strong>イベント:</strong> 歌詞コンテナに対して contextmenu / copy / cut / selectstart を preventDefault</li>
+    <li><strong>透かし:</strong> <span class="mono">::before</span> 疑似要素で SHA-256 ハッシュ文字列を repeating-background として配置（5% 不透明）</li>
+    <li><strong>DevTools 検知:</strong> window.outerHeight - window.innerHeight が一定値を超えた時に歌詞を非表示（鉄壁ではないが抑止）</li>
+    <li><strong>PrintScreen 検知:</strong> keydown で PrintScreen キーを受けたら歌詞を 3 秒間 blur</li>
+  </ul>
+
+  <h3>やらないこと（v3 では見送り）</h3>
+  <ul class="styled">
+    <li><strong>Canvas / SVG レンダリング:</strong>選択・コピーは完全に防げるが、アクセシビリティと検索性が大きく落ちる。v3 では DOM+CSS で妥協。</li>
+    <li><strong>歌詞の画像化:</strong>スクレイピングに弱く、OCR で簡単に抜ける。ファイルサイズも増える。</li>
+    <li><strong>DRM（Widevine など）:</strong>歌詞テキストには過剰。音声側も現時点では導入しない。</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s9">
+  <div class="st"><span class="sn">09</span>My Page の再定義</div>
+
+  <h3>思想：管理画面ではなくラウンジ</h3>
+  <div class="hint hint-gold">
+    <strong>My Page は、会員になったことの意味を忘れさせない場所。</strong>残高と履歴の数字板ではなく、「今あなたが一足先に聴ける曲」をまず見せる場所に変える。
+  </div>
+
+  <h3>v3 の My Page セクション構成（上から順）</h3>
+  <table>
+    <tr><th>順</th><th>セクション</th><th>内容</th><th>状態</th></tr>
+    <tr><td>1</td><td>EARLY ACCESS NOW</td><td>今あなただけ聴ける曲を大きく 1〜3 曲表示。そのまま再生可</td><td><span class="tag tag-new">v3 新設</span></td></tr>
+    <tr><td>2</td><td>コイン残高</td><td>大きな数字＋残高（v2 と同等）</td><td><span class="tag tag-done">維持</span></td></tr>
+    <tr><td>3</td><td>コインパック（#purchase-grid）</td><td>3 プラン。アンカー経由でスクロール先に</td><td><span class="tag tag-done">維持</span></td></tr>
+    <tr><td>4</td><td>PENDING PURCHASE（反映待ち）</td><td>未反映の Square 決済があれば表示</td><td><span class="tag tag-done">維持</span></td></tr>
+    <tr><td>5</td><td>COMING UP NEXT</td><td>次に先行公開される曲を日付付きで 1〜2 曲</td><td><span class="tag tag-new">v3 新設</span></td></tr>
+    <tr><td>6</td><td>購入履歴 / 再生履歴</td><td>折りたたみで格納</td><td><span class="tag tag-warn">縮小</span></td></tr>
+    <tr><td>7</td><td>アカウント設定</td><td>ログアウト・言語・パスワード変更リンク</td><td><span class="tag tag-done">維持</span></td></tr>
+  </table>
+
+  <h3>EARLY ACCESS NOW セクションの表示ロジック</h3>
+  <pre class="code"><span class="c">// TAMSICRelease.getState(title) === 'member' の曲のみ抽出</span>
+<span class="k">const</span> now = <span class="k">new</span> <span class="v">Date</span>();
+<span class="k">const</span> earlyNow = window.TAMSIC_CONTENT.tracks.<span class="v">filter</span>(t =&gt; {
+  <span class="k">const</span> st = TAMSICRelease.<span class="v">getState</span>(t.title);
+  <span class="k">return</span> st === <span class="s">'member'</span>;
+});
+<span class="c">// 最大 3 曲表示（日付が近い順）</span></pre>
+
+  <div class="hint hint-blue">
+    <strong>非会員が My Page を開いたときの表示：</strong>残高や履歴の代わりに「My Page は会員のラウンジです」カードとログイン／登録ボタンのみ表示する。<br>
+    → gate-modal を表示するのではなく、<strong>ページ構造そのものをゲストビューに切り替える</strong>方がブランド的に美しい。
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s10">
+  <div class="st"><span class="sn">10</span>文言・UI 統一方針</div>
+
+  <h3>TAMSIC の文言原則</h3>
+  <table>
+    <tr><th>原則</th><th>✅ やる</th><th>❌ やらない</th></tr>
+    <tr><td>長さ</td><td>端的・一文</td><td>2 行以上の説明</td></tr>
+    <tr><td>語彙</td><td>LOCKED / EARLY ACCESS / NOW AVAILABLE</td><td>「会員限定の特別な」「お得に」</td></tr>
+    <tr><td>トーン</td><td>フラットに事実</td><td>煽り・命令形</td></tr>
+    <tr><td>数字</td><td>具体（14 日前、50 coin）</td><td>「しばらく前」「少額で」</td></tr>
+  </table>
+
+  <h3>使用フレーズ辞書（v3 確定）</h3>
+  <table>
+    <tr><th>シーン</th><th>日本語</th><th>English</th></tr>
+    <tr><td>未公開ラベル</td><td>COMING SOON</td><td>COMING SOON</td></tr>
+    <tr><td>先行ラベル</td><td>EARLY ACCESS</td><td>EARLY ACCESS</td></tr>
+    <tr><td>公開済ラベル</td><td>NOW AVAILABLE</td><td>NOW AVAILABLE</td></tr>
+    <tr><td>会員特典文</td><td>会員は一般公開の 14 日前から先行視聴できます</td><td>Members listen 14 days before public release</td></tr>
+    <tr><td>フル解放</td><td>{N} コインで 1 回フル試聴</td><td>Unlock full listening for {N} coin</td></tr>
+    <tr><td>コイン不足</td><td>残高が不足しています</td><td>Not enough coins</td></tr>
+  </table>
+
+  <h3>ボタン優先順位（曲カード内）</h3>
+  <div class="step-box">
+    <ol>
+      <li>① 曲名・カバー（情報の主役）</li>
+      <li>② 公開状態チップ（LOCKED / EARLY ACCESS / NOW AVAILABLE）</li>
+      <li>③ ▶ 再生（サンプル）</li>
+      <li>④ フル試聴（コイン数表示）</li>
+      <li>⑤ YouTube（外向け導線。TAMSIC 内体験の代替ではない）</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s11">
+  <div class="st"><span class="sn">11</span>他サービスとの統一事項</div>
+
+  <div class="hint hint-blue">
+    <strong>TAmJump / TAmJ.Corp が運営する他サービス（Touchvoo・Medvoo・Adavoo）と、運用ルールを揃える。</strong>業種は違うが、ログイン・課金・パスワード管理・設計書フォーマットは統一することで引き継ぎコストが下がる。
+  </div>
+
+  <h3>Touchvoo からの移植項目</h3>
+  <table>
+    <tr><th>項目</th><th>Touchvoo の実装</th><th>TAMSIC v3 での扱い</th></tr>
+    <tr><td>パスワードハッシュ</td><td>SHA-256 ハッシュ化して D1 に保存</td><td>Cognito 管理のためハッシュ化は不要。TAMSIC 側で生パスワードを保持しないのは共通</td></tr>
+    <tr><td>パスワードリセット</td><td>管理者から再発行可能（account-master）</td><td>Cognito の forgotPassword 機能を使う。管理者からも AWS コンソールで一時パスワード発行可</td></tr>
+    <tr><td>Square 決済リンク</td><td>月額サブスク型（¥200/月）</td><td>都度課金型（coin パック）のまま。Webhook の将来実装パターンだけ流用する</td></tr>
+    <tr><td>設計書フォーマット</td><td>HTML 1 枚・badge / hint / table / code ブロックで構成</td><td>TAMSIC は v2 のスタイルを維持（より引き締まった配色）</td></tr>
+    <tr><td>引き継ぎ方針</td><td>「本設計書 1 つで 100% 引き継ぎ可能」</td><td>TAMSIC v3 も同方針。v2 への参照は許容（§ 14 に集約）</td></tr>
+  </table>
+
+  <h3>統一できない項目（あえて分ける）</h3>
+  <table>
+    <tr><th>項目</th><th>理由</th></tr>
+    <tr><td>データベース層</td><td>Touchvoo は Cloudflare D1 / TAMSIC は Cognito カスタム属性＋ localStorage。サービス規模・データ構造が違うため統一不要。</td></tr>
+    <tr><td>アクセス制御</td><td>Touchvoo は会社＋事業所＋ユーザーの階層 / TAMSIC は単純な会員フラグのみ。</td></tr>
+    <tr><td>ブランド体験</td><td>Touchvoo は業務ツール（オレンジ・機能密度重視） / TAMSIC は音楽レーベル（ゴールド・余白重視）。ここを混ぜると両方が壊れる。</td></tr>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s12">
+  <div class="st"><span class="sn">12</span>実装優先順位と残タスク</div>
+
+  <h3>v3 実装の優先順位</h3>
+  <div class="flow">
+    <div class="fs"><div><div class="ft">優先 1：公開制御 × 会員判定の二重チェック</div><div class="fd">release-control.js の挙動が「未公開曲は絶対に再生できない」「先行曲は会員以外絶対に聴けない」を満たしているか。音声 URL を非会員でも取得できてしまう穴がないか。</div></div></div>
+    <div class="fs"><div><div class="ft">優先 2：インライン認証（login / signup 置換）</div><div class="fd">auth.js に signInWithPassword / signUp / confirmSignUp / forgotPassword を追加し、login.html / signup.html を全置換。</div></div></div>
+    <div class="fs"><div><div class="ft">優先 3：ゲートモーダル＋ redirect パラメータ</div><div class="fd">gate-modal.js を新設し、nono.html / kiki.html から呼び出す。login 完了後は元ページに戻す。</div></div></div>
+    <div class="fs"><div><div class="ft">優先 4：歌詞保護モジュール</div><div class="fd">lyrics-guard.js を新設し、nono.html / kiki.html の歌詞レンダリング箇所を置換。</div></div></div>
+    <div class="fs"><div><div class="ft">優先 5：サンプル秒数の確認</div><div class="fd">tamsic-content.js で既に 30 秒幅で運用済み。v2 設計書のコード例が誤記だった。曲ごとの sampleStart 最適化は継続課題。</div></div></div>
+    <div class="fs"><div><div class="ft">優先 6：曲カード上のコイン常時表示</div><div class="fd">renderTracks() 内で展開前のカード上部に cost ピルを追加。</div></div></div>
+    <div class="fs"><div><div class="ft">優先 7：My Page の EARLY ACCESS NOW セクション</div><div class="fd">会員先行中の曲を最上部に配置。COMING UP NEXT も追加。</div></div></div>
+  </div>
+
+  <h3>動作確認チェックリスト</h3>
+  <table>
+    <tr><th>シナリオ</th><th>期待挙動</th></tr>
+    <tr><td>非会員が未公開曲を押す</td><td>モーダル表示。音声は鳴らない。audio URL は DOM にも出ない</td></tr>
+    <tr><td>非会員がフル試聴を押す</td><td>モーダル：「ここから先は会員限定です」→ login.html へ</td></tr>
+    <tr><td>会員が 30 秒サンプルを聴き終える</td><td>自動停止し、「フル試聴 50 coin」がハイライト</td></tr>
+    <tr><td>会員がコイン不足でフルを押す</td><td>モーダル：「残高が不足しています…」→ My Page へ</td></tr>
+    <tr><td>Square で購入 → 反映ボタン → 戻り</td><td>元の曲ページに戻り、対象曲までスクロール、フル試聴ボタンが緑色に</td></tr>
+    <tr><td>歌詞で右クリック / Ctrl+C</td><td>何も起きない。コピーされない</td></tr>
+    <tr><td>歌詞で選択しようとする</td><td>選択できない（ネイティブの青ハイライトも出ない）</td></tr>
+    <tr><td>歌詞で PrintScreen</td><td>歌詞が 3 秒間ぼやける</td></tr>
+    <tr><td>login.html でメール / パスワード入力</td><td>AWS ドメインに飛ばず、同じページ内で認証完了</td></tr>
+    <tr><td>login.html で間違ったパスワード</td><td>「メールアドレスまたはパスワードが正しくありません。」を表示</td></tr>
+    <tr><td>signup.html でメール登録 → 確認コード入力</td><td>登録完了 → 自動ログイン → my page へ</td></tr>
+  </table>
+
+  <h3>v3 で見送り（v4 以降）</h3>
+  <ul class="styled">
+    <li><strong>Square Webhook 自動連携</strong>（v2 § 12 から継続）</li>
+    <li><strong>refresh_token による自動更新</strong>（60 分でログアウトされる問題）</li>
+    <li><strong>再生履歴のデバイス間同期</strong>（現状 localStorage のみ）</li>
+    <li><strong>歌詞の Canvas レンダリング</strong>（検索性とのトレードオフ）</li>
+    <li><strong>MFA（多要素認証）</strong>（コンシューマ向けには重い）</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s13">
+  <div class="st"><span class="sn">13</span>セキュリティ・運用ノート</div>
+
+  <div class="hint hint-red">
+    <strong>2026.04.22 発生事案：</strong>引き継ぎドキュメントに GitHub Personal Access Token（PAT）の平文スクリーンショットが含まれ、チャット経由で共有された。<strong>当該 PAT は即時失効済み / 新 PAT 発行済み。</strong>以降、同じ事故を起こさないため以下を運用ルールとする。
+  </div>
+
+  <h3>認証情報の取り扱い（厳守）</h3>
+  <table>
+    <tr><th>対象</th><th>正しい扱い</th><th>やってはいけない</th></tr>
+    <tr><td>GitHub PAT</td><td>1Password / Bitwarden 等に保存。期限切れ前に再発行</td><td>スクショ・画像・チャット・メール本文に貼り付け</td></tr>
+    <tr><td>Cognito ユーザーのパスワード</td><td>Cognito が SHA-256 でハッシュ保存。誰も復元できないのが正常</td><td>「今登録されている PW を確認したい」は不可。リセットしか手段がない</td></tr>
+    <tr><td>AWS アクセスキー</td><td>最小権限 IAM ロール＋ローテーション</td><td>ソースコードに直書き</td></tr>
+    <tr><td>Square API トークン</td><td>Cloudflare Workers の環境変数 / AWS Secrets Manager</td><td>HTML / JS にベタ書き</td></tr>
+  </table>
+
+  <h3>パスワードリセットの手順（管理者向け）</h3>
+  <div class="step-box">
+    <ol>
+      <li>AWS コンソール → Cognito → User pool - kzohfe → ユーザー</li>
+      <li>対象ユーザーを選択 → 「アクション」→「パスワードをリセット」</li>
+      <li>一時パスワードが発行される（メール送信）</li>
+      <li>ユーザーが次回ログイン時に新しいパスワードを設定</li>
+    </ol>
+  </div>
+
+  <div class="hint hint-gold">
+    <strong>ユーザーからの問い合わせフロー：</strong>「パスワードを忘れた」→ TAMSIC の login.html にある「パスワードを忘れた方」→ forgot-password.html でメール入力 → 確認コード → 新パスワード設定。管理者が介入する必要はない。
+  </div>
+
+  <h3>歌詞流出が判明した場合</h3>
+  <ol style="padding-left:20px;margin:10px 0;font-size:.88rem;line-height:1.9">
+    <li>流出している歌詞テキスト上の透かしハッシュを確認（§ 08）</li>
+    <li>そのハッシュから会員 ID を逆引き（内部マッピングテーブル）</li>
+    <li>Cognito 側で当該ユーザーを無効化（AdminDisableUser）</li>
+    <li>流出経路の評価と lyrics-guard.js のアップデート検討</li>
+  </ol>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s14">
+  <div class="st"><span class="sn">14</span>v2 から継続の参照先</div>
+
+  <div class="hint hint-blue">
+    <strong>v3 では収益化導線・認証・歌詞保護のみを再設計した。</strong>以下の領域は v2 の記述をそのまま参照すること。v3 では重複記載していない。
+  </div>
+
+  <table>
+    <tr><th>領域</th><th>参照先</th></tr>
+    <tr><td>サービス概要・本番 URL・ホスティング</td><td>v2 § 01</td></tr>
+    <tr><td>全ファイル一覧・assets 構成・CDN</td><td>v2 § 03</td></tr>
+    <tr><td>Cognito 基本情報・User Pool ID など</td><td>v2 § 04</td></tr>
+    <tr><td>コインパックの Square URL</td><td>v2 § 05, § 13</td></tr>
+    <tr><td>楽曲公開スケジュール（10 曲分）</td><td>v2 § 06</td></tr>
+    <tr><td>新曲追加手順（STEP 1–5）</td><td>v2 § 07</td></tr>
+    <tr><td>新アーティスト追加手順</td><td>v2 § 08</td></tr>
+    <tr><td>ニュース自動表示の仕組み</td><td>v2 § 09</td></tr>
+    <tr><td>GitHub 運用手順・ローカルパス</td><td>v2 § 10</td></tr>
+    <tr><td>デザイントークン（カラー・フォント）</td><td>v2 § 11</td></tr>
+    <tr><td>Cloudflare 最小構成</td><td>v2 § 14</td></tr>
+    <tr><td>TOP ページ 3 曲プレイヤー</td><td>v2 § 15</td></tr>
+    <tr><td>トラブル対応（IndexedDB 問題など）</td><td>v2 § 16</td></tr>
+  </table>
+
+  <div class="hint hint-green">
+    <strong>引き継ぎの優先順：</strong>本 v3 → v2 → ソースコードの順で読むこと。v3 は v2 を前提に差分と戦略を書いているため、v2 未読の状態で v3 だけを読むと設定値の参照先がわからない箇所がある。
+  </div>
+</section>
+
+<footer style="padding:48px 0 60px;text-align:center;color:var(--g4);font-size:.8rem;border-top:1px solid var(--g2)">
+  TAMSIC 設計書 v3.0　／　2026.04.22　／　Confidential　／　対象: 運用担当・開発担当・引継ぎ先
+</footer>
+
+</body>
+</html>
