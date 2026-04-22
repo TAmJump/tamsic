@@ -393,7 +393,12 @@ TAMSICGate.<span class="v">show</span>({
     <tr><td>App Client シークレット</td><td><strong>なし</strong>（public client）</td><td>※ シークレットありだとブラウザから使えない</td></tr>
     <tr><td>E メール属性</td><td>Alias としてサインインに使える</td><td>Cognito → Sign-in experience</td></tr>
     <tr><td>E メール検証</td><td>有効（確認コード送信）</td><td>Cognito → Message customizations</td></tr>
+    <tr><td>パスワードポリシー</td><td><strong>8文字以上・大文字・小文字・数字・記号</strong>の4種すべて必須（Cognitoデフォルト）</td><td>Cognito → Sign-in experience → Password policy</td></tr>
   </table>
+
+  <div class="hint hint-red">
+    <strong>2026.04.22 発生事案:</strong> 初回リリース時、signup.html / forgot-password.html のパスワードヒント文言・エラー文言が「8文字以上・大文字・小文字・数字」のみで<strong>記号を要求する記述が抜けていた</strong>。ユーザーが記号なしパスワードで繰り返し失敗する事故が発生。即日修正済み（当該コミット参照）。新規で認証系画面を作る際は、必ず Cognito 側の実際のパスワードポリシー（上表）と文言を一致させること。
+  </div>
 
   <h3>auth.js に追加する関数</h3>
   <pre class="code"><span class="c">// ─── v3 追加: SRP 認証でサインイン ───</span>
@@ -438,7 +443,7 @@ TAMSICGate.<span class="v">show</span>({
     <tr><td>UserNotConfirmedException</td><td>メール認証が完了していません。受信したコードを入力してください。</td></tr>
     <tr><td>CodeMismatchException</td><td>確認コードが正しくありません。</td></tr>
     <tr><td>ExpiredCodeException</td><td>確認コードの有効期限が切れました。再送してください。</td></tr>
-    <tr><td>InvalidPasswordException</td><td>パスワードは 8 文字以上、大小英字・数字を含めてください。</td></tr>
+    <tr><td>InvalidPasswordException</td><td>パスワードは 8 文字以上で、大文字・小文字・数字・記号（!@#$%^&amp;* など）をすべて含めてください。</td></tr>
     <tr><td>UsernameExistsException</td><td>このメールアドレスはすでに登録されています。</td></tr>
     <tr><td>LimitExceededException</td><td>試行回数が多すぎます。少し時間を置いてから再度お試しください。</td></tr>
   </table>

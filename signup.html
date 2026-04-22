@@ -108,7 +108,7 @@
             <input type="password" id="su-password" class="form-input" autocomplete="new-password" required>
             <button type="button" class="pw-toggle" onclick="togglePw('su-password',this)" data-ja="表示" data-en="Show">表示</button>
           </div>
-          <p class="pw-hint" data-ja="8文字以上・大文字・小文字・数字を含めてください" data-en="At least 8 chars with upper, lower, and number">8文字以上・大文字・小文字・数字を含めてください</p>
+          <p class="pw-hint" data-ja="8文字以上・大文字・小文字・数字・記号（!@#$%^&amp;* など）をすべて含めてください" data-en="At least 8 chars with upper, lower, number, and symbol (e.g. !@#$%^&amp;*)">8文字以上・大文字・小文字・数字・記号（!@#$%^&amp;* など）をすべて含めてください</p>
         </div>
 
         <button type="submit" class="btn" id="suBtn">
@@ -173,7 +173,7 @@ function lang() { return (window.TAMSICLang && window.TAMSICLang.get && window.T
 
 const ERR_MAP = {
   UsernameExistsException:   { ja:'このメールアドレスはすでに登録されています。',             en:'This email is already registered.' },
-  InvalidPasswordException:  { ja:'パスワードは8文字以上・大文字・小文字・数字を含めてください。', en:'Password must be 8+ chars with upper, lower, and number.' },
+  InvalidPasswordException:  { ja:'パスワードは8文字以上で、大文字・小文字・数字・記号（!@#$%^&* など）をすべて含めてください。', en:'Password must be 8+ chars with upper, lower, number, and symbol (e.g. !@#$%^&*).' },
   InvalidParameterException: { ja:'入力内容をご確認ください。',                                 en:'Please check your input.' },
   CodeMismatchException:     { ja:'確認コードが正しくありません。',                              en:'Invalid verification code.' },
   ExpiredCodeException:      { ja:'コードの有効期限が切れました。再送してください。',           en:'Code expired. Please resend.' },
