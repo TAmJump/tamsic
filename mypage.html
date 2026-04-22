@@ -3,11 +3,48 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="auth.css">
 <script src="purchase-config.js"></script>
+<script src="tamsic-content.js"></script>
+<script src="release-control.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js"></script>
 <script src="auth.js"></script>
 <script src="coins.js"></script>
 <script src="lang.js"></script>
-<title>My Page | TAMSIC</title><script src="mypage.js"></script></head><body>
+<title>My Page | TAMSIC</title><script src="mypage.js"></script>
+<style>
+/* v3 追加: EARLY ACCESS NOW / COMING UP NEXT セクション */
+.v3-early-hero{margin:18px 0 28px;padding:22px 24px;border:1px solid #E6E6E0;background:linear-gradient(135deg,#FFFBF0 0%,#FFFFFF 100%);border-radius:4px;position:relative;overflow:hidden;}
+.v3-early-hero::before{content:'';position:absolute;top:0;right:0;width:180px;height:180px;background:radial-gradient(circle at 60% 40%,rgba(196,150,14,.12) 0%,transparent 60%);pointer-events:none;}
+.v3-early-kicker{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:#C4960E;margin-bottom:6px;font-weight:600;position:relative;}
+.v3-early-kicker::after{content:'●';display:inline-block;margin-left:8px;color:#16a34a;animation:v3-pulse 2s ease-in-out infinite;font-size:8px;vertical-align:middle;}
+@keyframes v3-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.v3-early-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:400;color:#0E0E0E;margin-bottom:4px;position:relative;}
+.v3-early-sub{font-size:.82rem;color:#7A7A72;margin-bottom:18px;line-height:1.7;position:relative;}
+.v3-early-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;position:relative;}
+.v3-early-card{display:flex;gap:14px;padding:12px 14px;background:#fff;border:1px solid #E6E6E0;border-radius:3px;text-decoration:none;color:inherit;transition:border-color .18s ease,transform .12s ease;align-items:center;}
+.v3-early-card:hover{border-color:#C4960E;transform:translateY(-1px);}
+.v3-early-cover{width:56px;height:56px;flex-shrink:0;background:#F5F5F0;border-radius:2px;background-size:cover;background-position:center;}
+.v3-early-body{flex:1;min-width:0;}
+.v3-early-artist{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#7A7A72;margin-bottom:3px;}
+.v3-early-name{font-size:14px;font-weight:500;color:#0E0E0E;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.v3-early-note{font-size:10px;color:#C4960E;letter-spacing:.08em;}
+.v3-early-empty{padding:14px 16px;background:#fff;border:1px dashed #E6E6E0;color:#7A7A72;font-size:.85rem;border-radius:3px;}
+
+.v3-upcoming{margin:28px 0;padding:20px 22px;border:1px solid #E6E6E0;background:#fff;border-radius:4px;}
+.v3-upcoming-kicker{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#7A7A72;margin-bottom:10px;font-weight:600;}
+.v3-upcoming-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:400;color:#0E0E0E;margin-bottom:14px;}
+.v3-upcoming-list{display:flex;flex-direction:column;gap:8px;}
+.v3-upcoming-row{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#FAFAF7;border-left:2px solid #C4960E;font-size:.85rem;gap:12px;}
+.v3-upcoming-row-main{display:flex;gap:10px;align-items:baseline;min-width:0;}
+.v3-upcoming-row-artist{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#7A7A72;flex-shrink:0;}
+.v3-upcoming-row-name{color:#0E0E0E;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.v3-upcoming-row-date{font-family:'JetBrains Mono','Courier New',monospace;font-size:11px;color:#C4960E;flex-shrink:0;letter-spacing:.05em;}
+
+@media (max-width: 600px){
+  .v3-early-list{grid-template-columns:1fr;}
+  .v3-upcoming-row{flex-direction:column;align-items:flex-start;gap:4px;}
+}
+</style>
+</head><body>
 <nav><a class="nav-logo" href="index.html">TAMSIC</a><ul class="nav-links"><li></li><li><a href="nono.html">no-no</a></li><li><a href="kiki.html">kiki</a></li><li><a class="active" href="mypage.html">My Page</a></li><li><a href="javascript:void(0)" onclick="handleLogout()">Logout</a></li><li><button data-lang-toggle style="background:none;border:1px solid var(--light,#E6E6E0);color:var(--mid,#7A7A72);font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.1em;padding:5px 12px;cursor:pointer;border-radius:2px;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='';this.style.color=''">EN</button></li></ul></nav>
 
 <main class="page-shell mypage-shell">
@@ -19,6 +56,14 @@
     </div>
     <div class="member-chip">member <strong data-user-email>—</strong></div>
   </div>
+
+  <!-- v3: EARLY ACCESS NOW — 今あなただけが聴ける曲 -->
+  <section class="v3-early-hero" id="v3-early-access" style="display:none">
+    <div class="v3-early-kicker" data-ja="EARLY ACCESS NOW" data-en="EARLY ACCESS NOW">EARLY ACCESS NOW</div>
+    <h2 class="v3-early-title" data-ja="今あなただけが聴けます" data-en="Only you can listen right now">今あなただけが聴けます</h2>
+    <p class="v3-early-sub" data-ja="一般公開前の会員先行期間中の楽曲です。" data-en="These tracks are in member early-access period.">一般公開前の会員先行期間中の楽曲です。</p>
+    <div class="v3-early-list" id="v3-early-list"></div>
+  </section>
 
   <section class="mypage-lounge">
     <div class="vault-card">
@@ -68,6 +113,13 @@
     </div>
   </div>
 
+  <!-- v3: COMING UP NEXT — 次に先行公開される曲 -->
+  <section class="v3-upcoming" id="v3-upcoming" style="display:none">
+    <div class="v3-upcoming-kicker" data-ja="COMING UP NEXT" data-en="COMING UP NEXT">COMING UP NEXT</div>
+    <h3 class="v3-upcoming-title" data-ja="次の会員先行公開" data-en="Next member early access">次の会員先行公開</h3>
+    <div class="v3-upcoming-list" id="v3-upcoming-list"></div>
+  </section>
+
   <div class="section-block">
     <div class="accordion-group">
       <div class="accordion" data-accordion="pending">
@@ -105,4 +157,119 @@
   </div>
 </main>
 
-<footer><div>© TAMSIC</div><div>Member lounge / Coin / History</div></footer></body></html>
+<footer><div>© TAMSIC</div><div>Member lounge / Coin / History</div></footer>
+
+<script>
+// ──────────────────────────────────────────
+// v3: EARLY ACCESS NOW / COMING UP NEXT populate
+// ──────────────────────────────────────────
+(function(){
+  function ready(fn){
+    if(document.readyState!=='loading') fn();
+    else document.addEventListener('DOMContentLoaded', fn);
+  }
+
+  function coverSrc(track){
+    // tamsic-content.js の tracks にある coverPath を優先。なければ null
+    return (track && track.coverPath) || '';
+  }
+
+  function artistLabel(id){
+    if(id==='nono') return 'no-no';
+    if(id==='kiki') return 'kiki';
+    return id || '';
+  }
+
+  function trackPageHref(track){
+    if(track.artist==='nono') return 'nono.html#track-'+track.id;
+    if(track.artist==='kiki') return 'kiki.html#track-'+track.id;
+    return 'index.html';
+  }
+
+  function formatJP(str){
+    if(!str) return '';
+    const [y,m,d]=String(str).split('-');
+    return `${y}.${m}.${d}`;
+  }
+
+  function renderEarlyAccess(){
+    const wrap=document.getElementById('v3-early-access');
+    const list=document.getElementById('v3-early-list');
+    if(!wrap||!list) return;
+    if(!window.TAMSIC_CONTENT || !window.TAMSICRelease) return;
+    if(typeof isLoggedIn==='function' && !isLoggedIn()){
+      wrap.style.display='none';
+      return;
+    }
+    const tracks=(window.TAMSIC_CONTENT.tracks||[]).filter(t=>{
+      try{ return window.TAMSICRelease.getState(t.title)==='member'; }catch(e){ return false; }
+    });
+    if(!tracks.length){
+      wrap.style.display='none';
+      return;
+    }
+    list.innerHTML=tracks.slice(0,3).map(t=>{
+      const cover=coverSrc(t);
+      const coverStyle=cover?`background-image:url('${cover}')`:'';
+      const releaseMeta = window.TAMSICRelease.config.tracks[t.title];
+      const note = releaseMeta ? (formatJP(releaseMeta.release)+' 公開') : '先行視聴中';
+      return `<a class="v3-early-card" href="${trackPageHref(t)}">
+        <div class="v3-early-cover" style="${coverStyle}"></div>
+        <div class="v3-early-body">
+          <div class="v3-early-artist">${artistLabel(t.artist)}</div>
+          <div class="v3-early-name">${t.title||''}</div>
+          <div class="v3-early-note">${note}</div>
+        </div>
+      </a>`;
+    }).join('');
+    wrap.style.display='block';
+  }
+
+  function renderUpcoming(){
+    const wrap=document.getElementById('v3-upcoming');
+    const list=document.getElementById('v3-upcoming-list');
+    if(!wrap||!list) return;
+    if(!window.TAMSIC_CONTENT || !window.TAMSICRelease) return;
+
+    const now=new Date();
+    const schedule=window.TAMSICRelease.config.tracks || {};
+    const tracks=window.TAMSIC_CONTENT.tracks||[];
+
+    // sample(先行)公開日が未来のトラックを抽出
+    const upcoming=tracks.map(t=>{
+      const sched=schedule[t.title];
+      if(!sched||!sched.sample) return null;
+      const [y,m,d]=sched.sample.split('-').map(Number);
+      const sampleDate=new Date(y,(m||1)-1,d||1);
+      if(sampleDate<=now) return null;
+      return { track:t, sampleDate, sampleStr:sched.sample };
+    }).filter(Boolean).sort((a,b)=>a.sampleDate-b.sampleDate);
+
+    if(!upcoming.length){
+      wrap.style.display='none';
+      return;
+    }
+
+    list.innerHTML=upcoming.slice(0,3).map(u=>{
+      return `<div class="v3-upcoming-row">
+        <div class="v3-upcoming-row-main">
+          <span class="v3-upcoming-row-artist">${artistLabel(u.track.artist)}</span>
+          <span class="v3-upcoming-row-name">${u.track.title||''}</span>
+        </div>
+        <span class="v3-upcoming-row-date">${formatJP(u.sampleStr)}</span>
+      </div>`;
+    }).join('');
+    wrap.style.display='block';
+  }
+
+  ready(function(){
+    renderEarlyAccess();
+    renderUpcoming();
+    // 言語切替時に再描画
+    window.addEventListener('tamsic:lang-change', ()=>{ renderEarlyAccess(); renderUpcoming(); });
+    if(window.TAMSICLang) window.TAMSICLang.apply(window.TAMSICLang.get());
+  });
+})();
+</script>
+
+</body></html>

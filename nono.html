@@ -13,6 +13,7 @@
 <script src="lang.js"></script>
 <script src="tamsic.js"></script>
 <script src="lyrics-guard.js"></script>
+<script src="gate-modal.js"></script>
 <style>
 :root{--bg:#EEF3F9;--text:#0B1D35;--accent:#0099CC;--light:#D4E2F0;--mid:#5B7FA0;--white:#FFFFFF;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -59,6 +60,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
 .tb-meta{display:flex;gap:10px;align-items:center;margin-bottom:10px;}
 .badge-new{font-family:'Syncopate',sans-serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);padding:3px 10px;}
 .tb-type{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);}
+.tb-coin-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border:1px solid rgba(0,153,204,.28);border-radius:999px;font-family:'Syncopate',sans-serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);background:rgba(255,255,255,.6);}
+.tb-coin-pill::before{content:'◈';font-size:9px;letter-spacing:0;}
 .tb-title{font-family:'Syncopate',sans-serif;font-size:18px;font-weight:700;letter-spacing:.06em;margin-bottom:6px;}
 .tb-sub{font-size:11px;color:var(--mid);letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px;}
 .player-modes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
@@ -321,20 +324,50 @@ function unlockFullTrack(trackId){
   if(!track) return;
   const meta=getReleaseMeta(track);
   if(!meta.canFull){
-    alert(meta.note || 'フル試聴はまだ利用できません。');
+    // v3: release状態に応じたモーダル表示
+    if(window.TAMSICGate){
+      if(meta.state === 'preview'){
+        window.TAMSICGate.showMemberGate({ message: meta.note });
+      } else if(meta.state === 'locked'){
+        window.TAMSICGate.showComingSoon({ message: meta.note });
+      } else {
+        window.TAMSICGate.show({
+          kicker:'LOCKED', title:'この曲はまだ利用できません',
+          message: meta.note || 'フル試聴はまだ利用できません。',
+          tertiary:{ label:'閉じる' }
+        });
+      }
+    } else {
+      alert(meta.note || 'フル試聴はまだ利用できません。');
+    }
     return;
   }
   const cost=Number(track.price||0);
   const spend=TAMSICCoins.spendCoins(track.id,cost);
   if(!spend.ok){
     if(spend.loginRequired){
-      window.location.href=`login.html?redirect=${encodeURIComponent(location.pathname.split('/').pop() || 'nono.html')}`;
+      // v3: 会員ゲートモーダル→ログイン誘導
+      if(window.TAMSICGate){
+        window.TAMSICGate.showMemberGate({
+          title:'ここから先は会員限定です',
+          redirect: location.pathname.split('/').pop() || 'nono.html'
+        });
+      } else {
+        window.location.href=`login.html?redirect=${encodeURIComponent(location.pathname.split('/').pop() || 'nono.html')}`;
+      }
       return;
     }
-    alert(`コインが不足しています。
-「${track.title}」には ${cost}コイン必要です。
-My Page でコインを追加してください。`);
-    window.location.href='mypage.html#purchase-grid';
+    // v3: コイン不足モーダル
+    if(window.TAMSICGate){
+      window.TAMSICGate.showCoinShortage({
+        trackTitle: track.title,
+        needed: cost,
+        balance: TAMSICCoins.getBalance()
+      });
+    } else {
+      alert(`コインが不足しています。\n「${track.title}」には ${cost}コイン必要です。\nMy Page でコインを追加してください。`);
+      window.location.href='mypage.html#purchase-grid';
+    }
     return;
   }
   refreshCoinUI();
@@ -414,7 +447,7 @@ function renderTracks(){
         <span class="tb-num">${num}</span>
       </div>
       <div class="tb-body">
-        <div class="tb-meta">${t.isNew?'<span class="badge-new">New</span>':''}<span class="tb-type">Single</span></div>
+        <div class="tb-meta">${t.isNew?'<span class="badge-new">New</span>':''}<span class="tb-type">Single</span>${meta.canFull && (t.price||30) ? `<span class="tb-coin-pill">${t.price||30} coin · Full</span>` : ''}</div>
         <div class="tb-title">${t.title||'TRACK TITLE'}</div>
         <div class="tb-sub">no-no</div>
         <div class="track-release-note">${chip}<div style="margin-top:8px;">${meta.note}</div></div>
