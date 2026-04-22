@@ -23,6 +23,18 @@ function getTrackCoverSrc(track) {
   return track.coverDataUrl || track.coverPath || '';
 }
 function getTrackAudioSrc(track) {
+  // v3: 公開状態の二重チェック（release-control.js が読み込まれている場合）
+  // これは静的サイト上の「防御的ゲート」。true のセキュリティは assets/ に
+  // MP3 を置かないこと、または signed URL CDN が必要。コメント欄参照。
+  try {
+    if (window.TAMSICRelease && typeof window.TAMSICRelease.getState === 'function' && track && track.title) {
+      const st = window.TAMSICRelease.getState(track.title);
+      // locked = 全員不可, preview = 非会員不可
+      if (st === 'locked') return '';
+      if (st === 'preview') return ''; // preview は非会員状態での先行期間中
+    }
+  } catch (e) { /* noop */ }
+
   if (track.audioData) {
     if (!TAMSICPlayer.blobUrls[track.id]) {
       const blob = new Blob([track.audioData], { type: track.audioType || 'audio/mpeg' });

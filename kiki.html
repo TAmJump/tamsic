@@ -542,7 +542,21 @@ function playT(id){
   const t=_tracks.find(x=>x.id===id);if(!t)return;
   const meta=getReleaseMeta(t);
   if(!meta.canSample){
-    alert(meta.note || 'この曲はまだ試聴できません。');
+    // v3: サンプル不可時もモーダル化
+    if(window.TAMSICGate){
+      if(meta.state === 'preview'){
+        window.TAMSICGate.showMemberGate({ message: meta.note });
+      } else if(meta.state === 'locked'){
+        window.TAMSICGate.showComingSoon({ message: meta.note });
+      } else {
+        window.TAMSICGate.show({
+          kicker:'LOCKED', title:'この曲はまだ試聴できません',
+          message: meta.note || '', tertiary:{label:'閉じる'}
+        });
+      }
+    } else {
+      alert(meta.note || 'この曲はまだ試聴できません。');
+    }
     return;
   }
   const url=getTrackAudioSrc(t);
