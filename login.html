@@ -6,6 +6,8 @@
   <title>TAMSIC — LOGIN</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Cognito SDK（SRP 認証用） -->
+  <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.7/dist/amazon-cognito-identity.min.js"></script>
   <style>
     :root {
       --bg:     #FAFAF7;
@@ -13,6 +15,8 @@
       --accent: #C4960E;
       --light:  #E6E6E0;
       --mid:    #7A7A72;
+      --err:    #B8463A;
+      --err-bg: #FDF3F1;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -62,7 +66,7 @@
     }
     .card {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
     }
     .card-title {
       font-family: 'Playfair Display', serif;
@@ -75,8 +79,68 @@
       font-size: 0.82rem;
       color: var(--mid);
       letter-spacing: 0.06em;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
     }
+
+    /* ─── FORM ─── */
+    .form-group { margin-bottom: 1.2rem; }
+    .form-label {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 0.5rem;
+    }
+    .form-input {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      background: #fff;
+      border: 1px solid var(--light);
+      color: var(--text);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      border-radius: 2px;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .form-input::placeholder { color: #BFBFB8; }
+
+    .pw-wrap { position: relative; }
+    .pw-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--mid);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 6px 8px;
+    }
+    .pw-toggle:hover { color: var(--accent); }
+
+    .form-hint-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: -0.4rem;
+      margin-bottom: 1.6rem;
+    }
+    .form-hint-row a {
+      font-size: 0.76rem;
+      color: var(--mid);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .form-hint-row a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 
     /* ─── BUTTON ─── */
     .btn-login {
@@ -98,8 +162,9 @@
       transition: background 0.2s, transform 0.1s;
       border-radius: 2px;
     }
-    .btn-login:hover  { background: #222; }
-    .btn-login:active { transform: scale(0.98); }
+    .btn-login:hover:not(:disabled) { background: #222; }
+    .btn-login:active:not(:disabled) { transform: scale(0.98); }
+    .btn-login:disabled { opacity: 0.55; cursor: not-allowed; }
     .btn-login.loading { opacity: 0.7; pointer-events: none; }
 
     .spinner-sm {
@@ -113,15 +178,27 @@
     .loading .spinner-sm { display: block; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ─── ERROR ─── */
+    .err-box {
+      margin-top: 1rem;
+      padding: 0.9rem 1rem;
+      background: var(--err-bg);
+      border-left: 2px solid var(--err);
+      color: var(--err);
+      font-size: 0.82rem;
+      line-height: 1.6;
+      display: none;
+    }
+    .err-box.show { display: block; }
+
     .divider {
       display: flex;
       align-items: center;
       gap: 1rem;
       margin: 1.8rem 0;
-      color: var(--light);
+      color: var(--mid);
       font-size: 0.75rem;
       letter-spacing: 0.1em;
-      color: var(--mid);
     }
     .divider::before, .divider::after {
       content: '';
@@ -144,16 +221,20 @@
     }
     .signup-link a:hover { border-color: var(--accent); }
 
-    .notice {
-      margin-top: 2.5rem;
-      padding: 1rem 1.2rem;
-      border: 1px solid var(--light);
-      border-radius: 4px;
-      font-size: 0.78rem;
+    .fallback {
+      margin-top: 1.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px dashed var(--light);
+      text-align: center;
+      font-size: 0.72rem;
       color: var(--mid);
-      line-height: 1.6;
+      line-height: 1.7;
     }
-    .notice strong { color: var(--accent); }
+    .fallback a {
+      color: var(--mid);
+      text-decoration: underline;
+    }
+    .fallback a:hover { color: var(--accent); }
 
     /* ─── FOOTER ─── */
     footer {
@@ -183,19 +264,42 @@
     <h1 class="card-title" data-ja="会員ログイン" data-en="Member Login">会員ログイン</h1>
     <p class="card-sub"><span data-ja="先行試聴・コイン機能を利用するにはログインが必要です" data-en="Login required for early listening &amp; coins">先行試聴・コイン機能を利用するにはログインが必要です</span></p>
 
-    <button class="btn-login" id="loginBtn" onclick="handleLogin()">
-      <div class="spinner-sm"></div>
-      <span data-ja="ログイン" data-en="Login">ログイン</span>
-    </button>
+    <form id="loginForm" autocomplete="on" novalidate>
+      <div class="form-group">
+        <label for="email" class="form-label" data-ja="メールアドレス" data-en="Email">メールアドレス</label>
+        <input type="email" id="email" name="email" class="form-input" autocomplete="email" required placeholder="you@example.com">
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label" data-ja="パスワード" data-en="Password">パスワード</label>
+        <div class="pw-wrap">
+          <input type="password" id="password" name="password" class="form-input" autocomplete="current-password" required>
+          <button type="button" class="pw-toggle" onclick="togglePw()" data-ja="表示" data-en="Show">表示</button>
+        </div>
+      </div>
+
+      <div class="form-hint-row">
+        <a href="/forgot-password.html" data-ja="パスワードを忘れた方" data-en="Forgot password?">パスワードを忘れた方</a>
+      </div>
+
+      <button type="submit" class="btn-login" id="loginBtn">
+        <div class="spinner-sm"></div>
+        <span data-ja="ログイン" data-en="Log in">ログイン</span>
+      </button>
+
+      <div class="err-box" id="errBox"></div>
+    </form>
 
     <div class="divider">or</div>
 
     <p class="signup-link">
-      <span data-ja="アカウントをお持ちでない方は" data-en="New here?">アカウントをお持ちでない方は</span> <a href="/signup.html" data-ja="新規登録" data-en="Create account">新規登録</a>
+      <span data-ja="アカウントをお持ちでない方は" data-en="New here?">アカウントをお持ちでない方は</span>
+      <a href="/signup.html" data-ja="新規登録" data-en="Create account">新規登録</a>
     </p>
 
-    <div class="notice">
-      <strong data-ja="会員特典：" data-en="Member benefits:">会員特典：</strong><span data-ja="一般公開より2週間早く新曲を試聴できます。コインを購入して楽曲をアンロックしましょう。" data-en="Listen early &amp; unlock full tracks with coins.">一般公開より2週間早く新曲を試聴できます。コインを購入して楽曲をアンロックしましょう。</span>
+    <div class="fallback">
+      <span data-ja="うまくログインできない場合は" data-en="Having trouble?">うまくログインできない場合は</span>
+      <a href="#" onclick="useHostedUI(event)" data-ja="旧ログイン画面を使う" data-en="use classic login">旧ログイン画面を使う</a>
     </div>
   </div>
 </main>
@@ -205,16 +309,163 @@
 <script src="auth.js"></script>
 <script src="lang.js"></script>
 <script>
-  // すでにログイン済みならマイページへ
-  if (isLoggedIn()) {
-    window.location.href = '/mypage.html';
+// ────────────────────────────────────────────────
+// すでにログイン済みなら redirect 先 or マイページへ
+// ────────────────────────────────────────────────
+(function () {
+  const params = new URLSearchParams(location.search);
+  const redirect = params.get('redirect');
+  if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+    location.href = redirect ? `/${redirect}` : '/mypage.html';
+  }
+})();
+
+// ────────────────────────────────────────────────
+// Cognito エラーコード → 日本語文言
+// ────────────────────────────────────────────────
+const ERR_MAP = {
+  NotAuthorizedException:    { ja: 'メールアドレスまたはパスワードが正しくありません。', en: 'Incorrect email or password.' },
+  UserNotFoundException:     { ja: 'このメールアドレスは登録されていません。',               en: 'This email is not registered.' },
+  UserNotConfirmedException: { ja: 'メール認証が完了していません。登録時の確認コードを入力してください。', en: 'Email not verified. Please confirm your registration.' },
+  PasswordResetRequiredException: { ja: 'パスワードの再設定が必要です。',                   en: 'Password reset required.' },
+  TooManyFailedAttemptsException: { ja: '試行回数が多すぎます。時間を置いてお試しください。', en: 'Too many attempts. Please try again later.' },
+  LimitExceededException:    { ja: '試行回数が多すぎます。時間を置いてお試しください。',     en: 'Too many attempts. Please try again later.' },
+  InvalidParameterException: { ja: '入力内容をご確認ください。',                              en: 'Please check your input.' },
+  NetworkError:              { ja: 'ネットワークエラー。接続を確認してください。',            en: 'Network error. Please check your connection.' },
+};
+function lang() {
+  return (window.TAMSICLang && window.TAMSICLang.get && window.TAMSICLang.get()) || 'ja';
+}
+function mapErr(err) {
+  const code = (err && (err.code || err.name)) || 'Unknown';
+  const m = ERR_MAP[code];
+  if (m) return m[lang()] || m.ja;
+  return lang() === 'en'
+    ? (err && err.message) || 'Login failed.'
+    : (err && err.message) || 'ログインに失敗しました。';
+}
+
+// ────────────────────────────────────────────────
+// パスワード表示切り替え
+// ────────────────────────────────────────────────
+function togglePw() {
+  const el = document.getElementById('password');
+  const btn = document.querySelector('.pw-toggle');
+  if (el.type === 'password') {
+    el.type = 'text';
+    btn.textContent = lang() === 'en' ? 'Hide' : '非表示';
+  } else {
+    el.type = 'password';
+    btn.textContent = lang() === 'en' ? 'Show' : '表示';
+  }
+}
+
+// ────────────────────────────────────────────────
+// SRP 認証（Cognito SDK 経由）
+// ────────────────────────────────────────────────
+function cognitoSignIn(email, password) {
+  return new Promise((resolve, reject) => {
+    if (!window.AmazonCognitoIdentity) {
+      return reject(new Error('Cognito SDK not loaded.'));
+    }
+    const poolData = {
+      UserPoolId: 'ap-northeast-1_vozRgCY5k',
+      ClientId:   '62e35ra0h4s2dr657euorlm5bu'
+    };
+    const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    const cognitoUser = new AmazonCognitoIdentity.CognitoUser({ Username: email, Pool: userPool });
+    const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({ Username: email, Password: password });
+
+    cognitoUser.authenticateUser(authDetails, {
+      onSuccess: (session) => {
+        // auth.js の STORAGE_KEYS に合わせて保存
+        const accessToken  = session.getAccessToken().getJwtToken();
+        const idToken      = session.getIdToken().getJwtToken();
+        const refreshToken = session.getRefreshToken().getToken();
+        localStorage.setItem('tamsic_access_token', accessToken);
+        localStorage.setItem('tamsic_id_token',     idToken);
+        localStorage.setItem('tamsic_refresh_token', refreshToken);
+        // アクセストークンの exp から有効期限を設定
+        try {
+          const payload = JSON.parse(atob(accessToken.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
+          const expMs = payload.exp * 1000;
+          localStorage.setItem('tamsic_token_expiry', String(expMs));
+        } catch {
+          localStorage.setItem('tamsic_token_expiry', String(Date.now() + 3600 * 1000));
+        }
+        // コイン残高を Cognito 属性から同期（auth.js の関数を流用）
+        try {
+          if (typeof _syncWalletFromCognito === 'function') {
+            setTimeout(() => _syncWalletFromCognito(), 500);
+          }
+        } catch {}
+        resolve();
+      },
+      onFailure: (err) => reject(err),
+      newPasswordRequired: () => {
+        // 管理者が初期一時パスワードを発行したケース。forgot-password 経由で設定してもらう
+        const e = new Error('Password change required.');
+        e.code = 'PasswordResetRequiredException';
+        reject(e);
+      }
+    });
+  });
+}
+
+// ────────────────────────────────────────────────
+// フォーム送信
+// ────────────────────────────────────────────────
+const form   = document.getElementById('loginForm');
+const btn    = document.getElementById('loginBtn');
+const errBox = document.getElementById('errBox');
+
+form.addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  errBox.classList.remove('show');
+  errBox.textContent = '';
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  if (!email || !password) {
+    errBox.textContent = lang() === 'en' ? 'Please enter email and password.' : 'メールアドレスとパスワードを入力してください。';
+    errBox.classList.add('show');
+    return;
   }
 
-  async function handleLogin() {
-    const btn = document.getElementById('loginBtn');
-    btn.classList.add('loading');
-    await cognitoLogin(); // Cognito Hosted UI へリダイレクト
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  try {
+    await cognitoSignIn(email, password);
+    const params = new URLSearchParams(location.search);
+    const redirect = params.get('redirect');
+    location.href = redirect ? `/${redirect}` : '/mypage.html';
+  } catch (err) {
+    console.error('[login] failed', err);
+    errBox.textContent = mapErr(err);
+    errBox.classList.add('show');
+
+    // UserNotConfirmedException の場合は確認コード画面へ誘導
+    if (err && (err.code === 'UserNotConfirmedException' || err.name === 'UserNotConfirmedException')) {
+      setTimeout(() => {
+        location.href = `/signup.html?confirm=${encodeURIComponent(email)}`;
+      }, 1800);
+    }
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
   }
+});
+
+// ────────────────────────────────────────────────
+// フォールバック: 旧 Hosted UI へ
+// ────────────────────────────────────────────────
+async function useHostedUI(ev) {
+  ev.preventDefault();
+  if (typeof cognitoLogin === 'function') {
+    await cognitoLogin();
+  }
+}
 </script>
 
 </body>

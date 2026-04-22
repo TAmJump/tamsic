@@ -12,6 +12,7 @@
 <script src="release-control.js"></script>
 <script src="lang.js"></script>
 <script src="tamsic.js"></script>
+<script src="lyrics-guard.js"></script>
 <style>
 :root{--bg:#FDF8F4;--text:#221418;--accent:#C85A72;--accent2:#E8A0B0;--light:#EEE0D8;--mid:#9A7068;--white:#FFFFFF;--soft:#F7EEE8;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -356,7 +357,17 @@ My Page でコインを追加してください。`);
   refreshCoinUI();
   const mount=document.getElementById(`full-player-${track.id}`);
   const lyrics=document.getElementById(`lyrics-${track.id}`);
+  const lyricsInner=document.getElementById(`lyrics-inner-${track.id}`);
   if(lyrics) lyrics.style.display='block';
+  // v3: 歌詞保護モジュールで描画（コピー・右クリック・スクショを抑止＋透かし）
+  if(lyricsInner && window.TAMSICLyrics){
+    const userEmail = (typeof getUserInfo === 'function' && getUserInfo()) ? getUserInfo().email : 'guest';
+    window.TAMSICLyrics.protect(lyricsInner, track.lyrics || '', {
+      watermark: userEmail,
+      obfuscate: true,
+      onPrintScreen: 'blur'
+    });
+  }
   const url=getTrackAudioSrc(track);
   if(!url){
     alert('音声ファイルが設定されていません。');
@@ -452,7 +463,7 @@ function renderTracks(){
               <div class="full-note">${meta.canFull ? 'ダウンロード不可 / ブラウザ内再生のみ / 再度再生する場合は再度コインを消費' : meta.note}</div>
               ${fullMsg}
               <div class="full-player-mount" id="full-player-${t.id}"></div>
-              <div class="full-lyrics" id="lyrics-${t.id}" style="display:none;--lyrics-bg-image:url('${coverSrc||''}')"><div class="full-lyrics-title">lyrics</div><div class="full-lyrics-inner">${(t.lyrics||'').split(/\n\s*\n/).map(s=>'<p class="lyrics-stanza">'+s.trim().replace(/\n/g,'<br>')+'</p>').join('')}</div></div>
+              <div class="full-lyrics" id="lyrics-${t.id}" style="display:none;--lyrics-bg-image:url('${coverSrc||''}')" data-lyrics-id="${t.id}"><div class="full-lyrics-title">lyrics</div><div class="full-lyrics-inner" id="lyrics-inner-${t.id}"></div></div>
             </div>
             <div class="full-side">
               <div class="full-price"><span class="coin-num" data-track-cost="${t.price||30}">${t.price||30}</span><span class="coin-unit">coin / one listen</span></div>

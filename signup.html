@@ -6,179 +6,67 @@
   <title>TAMSIC — SIGN UP</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.7/dist/amazon-cognito-identity.min.js"></script>
   <style>
     :root {
-      --bg:     #FAFAF7;
-      --text:   #0E0E0E;
-      --accent: #C4960E;
-      --light:  #E6E6E0;
-      --mid:    #7A7A72;
+      --bg:#FAFAF7;--text:#0E0E0E;--accent:#C4960E;--light:#E6E6E0;--mid:#7A7A72;
+      --err:#B8463A;--err-bg:#FDF3F1;--ok:#3F7F5B;--ok-bg:#F1F8F3;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Jost', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:var(--bg);color:var(--text);font-family:'Jost',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+    header{display:flex;align-items:center;justify-content:space-between;padding:1.2rem 2rem;border-bottom:1px solid var(--light)}
+    .logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;letter-spacing:.3em;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--accent)}
+    nav a{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--mid);margin-left:1.8rem;transition:color .2s}
+    nav a:hover{color:var(--text)}
+    main{flex:1;display:flex;align-items:center;justify-content:center;padding:3rem 1.5rem}
+    .card{width:100%;max-width:420px}
+    .card-title{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:400;letter-spacing:.05em;margin-bottom:.5rem}
+    .card-sub{font-size:.82rem;color:var(--mid);letter-spacing:.06em;margin-bottom:1.8rem}
+    .benefits{list-style:none;margin:0 0 1.8rem;padding:1rem 1.1rem;background:#fff;border:1px solid var(--light);border-radius:2px}
+    .benefits li{font-size:.82rem;color:var(--mid);padding:.35rem 0 .35rem 1.1rem;position:relative;line-height:1.55}
+    .benefits li::before{content:'';position:absolute;left:0;top:.85rem;width:5px;height:5px;background:var(--accent);border-radius:50%}
+    .form-group{margin-bottom:1.2rem}
+    .form-label{display:block;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mid);margin-bottom:.5rem}
+    .form-input{width:100%;padding:.9rem 1rem;background:#fff;border:1px solid var(--light);color:var(--text);font-family:'Jost',sans-serif;font-size:.95rem;letter-spacing:.02em;border-radius:2px;transition:border-color .15s}
+    .form-input:focus{outline:none;border-color:var(--accent)}
+    .form-input::placeholder{color:#BFBFB8}
+    .pw-wrap{position:relative}
+    .pw-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--mid);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;padding:6px 8px}
+    .pw-toggle:hover{color:var(--accent)}
+    .pw-hint{font-size:.72rem;color:var(--mid);margin-top:.45rem;line-height:1.6}
+    .code-input{letter-spacing:.4em;text-align:center;font-size:1.2rem}
 
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.2rem 2rem;
-      border-bottom: 1px solid var(--light);
-    }
-    .logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.4rem;
-      font-weight: 700;
-      letter-spacing: 0.3em;
-      text-decoration: none;
-      color: var(--text);
-    }
-    .logo span { color: var(--accent); }
-    nav a {
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      text-decoration: none;
-      color: var(--mid);
-      margin-left: 1.8rem;
-      transition: color 0.2s;
-    }
-    nav a:hover { color: var(--text); }
+    .btn{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:1rem;background:var(--text);color:#fff;font-family:'Jost',sans-serif;font-size:.85rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;transition:background .2s,transform .1s;border-radius:2px}
+    .btn:hover:not(:disabled){background:#222}
+    .btn:active:not(:disabled){transform:scale(.98)}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+    .btn.loading{opacity:.7;pointer-events:none}
+    .spinner-sm{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+    .loading .spinner-sm{display:block}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-    main {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 3rem 1.5rem;
-    }
-    .card {
-      width: 100%;
-      max-width: 420px;
-    }
-    .card-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.8rem;
-      font-weight: 400;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.5rem;
-    }
-    .card-sub {
-      font-size: 0.82rem;
-      color: var(--mid);
-      letter-spacing: 0.06em;
-      margin-bottom: 2.5rem;
-      line-height: 1.6;
-    }
+    .btn-alt{background:transparent;color:var(--mid);border:1px solid var(--light);margin-top:.8rem}
+    .btn-alt:hover:not(:disabled){color:var(--text);border-color:var(--mid);background:transparent}
 
-    .benefits {
-      list-style: none;
-      margin-bottom: 2rem;
-      border: 1px solid var(--light);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .benefits li {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      padding: 0.9rem 1.2rem;
-      font-size: 0.83rem;
-      border-bottom: 1px solid var(--light);
-    }
-    .benefits li:last-child { border-bottom: none; }
-    .benefits li::before {
-      content: '✦';
-      color: var(--accent);
-      font-size: 0.7rem;
-      flex-shrink: 0;
-    }
+    .msg-box{margin-top:1rem;padding:.9rem 1rem;font-size:.82rem;line-height:1.6;display:none}
+    .msg-box.show{display:block}
+    .msg-err{background:var(--err-bg);border-left:2px solid var(--err);color:var(--err)}
+    .msg-ok{background:var(--ok-bg);border-left:2px solid var(--ok);color:var(--ok)}
 
-    .btn-signup {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.6rem;
-      width: 100%;
-      padding: 1rem;
-      background: var(--accent);
-      color: #fff;
-      font-family: 'Jost', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      border: none;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      border-radius: 2px;
-    }
-    .btn-signup:hover  { background: #b3860c; }
-    .btn-signup:active { transform: scale(0.98); }
-    .btn-signup.loading { opacity: 0.7; pointer-events: none; }
+    .divider{display:flex;align-items:center;gap:1rem;margin:1.8rem 0;color:var(--mid);font-size:.75rem;letter-spacing:.1em}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--light)}
+    .login-link{text-align:center;font-size:.82rem;color:var(--mid)}
+    .login-link a{color:var(--accent);text-decoration:none;font-weight:500;border-bottom:1px solid transparent;transition:border-color .2s}
+    .login-link a:hover{border-color:var(--accent)}
+    .terms{margin-top:1.5rem;font-size:.72rem;color:var(--mid);text-align:center;line-height:1.7}
+    .step-nav{font-size:.72rem;color:var(--mid);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.6rem}
+    .back-link{display:inline-block;margin-top:1.2rem;font-size:.78rem;color:var(--mid);text-decoration:none;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
+    .back-link:hover{color:var(--accent);border-bottom-color:var(--accent)}
+    footer{text-align:center;padding:1.5rem;font-size:.72rem;color:var(--mid);letter-spacing:.08em;border-top:1px solid var(--light)}
 
-    .spinner-sm {
-      width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,0.4);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      display: none;
-    }
-    .loading .spinner-sm { display: block; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin: 1.8rem 0;
-      font-size: 0.75rem;
-      color: var(--mid);
-    }
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--light);
-    }
-
-    .login-link {
-      text-align: center;
-      font-size: 0.82rem;
-      color: var(--mid);
-    }
-    .login-link a {
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 500;
-      border-bottom: 1px solid var(--mid);
-      transition: border-color 0.2s;
-    }
-    .login-link a:hover { border-color: var(--text); }
-
-    .terms {
-      margin-top: 1.5rem;
-      font-size: 0.75rem;
-      color: var(--mid);
-      text-align: center;
-      line-height: 1.6;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1.5rem;
-      font-size: 0.72rem;
-      color: var(--mid);
-      letter-spacing: 0.08em;
-      border-top: 1px solid var(--light);
-    }
+    .step{display:none}
+    .step.active{display:block}
   </style>
 </head>
 <body>
@@ -195,30 +83,79 @@
 
 <main>
   <div class="card">
-    <h1 class="card-title" data-ja="TAMSIC に参加する" data-en="Join TAMSIC">TAMSIC に参加する</h1>
-    <p class="card-sub"><span data-ja="無料会員登録で先行試聴・コイン購入機能が使えます" data-en="Free membership — early listening &amp; coins">無料会員登録で先行試聴・コイン購入機能が使えます</span></p>
 
-    <ul class="benefits">
-      <li data-ja="一般公開より2週間早い先行試聴" data-en="Early access before public release">一般公開より2週間早い先行試聴</li>
-      <li data-ja="アーティスト限定コンテンツへのアクセス" data-en="Exclusive artist content">アーティスト限定コンテンツへのアクセス</li>
-      <li data-ja="コインでお気に入り楽曲をアンロック" data-en="Unlock tracks with coins">コインでお気に入り楽曲をアンロック</li>
-      <li data-ja="新曲リリース通知（予定）" data-en="New release notifications (coming soon)">新曲リリース通知（予定）</li>
-    </ul>
+    <!-- ─── STEP 1: 登録フォーム ─── -->
+    <div class="step active" id="step-signup">
+      <div class="step-nav" data-ja="STEP 1 / 2　新規登録" data-en="STEP 1 / 2　Create account">STEP 1 / 2　新規登録</div>
+      <h1 class="card-title" data-ja="TAMSIC に参加する" data-en="Join TAMSIC">TAMSIC に参加する</h1>
+      <p class="card-sub" data-ja="会員登録で先行試聴とコイン機能が使えます" data-en="Early listening &amp; coins for members">会員登録で先行試聴とコイン機能が使えます</p>
 
-    <button class="btn-signup" id="signupBtn" onclick="handleSignup()">
-      <div class="spinner-sm"></div>
-      <span data-ja="アカウント作成" data-en="Create Account">アカウント作成</span>
-    </button>
+      <ul class="benefits">
+        <li data-ja="一般公開より 14 日早い先行試聴" data-en="Listen 14 days before public release">一般公開より 14 日早い先行試聴</li>
+        <li data-ja="フル試聴をコインでアンロック" data-en="Unlock full tracks with coins">フル試聴をコインでアンロック</li>
+        <li data-ja="会員限定の歌詞カード" data-en="Members-only lyrics">会員限定の歌詞カード</li>
+      </ul>
 
-    <div class="divider"><span data-ja="すでに会員の方" data-en="Already a member?">すでに会員の方</span></div>
+      <form id="signupForm" novalidate>
+        <div class="form-group">
+          <label for="su-email" class="form-label" data-ja="メールアドレス" data-en="Email">メールアドレス</label>
+          <input type="email" id="su-email" class="form-input" autocomplete="email" required placeholder="you@example.com">
+        </div>
 
-    <p class="login-link">
-      <a href="/login.html" data-ja="ログインはこちら" data-en="Login here">ログインはこちら</a>
-    </p>
+        <div class="form-group">
+          <label for="su-password" class="form-label" data-ja="パスワード" data-en="Password">パスワード</label>
+          <div class="pw-wrap">
+            <input type="password" id="su-password" class="form-input" autocomplete="new-password" required>
+            <button type="button" class="pw-toggle" onclick="togglePw('su-password',this)" data-ja="表示" data-en="Show">表示</button>
+          </div>
+          <p class="pw-hint" data-ja="8文字以上・大文字・小文字・数字を含めてください" data-en="At least 8 chars with upper, lower, and number">8文字以上・大文字・小文字・数字を含めてください</p>
+        </div>
 
-    <p class="terms">
-      <span data-ja="登録することで、TAMSICの利用規約およびプライバシーポリシーに同意したものとみなします。" data-en="By registering you agree to our Terms of Service and Privacy Policy.">登録することで、TAMSICの利用規約およびプライバシーポリシーに同意したものとみなします。</span>
-    </p>
+        <button type="submit" class="btn" id="suBtn">
+          <div class="spinner-sm"></div>
+          <span data-ja="確認コードを送信" data-en="Send verification code">確認コードを送信</span>
+        </button>
+
+        <div class="msg-box msg-err" id="suErr"></div>
+      </form>
+
+      <div class="divider"><span data-ja="すでに会員の方" data-en="Already a member?">すでに会員の方</span></div>
+      <p class="login-link"><a href="/login.html" data-ja="ログインはこちら" data-en="Log in here">ログインはこちら</a></p>
+
+      <p class="terms" data-ja="登録することで、TAMSIC の利用規約およびプライバシーポリシーに同意したものとみなします。" data-en="By registering you agree to our Terms and Privacy Policy.">登録することで、TAMSIC の利用規約およびプライバシーポリシーに同意したものとみなします。</p>
+    </div>
+
+    <!-- ─── STEP 2: 確認コード入力 ─── -->
+    <div class="step" id="step-confirm">
+      <div class="step-nav" data-ja="STEP 2 / 2　メール確認" data-en="STEP 2 / 2　Verify email">STEP 2 / 2　メール確認</div>
+      <h1 class="card-title" data-ja="確認コードを入力" data-en="Enter verification code">確認コードを入力</h1>
+      <p class="card-sub">
+        <span data-ja="登録されたメールアドレスに 6 桁の確認コードを送信しました。" data-en="A 6-digit code has been sent to your email.">登録されたメールアドレスに 6 桁の確認コードを送信しました。</span>
+        <br>
+        <strong style="color:var(--text);letter-spacing:.02em" id="confirm-email-label"></strong>
+      </p>
+
+      <form id="confirmForm" novalidate>
+        <div class="form-group">
+          <label for="cf-code" class="form-label" data-ja="確認コード" data-en="Verification code">確認コード</label>
+          <input type="text" id="cf-code" class="form-input code-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required placeholder="000000">
+        </div>
+
+        <button type="submit" class="btn" id="cfBtn">
+          <div class="spinner-sm"></div>
+          <span data-ja="登録を完了する" data-en="Complete registration">登録を完了する</span>
+        </button>
+        <button type="button" class="btn btn-alt" id="resendBtn" onclick="resendCode()">
+          <span data-ja="コードを再送する" data-en="Resend code">コードを再送する</span>
+        </button>
+
+        <div class="msg-box msg-err" id="cfErr"></div>
+        <div class="msg-box msg-ok" id="cfOk"></div>
+      </form>
+
+      <a href="#" class="back-link" onclick="backToStep1(event)" data-ja="← メールアドレスを変更する" data-en="← Change email">← メールアドレスを変更する</a>
+    </div>
+
   </div>
 </main>
 
@@ -227,16 +164,234 @@
 <script src="auth.js"></script>
 <script src="lang.js"></script>
 <script>
-  // すでにログイン済みならマイページへ
-  if (isLoggedIn()) {
-    window.location.href = '/mypage.html';
+// ログイン済みはマイページへ
+if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+  location.href = '/mypage.html';
+}
+
+function lang() { return (window.TAMSICLang && window.TAMSICLang.get && window.TAMSICLang.get()) || 'ja'; }
+
+const ERR_MAP = {
+  UsernameExistsException:   { ja:'このメールアドレスはすでに登録されています。',             en:'This email is already registered.' },
+  InvalidPasswordException:  { ja:'パスワードは8文字以上・大文字・小文字・数字を含めてください。', en:'Password must be 8+ chars with upper, lower, and number.' },
+  InvalidParameterException: { ja:'入力内容をご確認ください。',                                 en:'Please check your input.' },
+  CodeMismatchException:     { ja:'確認コードが正しくありません。',                              en:'Invalid verification code.' },
+  ExpiredCodeException:      { ja:'コードの有効期限が切れました。再送してください。',           en:'Code expired. Please resend.' },
+  LimitExceededException:    { ja:'試行回数が多すぎます。時間を置いてお試しください。',           en:'Too many attempts. Please try later.' },
+  NotAuthorizedException:    { ja:'すでに登録済み、または無効な操作です。',                     en:'Already registered or invalid operation.' },
+};
+function mapErr(err) {
+  const code = (err && (err.code || err.name)) || '';
+  const m = ERR_MAP[code];
+  if (m) return m[lang()] || m.ja;
+  return lang() === 'en'
+    ? (err && err.message) || 'Something went wrong.'
+    : (err && err.message) || 'エラーが発生しました。';
+}
+
+function togglePw(id, btn) {
+  const el = document.getElementById(id);
+  if (el.type === 'password') { el.type='text'; btn.textContent = lang()==='en'?'Hide':'非表示'; }
+  else { el.type='password'; btn.textContent = lang()==='en'?'Show':'表示'; }
+}
+
+function showStep(name) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(`step-${name}`).classList.add('active');
+}
+
+function backToStep1(ev) { ev.preventDefault(); showStep('signup'); }
+
+// ────────────────────────────────────────────────
+// Cognito 操作
+// ────────────────────────────────────────────────
+const POOL_CONFIG = {
+  UserPoolId: 'ap-northeast-1_vozRgCY5k',
+  ClientId:   '62e35ra0h4s2dr657euorlm5bu'
+};
+
+function pool() {
+  return new AmazonCognitoIdentity.CognitoUserPool(POOL_CONFIG);
+}
+function user(email) {
+  return new AmazonCognitoIdentity.CognitoUser({ Username: email, Pool: pool() });
+}
+
+function cognitoSignUp(email, password) {
+  return new Promise((resolve, reject) => {
+    const attrs = [
+      new AmazonCognitoIdentity.CognitoUserAttribute({ Name:'email', Value: email })
+    ];
+    pool().signUp(email, password, attrs, null, (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+}
+
+function cognitoConfirm(email, code) {
+  return new Promise((resolve, reject) => {
+    user(email).confirmRegistration(code, true, (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+}
+
+function cognitoResend(email) {
+  return new Promise((resolve, reject) => {
+    user(email).resendConfirmationCode((err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+}
+
+function cognitoSignIn(email, password) {
+  return new Promise((resolve, reject) => {
+    const u = user(email);
+    const auth = new AmazonCognitoIdentity.AuthenticationDetails({ Username: email, Password: password });
+    u.authenticateUser(auth, {
+      onSuccess: (session) => {
+        const accessToken = session.getAccessToken().getJwtToken();
+        const idToken = session.getIdToken().getJwtToken();
+        const refreshToken = session.getRefreshToken().getToken();
+        localStorage.setItem('tamsic_access_token', accessToken);
+        localStorage.setItem('tamsic_id_token', idToken);
+        localStorage.setItem('tamsic_refresh_token', refreshToken);
+        try {
+          const payload = JSON.parse(atob(accessToken.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
+          localStorage.setItem('tamsic_token_expiry', String(payload.exp * 1000));
+        } catch {
+          localStorage.setItem('tamsic_token_expiry', String(Date.now() + 3600000));
+        }
+        resolve();
+      },
+      onFailure: reject
+    });
+  });
+}
+
+// ────────────────────────────────────────────────
+// STEP 1: Sign up
+// ────────────────────────────────────────────────
+const suForm = document.getElementById('signupForm');
+const suBtn  = document.getElementById('suBtn');
+const suErr  = document.getElementById('suErr');
+
+let pendingEmail    = '';
+let pendingPassword = ''; // 確認完了後の自動ログイン用に一時保持（DOM に残さない）
+
+suForm.addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  suErr.classList.remove('show'); suErr.textContent = '';
+  const email = document.getElementById('su-email').value.trim();
+  const password = document.getElementById('su-password').value;
+  if (!email || !password) {
+    suErr.textContent = lang()==='en' ? 'Please enter email and password.' : 'メールアドレスとパスワードを入力してください。';
+    suErr.classList.add('show'); return;
   }
 
-  async function handleSignup() {
-    const btn = document.getElementById('signupBtn');
-    btn.classList.add('loading');
-    await cognitoSignup(); // Cognito Hosted UI のサインアップへリダイレクト
+  suBtn.classList.add('loading'); suBtn.disabled = true;
+  try {
+    await cognitoSignUp(email, password);
+    pendingEmail = email;
+    pendingPassword = password;
+    document.getElementById('confirm-email-label').textContent = email;
+    showStep('confirm');
+  } catch (err) {
+    console.error('[signup]', err);
+    suErr.textContent = mapErr(err);
+    suErr.classList.add('show');
+
+    // すでに登録済みで未確認の場合 → 確認コード再送 + confirm 画面へ
+    if (err && (err.code === 'UsernameExistsException')) {
+      try {
+        await cognitoResend(email);
+        pendingEmail = email;
+        pendingPassword = password;
+        document.getElementById('confirm-email-label').textContent = email;
+        showStep('confirm');
+        suErr.classList.remove('show');
+      } catch {}
+    }
+  } finally {
+    suBtn.classList.remove('loading'); suBtn.disabled = false;
   }
+});
+
+// ────────────────────────────────────────────────
+// STEP 2: Confirm
+// ────────────────────────────────────────────────
+const cfForm = document.getElementById('confirmForm');
+const cfBtn  = document.getElementById('cfBtn');
+const cfErr  = document.getElementById('cfErr');
+const cfOk   = document.getElementById('cfOk');
+
+cfForm.addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  cfErr.classList.remove('show'); cfErr.textContent = '';
+  cfOk.classList.remove('show');  cfOk.textContent = '';
+
+  const code = document.getElementById('cf-code').value.trim();
+  if (!code || code.length < 4) {
+    cfErr.textContent = lang()==='en' ? 'Please enter the verification code.' : '確認コードを入力してください。';
+    cfErr.classList.add('show'); return;
+  }
+
+  cfBtn.classList.add('loading'); cfBtn.disabled = true;
+  try {
+    await cognitoConfirm(pendingEmail, code);
+    cfOk.textContent = lang()==='en' ? 'Registration complete. Logging in...' : '登録が完了しました。ログインします…';
+    cfOk.classList.add('show');
+    // 自動ログイン
+    try {
+      await cognitoSignIn(pendingEmail, pendingPassword);
+      pendingPassword = '';
+      setTimeout(() => { location.href = '/mypage.html'; }, 800);
+    } catch (loginErr) {
+      // 自動ログイン失敗 → login.html に誘導
+      pendingPassword = '';
+      setTimeout(() => { location.href = '/login.html'; }, 1000);
+    }
+  } catch (err) {
+    console.error('[confirm]', err);
+    cfErr.textContent = mapErr(err);
+    cfErr.classList.add('show');
+  } finally {
+    cfBtn.classList.remove('loading'); cfBtn.disabled = false;
+  }
+});
+
+async function resendCode() {
+  if (!pendingEmail) return;
+  cfErr.classList.remove('show'); cfOk.classList.remove('show');
+  const rBtn = document.getElementById('resendBtn');
+  rBtn.disabled = true;
+  try {
+    await cognitoResend(pendingEmail);
+    cfOk.textContent = lang()==='en' ? 'Code resent. Please check your email.' : 'コードを再送しました。メールをご確認ください。';
+    cfOk.classList.add('show');
+  } catch (err) {
+    cfErr.textContent = mapErr(err);
+    cfErr.classList.add('show');
+  } finally {
+    setTimeout(() => { rBtn.disabled = false; }, 5000);
+  }
+}
+
+// ────────────────────────────────────────────────
+// 他画面から遷移時の ?confirm=email 対応
+// ────────────────────────────────────────────────
+(function () {
+  const params = new URLSearchParams(location.search);
+  const confirmEmail = params.get('confirm');
+  if (confirmEmail) {
+    pendingEmail = confirmEmail;
+    document.getElementById('confirm-email-label').textContent = confirmEmail;
+    showStep('confirm');
+  }
+})();
 </script>
 
 </body>
