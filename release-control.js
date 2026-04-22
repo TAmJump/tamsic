@@ -1,5 +1,23 @@
 function _RL(ja,en){return(window.TAMSICLang&&window.TAMSICLang.get()==='en')?en:ja;}
 window.TAMSICRelease=(function(){
+// ─────────────────────────────────────────
+// Admin unlock: これらのメールでログインしたユーザーは、
+// 全ての曲を「full (公開済)」状態で見られる。
+// 注: 未公開曲の MP3 は本番 repo にまだ配置されていないため、
+// ロック解除されても再生は 404 になる（UI のみの解放）。
+// ─────────────────────────────────────────
+const ADMIN_EMAILS=["animalb001@gmail.com"]; // ← 自分の TAMSIC ログインメールに書き換え
+
+function _isAdmin(){
+  try{
+    if(typeof getUserInfo==="function"){
+      const u=getUserInfo();
+      if(u&&u.email&&ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(u.email.toLowerCase())) return true;
+    }
+  }catch(e){}
+  return false;
+}
+
 const config={tracks:{
 "ぎりぎりだよ。":{sample:"2026-04-01",release:"2026-04-15"},
 "RE+":{sample:"2026-05-01",release:"2026-05-15"},
@@ -29,6 +47,8 @@ function formatJP(str){const [y,m,d]=String(str).split("-");return `${y}.${m}.${
 
 function getState(title){
   const t=config.tracks[title]; if(!t)return"full";
+  // Admin override: 指定メールのログインユーザーは全曲 full 扱い
+  if(_isAdmin()) return"full";
   const now=new Date(), sample=parseDate(t.sample), release=parseDate(t.release);
   // sample日より前 → 全員ロック
   if(now<sample) return"locked";
