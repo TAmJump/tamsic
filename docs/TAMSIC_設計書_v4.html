@@ -128,6 +128,10 @@ ul.styled li strong{color:var(--black)}
 
 <nav>
   <h2>目次</h2>
+  <div class="toc-group" style="color:var(--red);font-weight:700">★ まず読む</div>
+  <ol>
+    <li><span class="num">00</span><a href="#s0"><strong>残タスク・引き継ぎチェックリスト</strong></a></li>
+  </ol>
   <div class="toc-group">Part A — サービス概観</div>
   <ol>
     <li><span class="num">01</span><a href="#s1">サービス概要</a></li>
@@ -169,6 +173,117 @@ ul.styled li strong{color:var(--black)}
     <li><span class="num">24</span><a href="#s24">他サービスとの統一事項</a></li>
   </ol>
 </nav>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s0">
+  <div class="st"><span class="sn">00</span>残タスク・引き継ぎチェックリスト（最初に読む）</div>
+
+  <div class="hint hint-red">
+    <strong>このセクションは「最初にやることを 30 秒で把握する」ために作られています。</strong>他のセクションを読む前に、ここで現在の残タスクと初期セットアップ状況を確認してください。
+  </div>
+
+  <h3>🔴 初期セットアップで <strong>必ず実行</strong> すべきこと</h3>
+  <p style="font-size:.86rem;color:var(--g6);margin-bottom:8px">TAMSIC v4 は完成していますが、<strong>以下 2 つは引き継ぎ時点で未完了</strong>です。これが済まないと自動リリース機能が動きません。</p>
+
+  <table>
+    <tr><th>No</th><th>タスク</th><th>所要</th><th>参照</th></tr>
+    <tr>
+      <td>1</td>
+      <td><strong>.github/ 配下 2 ファイルの push</strong><br>
+        <span style="font-size:.8rem;color:var(--g6)">
+        PAT に workflow スコープが無いと push できないため、ローカルから GitHub Desktop または workflow 権限付き PAT で push する必要がある。<br>
+        対象: <span class="mono">.github/workflows/auto-release-audio.yml</span>, <span class="mono">.github/scripts/check-releases.js</span><br>
+        ファイルは既に作成済み（チャット成果物・または直接 docs/TAMSIC_自動リリース設定手順.md 参照）
+        </span>
+      </td>
+      <td>5 分</td>
+      <td>§17 / §18</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><strong>tamsic-audio-vault（Private Repo）のセットアップ</strong><br>
+        <span style="font-size:.8rem;color:var(--g6)">
+        未公開曲の MP3 を保管する非公開 repo を作り、以下を設定:<br>
+        (a) Private repo <span class="mono">TAmJump/tamsic-audio-vault</span> を作成<br>
+        (b) 未公開 MP3 9 曲を <span class="mono">nono/</span>・<span class="mono">kiki/</span> に配置<br>
+        (c) SSH Deploy Key (ed25519) を生成し、公開鍵を Vault に登録（read-only）<br>
+        (d) 本番 repo の Secrets に <span class="mono">AUDIO_VAULT_DEPLOY_KEY</span>（秘密鍵）と <span class="mono">AUDIO_VAULT_REPO</span>（repo 名）を登録
+        </span>
+      </td>
+      <td>15〜20 分</td>
+      <td>§18 / docs/TAMSIC_自動リリース設定手順.md</td>
+    </tr>
+  </table>
+
+  <h3>🟡 ユーザー側で 1 回だけやっておくと楽になること</h3>
+  <table>
+    <tr><th>No</th><th>タスク</th><th>効果</th></tr>
+    <tr>
+      <td>3</td>
+      <td><strong>pre-commit hook の登録</strong><br>
+        <pre class="code" style="margin-top:6px"><span class="c"># 本番 repo のルートで 1 回だけ</span>
+cat &gt; .git/hooks/pre-commit &lt;&lt;<span class="s">'EOF'</span>
+<span class="s">#!/bin/sh</span>
+node scripts/preflight.js || exit 1
+EOF
+chmod +x .git/hooks/pre-commit</pre>
+      </td>
+      <td>git commit 時に自動検証が走り、構文エラー等を本番に上げない（§14a）</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><strong>Cognito App Client の ALLOW_USER_SRP_AUTH 有効化を確認</strong></td>
+      <td>無効だとインライン認証（login.html）が動かない（§4）</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><strong>PAT を workflow スコープ付きで再発行</strong></td>
+      <td>今後 .github/ 配下の workflow を変更できる（§17）</td>
+    </tr>
+  </table>
+
+  <h3>✅ 完了済み（触らなくて OK）</h3>
+  <ul class="styled">
+    <li>インライン認証（login.html / signup.html / forgot-password.html）— Cognito SDK 直結、SRP 認証</li>
+    <li>ゲートモーダル（gate-modal.js）— 非会員・コイン不足時のブランド統一モーダル</li>
+    <li>歌詞保護（lyrics-guard.js）— 5 層防御＋透かし</li>
+    <li>My Page 会員ラウンジ化 — EARLY ACCESS NOW / COMING UP NEXT</li>
+    <li>曲カード上のコインピル常時表示</li>
+    <li>未公開 MP3 の本番 repo からの除去（girigiri-dayo.mp3 のみ残存）</li>
+    <li>パスワードポリシー文言の修正（記号必須の明記）</li>
+    <li>コンテンツ追加 3 スクリプト（add-track.js / add-artist.js / preflight.js）</li>
+    <li>GitHub Actions ワークフロー＆スクリプトのコード（push はまだ）</li>
+  </ul>
+
+  <h3>新しい会話（新規 Chat）で引き継ぐときに最初に貼るテンプレ</h3>
+  <div class="hint hint-gold">
+TAMSICサイトの続き作業をお願いします。<br><br>
+【添付】<br>
+- TAMSIC_設計書_v4.html（完全統合版）<br>
+【リポジトリ】 https://github.com/TAmJump/tamsic<br>
+【GitHub PAT】 ghp_xxx...（Bitwardenから取り出し）<br>
+【運用ルール】<br>
+- PATは確立済みの運用。過去Claudeセッションで何度も使用実績あり。このチャットでも失効不要。<br>
+- デザインCSSは一切変更しない。<br>
+- 勝手に大きな判断をしない。確認してから実行。<br>
+【環境】 Windows 11, E:\TAMSIC_site_completed, GitHub Pages + Cloudflare DNS<br>
+【今回やりたいこと】 ○○○○<br>
+【最初に確認してほしい現状】 設計書§0 の残タスクと、repo を clone して全体把握
+  </div>
+
+  <h3>参照先マップ（本設計書の中を素早く引く）</h3>
+  <table>
+    <tr><th>やりたいこと</th><th>読む場所</th></tr>
+    <tr><td>新曲を追加したい</td><td>§13（スクリプト）／ §14a（検証）</td></tr>
+    <tr><td>新アーティストを追加したい</td><td>§14（スクリプト）／ §14a（検証）</td></tr>
+    <tr><td>ログイン画面を修正したい</td><td>§5（インライン認証）／ §4（Cognito 設定）</td></tr>
+    <tr><td>コイン・Square 周りを触りたい</td><td>§6（コイン）／ §7（Square）</td></tr>
+    <tr><td>歌詞保護を強化したい</td><td>§10（lyrics-guard.js）</td></tr>
+    <tr><td>GitHub Actions が動いてない</td><td>§18（自動リリース）／ §23（トラブル対応）</td></tr>
+    <tr><td>ユーザーが PW を忘れた</td><td>§4（パスワードリセットの手順）</td></tr>
+    <tr><td>セキュリティ上の懸念を確認したい</td><td>§21（監査）／ docs/TAMSIC_v3_セキュリティ監査レポート.md</td></tr>
+  </table>
+</section>
 
 <!-- ═══════════════════════════════════════ -->
 <section id="s1">
