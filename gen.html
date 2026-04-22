@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>gEN | TAMSIC</title>
+<link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="tamsic-content.js"></script>
+<script src="purchase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js" async></script>
+<script src="auth.js"></script>
+<script src="release-control.js"></script>
+<script src="lang.js"></script>
+<script src="tamsic.js"></script>
+<script src="lyrics-guard.js"></script>
+<script src="gate-modal.js"></script>
+<style>
+:root{--bg:#f2f2f2;--text:#0d0c0c;--accent:#4A4540;--light:#d7d6d5;--mid:#292623;--white:#FFFFFF;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:20px 56px;background:rgba(238,243,249,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--light);}
+.nav-back{font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.35em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color .25s;}
+.nav-back:hover{color:var(--accent);}
+.nav-title{font-family:'Syncopate',sans-serif;font-size:14px;font-weight:700;letter-spacing:.4em;}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color .25s;}
+.nav-links a:hover{color:var(--accent);}
+.hero{min-height:100vh;display:grid;grid-template-columns:55% 45%;padding-top:72px;}
+.hero-visual{position:relative;background:var(--light);display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:calc(100vh - 72px);}
+.hero-visual-bg{position:absolute;inset:0;background:linear-gradient(135deg,#D4E2F0 0%,#C0D5EC 50%,#B0C8E8 100%);}
+.hero-visual-pattern{position:absolute;inset:0;opacity:.06;background-image:linear-gradient(var(--text) 1px,transparent 1px),linear-gradient(90deg,var(--text) 1px,transparent 1px);background-size:48px 48px;}
+.hero-photo-frame{position:relative;z-index:1;width:75%;max-width:380px;aspect-ratio:3/4;overflow:hidden;border:1px solid rgba(255,255,255,.4);}
+.hero-photo-frame img{width:100%;height:100%;object-fit:cover;}
+.hero-photo-ph{display:flex;align-items:center;justify-content:center;height:100%;font-family:'Syncopate',sans-serif;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--mid);background:rgba(255,255,255,.15);}
+.hero-index{position:absolute;bottom:40px;left:40px;font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.3em;color:var(--mid);text-transform:uppercase;}
+.hero-info{padding:60px 56px;display:flex;flex-direction:column;justify-content:center;}
+.hero-number{font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.5em;color:var(--accent);text-transform:uppercase;margin-bottom:28px;opacity:0;animation:sIn .8s cubic-bezier(.22,1,.36,1) forwards .15s;}
+.hero-name{font-family:'Syncopate',sans-serif;font-size:clamp(52px,7vw,100px);font-weight:700;line-height:1;letter-spacing:.08em;opacity:0;animation:sIn .8s cubic-bezier(.22,1,.36,1) forwards .28s;}
+.hero-rule{width:40px;height:2px;background:var(--accent);margin:36px 0;opacity:0;animation:sIn .8s cubic-bezier(.22,1,.36,1) forwards .4s;}
+.hero-bio{font-size:14px;line-height:2;color:var(--mid);max-width:300px;margin-bottom:52px;opacity:0;animation:sIn .8s cubic-bezier(.22,1,.36,1) forwards .5s;}
+.hero-stats{display:flex;gap:32px;opacity:0;animation:sIn .8s cubic-bezier(.22,1,.36,1) forwards .62s;}
+.stat-box{border:1px solid var(--light);padding:20px 24px;background:var(--white);}
+.stat-num{font-family:'Syncopate',sans-serif;font-size:28px;font-weight:700;line-height:1;margin-bottom:6px;}
+.stat-label{font-size:10px;letter-spacing:.25em;color:var(--mid);text-transform:uppercase;}
+@keyframes sIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+.discography{padding:100px 56px;background:var(--white);}
+.sec-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:48px;border-bottom:1px solid var(--light);padding-bottom:24px;}
+.sec-left{display:flex;align-items:baseline;gap:24px;}
+.sec-tag{font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.45em;color:var(--accent);text-transform:uppercase;}
+.sec-title{font-family:'Syncopate',sans-serif;font-size:28px;font-weight:700;letter-spacing:.05em;}
+.sec-count{font-family:'Syncopate',sans-serif;font-size:64px;font-weight:700;color:var(--light);line-height:1;}
+/* Track Block */
+.track-block{display:grid;grid-template-columns:180px 1fr;gap:36px;padding:36px 0;border-bottom:1px solid var(--light);align-items:start;}
+.tb-cover{position:relative;}
+.cover-wrap{width:100%;aspect-ratio:1;background:var(--bg);border:1px solid var(--light);overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.cover-wrap img{width:100%;height:100%;object-fit:cover;}
+.cover-ph-txt{font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--mid);}
+.tb-num{position:absolute;bottom:-12px;right:-12px;font-family:'Syncopate',sans-serif;font-size:36px;font-weight:700;color:var(--light);line-height:1;pointer-events:none;}
+.tb-body{padding-top:4px;}
+.tb-meta{display:flex;gap:10px;align-items:center;margin-bottom:10px;}
+.badge-new{font-family:'Syncopate',sans-serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);padding:3px 10px;}
+.tb-type{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);}
+.tb-coin-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border:1px solid rgba(0,153,204,.28);border-radius:999px;font-family:'Syncopate',sans-serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);background:rgba(255,255,255,.6);}
+.tb-coin-pill::before{content:'◈';font-size:9px;letter-spacing:0;}
+.tb-title{font-family:'Syncopate',sans-serif;font-size:18px;font-weight:700;letter-spacing:.06em;margin-bottom:6px;}
+.tb-sub{font-size:11px;color:var(--mid);letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px;}
+.player-modes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.mode-btn{font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.2em;text-transform:uppercase;padding:8px 18px;border:1px solid var(--light);background:var(--white);color:var(--mid);cursor:pointer;transition:all .22s;}
+.mode-btn.active,.mode-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,153,204,.07);}
+.mode-btn.premium{border-color:#d4a800;color:#a07800;}
+.mode-btn.premium.active,.mode-btn.premium:hover{background:rgba(212,168,0,.09);}
+.site-player{background:#0B1D35;padding:18px 22px;border-radius:2px;}
+.sp-bar-wrap{position:relative;height:4px;margin-bottom:14px;cursor:pointer;}
+.sp-bar-bg{position:absolute;inset:0;background:rgba(255,255,255,.18);border-radius:2px;}
+.sp-bar-fill{position:absolute;top:0;bottom:0;left:0;background:var(--accent);border-radius:2px;transition:width .1s linear;}
+.sp-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(0,153,204,.3);transition:left .1s linear;}
+.sp-controls{display:flex;align-items:center;gap:16px;}
+.sp-btn{background:none;border:none;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;padding:0;transition:color .2s;}
+.sp-btn:hover{color:#fff;}
+.sp-play{width:36px;height:36px;border-radius:50%;background:var(--accent);border:none;color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.sp-play:hover{background:#007aaa;}
+.sp-time{margin-left:auto;font-size:11px;color:rgba(255,255,255,.4);font-family:'Syncopate',sans-serif;letter-spacing:.05em;}
+.yt-panel,.full-panel{margin-top:4px;}
+.yt-embed{width:100%;aspect-ratio:16/9;border:none;}
+.yt-placeholder{background:#111;aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;color:rgba(255,255,255,.5);font-size:12px;line-height:1.7;}
+.yt-icon{width:56px;height:40px;background:#f00;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;}
+.full-box{border:1px solid #d4a800;padding:28px 32px;background:rgba(212,168,0,.04);display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+.full-desc{font-size:12px;color:var(--mid);flex:1;letter-spacing:.05em;line-height:1.8;}
+.lyrics-preview{margin:14px 0;padding:12px 14px;background:rgba(255,255,255,.55);font-size:12px;line-height:1.8;color:inherit;border:1px dashed rgba(0,0,0,.12);}
+.full-note{font-size:11px;line-height:1.7;color:rgba(0,0,0,.55);margin-bottom:14px;}
+.full-price{font-family:'Syncopate',sans-serif;font-size:24px;font-weight:700;color:#a07800;}
+.full-buy{font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.25em;text-transform:uppercase;padding:12px 24px;background:#d4a800;border:none;color:#fff;cursor:pointer;transition:background .22s;}
+.full-buy:hover{background:#b08a00;}
+.loading-msg,.empty-msg{padding:48px;text-align:center;color:var(--mid);font-size:12px;}
+.empty-msg{background:var(--bg);border:1px solid var(--light);}
+.gallery{padding:100px 56px;background:var(--bg);}
+.gallery-grid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:auto auto;gap:12px;margin-top:48px;}
+.g-item{background:var(--light);display:flex;align-items:center;justify-content:center;font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--mid);cursor:pointer;overflow:hidden;position:relative;transition:opacity .3s;}
+.g-item:hover{opacity:.85;}
+.g-item::after{content:'';position:absolute;inset:0;border:2px solid var(--accent);opacity:0;transition:opacity .3s;}
+.g-item:hover::after{opacity:1;}
+.g-item img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.g-item:nth-child(1){aspect-ratio:3/4;grid-row:span 2;}
+.g-item:nth-child(n+2){aspect-ratio:4/5;}
+footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-content:space-between;align-items:center;}
+.footer-name{font-family:'Syncopate',sans-serif;font-size:18px;font-weight:700;letter-spacing:.4em;}
+.footer-label{font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.2em;text-transform:uppercase;}
+.footer-copy{font-size:11px;color:rgba(255,255,255,.25);}
+@media(max-width:768px){nav{padding:16px 20px;}.nav-links{display:none;}.hero{grid-template-columns:1fr;grid-template-rows:50vh auto;padding-top:64px;}.hero-visual{min-height:50vh;}.hero-info{padding:48px 24px;}.discography,.gallery{padding:80px 24px;}.track-block{grid-template-columns:110px 1fr;gap:16px;}.gallery-grid{grid-template-columns:1fr 1fr;}.g-item:nth-child(1){grid-row:span 1;}footer{padding:32px 24px;flex-direction:column;gap:16px;text-align:center;}}
+.footer-legal{display:flex;gap:20px;flex-wrap:wrap;align-items:center;}.footer-legal a{font-size:11px;letter-spacing:.15em;color:rgba(255,255,255,.4);text-decoration:none;text-transform:uppercase;transition:color .2s;}.footer-legal a:hover{color:var(--accent);}
+.nav-logo { display:flex; align-items:center; }
+
+
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-back">← TAMSIC</a>
+  <span class="nav-title">gEN</span>
+  <ul class="nav-links"><li><a href="#music" data-ja="ミュージック" data-en="Music">ミュージック</a></li><li></li><li><a href="news.html" data-ja="ニュース" data-en="News">ニュース</a></li><li><a href="about.html" data-ja="レーベル紹介" data-en="About">レーベル紹介</a></li><li><a href="mypage.html" data-ja="マイページ" data-en="My Page">マイページ</a></li><li><button data-lang-toggle style="background:none;border:1px solid var(--light,#E6E6E0);color:var(--mid,#7A7A72);font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.1em;padding:5px 12px;cursor:pointer;border-radius:2px;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='';this.style.color=''">EN</button></li></ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-visual">
+    <div class="hero-visual-bg"></div>
+    <div class="hero-visual-pattern"></div>
+    <div class="hero-photo-frame" id="hero-photo">
+      <div class="hero-photo-ph">Photo</div>
+    </div>
+    <span class="hero-index">TAMSIC / ARTIST 001</span>
+  </div>
+  <div class="hero-info">
+    <p class="hero-number">TAMSIC Artist 001</p>
+    <h1 class="hero-name">gEN</h1>
+    <div class="hero-rule"></div>
+    <p class="hero-bio"><span data-ja="次世代のAIアイドル。<br>革新的なサウンドと<br>唯一無二のビジョンで<br>音楽の未来を切り拓く。" data-en="Next-gen AI idol.<br>Pioneering the future of music<br>with revolutionary sound<br>and a singular vision.">次世代のAIアイドル。<br>革新的なサウンドと<br>唯一無二のビジョンで<br>音楽の未来を切り拓く。</span></p>
+    <div class="hero-stats">
+      <div class="stat-box"><div class="stat-num" id="track-count">—</div><div class="stat-label" data-ja="楽曲数" data-en="Tracks">楽曲数</div></div>
+      <div class="stat-box"><div class="stat-num">AI</div><div class="stat-label">Idol</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="discography" id="music">
+  <div class="sec-header">
+    <div class="sec-left"><span class="sec-tag" data-ja="ディスコグラフィー" data-en="Discography">ディスコグラフィー</span><h2 class="sec-title">Music</h2></div>
+    <span class="sec-count" id="disc-count">—</span>
+  </div>
+  <div id="tracks-container"><div class="loading-msg">読み込み中...</div></div>
+</section>
+
+
+<footer>
+  <div><div class="footer-name">gEN</div><div class="footer-label">TAMSIC Artist</div></div>
+  <div class="footer-legal"><a href="https://tamjump.com/" target="_blank" data-ja="プライバシーポリシー" data-en="Privacy Policy">プライバシーポリシー</a><a href="https://tamjump.com/" target="_blank" data-ja="利用規約" data-en="Terms of Service">利用規約</a><a href="https://tamjump.com/" target="_blank" data-ja="特定商取引法" data-en="Commercial Transactions">特定商取引法</a><a href="https://tamjump.com/contact" target="_blank" data-ja="お問い合わせ" data-en="Contact">お問い合わせ</a></div><span class="footer-copy">© 2025 TAMSIC. All Rights Reserved.</span>
+</footer>
+
+<script>
+
+// 言語ヘルパー
+function _L(ja, en){ return (window.TAMSICLang && window.TAMSICLang.get()==='en') ? en : ja; }
+
+let _tracks=[];
+
+function getReleaseMeta(track){
+  if(!window.TAMSICRelease || !track) return {label:'NOW AVAILABLE',note:'',showMask:false,canSample:true,canFull:true,icon:false};
+  return window.TAMSICRelease.getMeta(track.title || '');
+}
+function getLockIcon(){ return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 10V7.75a3.5 3.5 0 1 1 7 0V10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="5" y="10" width="14" height="10" rx="2.75" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="15" r="1.1" fill="currentColor"/></svg>`; }
+
+
+
+function injectCommerceStyles(){
+  if(document.getElementById('tamsic-commerce-style')) return;
+  const s=document.createElement('style');
+  s.id='tamsic-commerce-style';
+  s.textContent=`
+  .coin-panel{margin:0 0 28px;padding:24px 24px 22px;border:1px solid rgba(11,29,53,.08);background:#fff;border-radius:20px;box-shadow:0 10px 28px rgba(11,29,53,.04);}
+  .coin-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:16px;}
+  .coin-kicker{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+  .coin-title{font-size:26px;font-weight:700;line-height:1.15;color:#111;}
+  .coin-copy{margin-top:8px;font-size:13px;line-height:1.8;color:#6d6d66;max-width:660px;}
+  .coin-balance{min-width:210px;padding:16px 18px;border-radius:18px;background:#111;color:#fff;}
+  .coin-balance-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.62);margin-bottom:8px;}
+  .coin-balance-value{font-size:32px;font-weight:700;line-height:1;}
+  .coin-balance-sub{margin-top:8px;font-size:12px;color:rgba(255,255,255,.72);}
+  .coin-pack-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;}
+  .member-locked,.member-wallet{padding:28px 28px 24px;}
+  .locked-balance{background:#151515;}
+  .member-actions{display:flex;gap:12px;flex-wrap:wrap;}
+  .member-btn{display:inline-flex;align-items:center;justify-content:center;min-width:150px;padding:13px 18px;border-radius:999px;border:1px solid rgba(11,29,53,.08);background:#fff;color:#111;text-decoration:none;font-size:12px;letter-spacing:.08em;text-transform:uppercase;}
+  .member-btn.primary{background:#111;color:#fff;}
+  .member-btn.subtle{background:transparent;}
+  .member-btn:hover{transform:translateY(-1px);}
+  .coin-pack{padding:18px;border-radius:18px;border:1px solid rgba(11,29,53,.08);background:#fff;display:flex;flex-direction:column;gap:8px;}
+  .coin-pack.recommended{border-color:rgba(0,153,204,.32);box-shadow:0 10px 24px rgba(0,153,204,.08);}
+  .coin-pack-top{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .coin-pack-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#66788a;}
+  .coin-pack-badge{padding:4px 8px;border-radius:999px;background:rgba(0,153,204,.1);font-size:10px;color:var(--accent);}
+  .coin-pack-coins{font-size:28px;font-weight:700;color:#111;}
+  .coin-pack-price{font-size:15px;color:#444;}
+  .coin-pack-note{font-size:12px;color:#7a7a72;line-height:1.6;min-height:38px;}
+  .coin-pack-btn{margin-top:auto;border:none;border-radius:999px;background:#111;color:#fff;padding:12px 16px;font-size:13px;cursor:pointer;transition:transform .18s ease,opacity .18s ease;}
+  .coin-pack-btn:hover{transform:translateY(-1px);opacity:.92;}
+  .coin-pack-btn.is-rec{background:var(--accent);color:#fff;}
+  .full-panel{margin-top:4px;}
+  .full-box{border:1px solid rgba(11,29,53,.08);padding:24px;border-radius:18px;background:#fff;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:24px;align-items:start;}
+  .full-main{min-width:0;}
+  .full-side{padding:18px;border-radius:16px;background:var(--bg);border:1px solid rgba(11,29,53,.06);}
+  .full-kicker{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;}
+  .full-desc{font-size:13px;color:#4f5f6e;line-height:1.9;}
+  .full-desc strong{color:#111;}
+  .full-note{font-size:11px;line-height:1.8;color:#6f7d8b;margin-top:12px;}
+  .full-price{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;}
+  .full-price .coin-num{font-size:30px;font-weight:700;color:#111;}
+  .full-price .coin-unit{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#6f7d8b;}
+  .full-wallet-line{margin:0 0 14px;font-size:12px;color:#6f7d8b;line-height:1.7;}
+  .full-wallet-line strong{color:#111;}
+  .full-buy{width:100%;font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.18em;text-transform:uppercase;padding:14px 16px;background:#111;border:none;border-radius:999px;color:#fff;cursor:pointer;transition:opacity .22s, transform .22s;}
+  .full-buy:hover{opacity:.92;transform:translateY(-1px);}
+  .full-buy.disabled{opacity:.55;cursor:not-allowed;transform:none;}
+  .full-player-mount{margin-top:18px;max-width:720px;}
+  .full-player-mount audio{width:100%;display:block;}
+  .full-ended-msg{padding:14px 16px;border-radius:14px;background:rgba(11,29,53,.05);font-size:12px;color:#666;}
+  .full-lyrics{position:relative;overflow:hidden;margin-top:18px;max-width:920px;padding:24px 28px;border-radius:18px;background:linear-gradient(180deg,rgba(248,250,253,.96),rgba(244,247,251,.96));border:1px solid rgba(11,29,53,.06);font-size:15px;line-height:2;color:#243649;word-break:keep-all;}
+  .full-lyrics::before{content:'';position:absolute;inset:0;background-image:var(--lyrics-bg-image);background-size:cover;background-position:center 18%;opacity:.22;filter:saturate(1);pointer-events:none;}
+  .full-lyrics::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(248,250,253,.88));pointer-events:none;}
+  .full-lyrics-title{position:relative;z-index:1;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;}
+  .full-lyrics-inner{position:relative;z-index:1;column-count:2;column-gap:56px;}
+  .lyrics-stanza{break-inside:avoid;page-break-inside:avoid;margin:0 0 1.35em;}
+  @media (max-width: 900px){.coin-pack-grid{grid-template-columns:1fr;}.coin-balance{width:100%;}.coin-title{font-size:22px;}.full-box{grid-template-columns:1fr;}.full-side{order:-1;}.full-lyrics{padding:20px 20px;max-width:720px;}.full-lyrics-inner{column-count:1;column-gap:0;}}
+  
+  .release-hero{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin:0 0 26px;padding:24px 0 6px;}
+  .release-hero-copy{max-width:720px;}
+  .release-eyebrow{margin:0 0 8px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);}
+  .release-title{margin:0 0 8px;font-size:18px;line-height:1.3;color:var(--text);}
+  .release-note{margin:0;line-height:1.8;color:var(--mid);}
+  .release-actions{display:flex;gap:12px;flex-wrap:wrap;}
+  .release-pill{display:inline-flex;align-items:center;justify-content:center;min-width:180px;height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(11,29,53,.10);background:#fff;color:var(--text);text-decoration:none;font-size:12px;letter-spacing:.18em;text-transform:uppercase;}
+  .cover-wrap{position:relative;overflow:hidden;}
+  .cover-mask{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:flex-end;padding:16px;background:rgba(255,255,255,.14);backdrop-filter:blur(12px);z-index:2;}
+  .cover-mask .lock-icon{width:24px;height:24px;color:#0f172a;opacity:.9;}
+  .release-chip{display:inline-flex;align-items:center;gap:8px;min-height:28px;padding:0 12px;border-radius:999px;background:rgba(11,29,53,.88);color:#fff;font-size:10px;letter-spacing:.14em;text-transform:uppercase;}
+  .release-chip svg{width:14px;height:14px;display:block;}
+  .track-release-note{margin:10px 0 0;font-size:11px;letter-spacing:.06em;color:var(--mid);line-height:1.8;}
+  .mode-btn.premium.is-restricted{opacity:.56;cursor:not-allowed;}
+  .full-locked-msg{margin-top:12px;padding:14px 16px;border:1px solid rgba(11,29,53,.08);border-radius:16px;background:rgba(255,255,255,.82);color:var(--mid);line-height:1.8;font-size:14px;}
+`;
+  document.head.appendChild(s);
+}
+
+function renderCoinPanel(){
+  const loggedIn = !!(typeof isLoggedIn === "function" ? isLoggedIn() : (window.TAMSICAuth && TAMSICAuth.isLoggedIn && TAMSICAuth.isLoggedIn()));
+  const balance = TAMSICCoins.getBalance();
+  if (!loggedIn) {
+    return `<div class="coin-panel member-locked">
+      <div class="coin-panel-head">
+        <div>
+          <div class="coin-kicker" data-ja="TAMSICメンバー" data-en="TAMSIC Member">TAMSICメンバー</div>
+          <div class="coin-title"><span data-ja="フル試聴と残高表示はログイン後に解放されます。" data-en="Full listening and balance unlock after login.">フル試聴と残高表示はログイン後に解放されます。</span></div>
+          <div class="coin-copy"><span data-ja="sampleは無料です。コインの購入・残高管理・フル試聴は My Page から。" data-en="Samples are free. Buy coins and manage your balance on My Page.">sampleは無料です。コインの購入・残高管理・フル試聴は My Page から。</span></div>
+        </div>
+        <div class="coin-balance locked-balance">
+          <div class="coin-balance-label">Member only</div>
+          <div class="coin-balance-value">— coin</div>
+          <div class="coin-balance-sub"><span data-ja="Login して先行視聴" data-en="Login for early access">Login して先行視聴</span></div>
+        </div>
+      </div>
+      <div class="member-actions">
+        <a class="member-btn primary" href="login.html" data-ja="ログイン / 新規登録" data-en="Login / Sign up">ログイン / 新規登録</a>
+      </div>
+    </div>`;
+  }
+  return `<div class="coin-panel member-wallet">
+    <div class="coin-panel-head">
+      <div>
+        <div class="coin-kicker" data-ja="TAMSICウォレット" data-en="TAMSIC Wallet">TAMSICウォレット</div>
+        <div class="coin-title" data-ja="フル試聴は My Page で購入したコインから消費されます。" data-en="Full listening uses coins purchased on My Page.">フル試聴は My Page で購入したコインから消費されます。</div>
+        <div class="coin-copy" data-ja="コインの購入・残高管理は My Page に集約します。" data-en="Manage coins and balance from My Page.">コインの購入・残高管理は My Page に集約します。</div>
+      </div>
+      <div class="coin-balance">
+        <div class="coin-balance-label" data-ja="残高" data-en="Balance">残高</div>
+        <div class="coin-balance-value"><span data-coin-balance>${balance}</span> coin</div>
+        <div class="coin-balance-sub" data-ja="ログイン中" data-en="Logged in as member">ログイン中</div>
+      </div>
+    </div>
+    <div class="member-actions">
+      <a class="member-btn primary" href="mypage.html" data-ja="マイページ" data-en="My Page">マイページ</a>
+    </div>
+  </div>`;
+}
+
+function refreshCoinUI(){
+  const loggedIn = !!(typeof isLoggedIn === "function" ? isLoggedIn() : (window.TAMSICAuth && TAMSICAuth.isLoggedIn && TAMSICAuth.isLoggedIn()));
+  const balance = loggedIn ? TAMSICCoins.getBalance() : 0;
+  document.querySelectorAll('[data-coin-balance]').forEach(el=>el.textContent=balance);
+  document.querySelectorAll('[data-track-cost]').forEach(el=>{
+    const cost=Number(el.getAttribute('data-track-cost')||0);
+    const panel=el.closest('.full-panel');
+    const btn=panel?.querySelector('.full-buy');
+    const line=panel?.querySelector('[data-track-balance]');
+    if(line) line.textContent = loggedIn ? balance : '—';
+    if(btn){
+      if(!loggedIn){
+        btn.classList.remove('disabled');
+        btn.textContent = 'ログインしてフル試聴';
+      } else if(balance >= cost){
+        btn.classList.remove('disabled');
+        btn.textContent = `${cost}コインで1回フル試聴`;
+      } else {
+        btn.classList.remove('disabled');
+        btn.textContent = 'My Pageでコイン購入';
+      }
+    }
+  });
+}
+
+function chargeCoins(packId){
+  window.location.href = 'mypage.html#purchase-grid';
+}
+
+function unlockFullTrack(trackId){
+  const track=_tracks.find(x=>x.id===trackId);
+  if(!track) return;
+  const meta=getReleaseMeta(track);
+  if(!meta.canFull){
+    // v3: release状態に応じたモーダル表示
+    if(window.TAMSICGate){
+      if(meta.state === 'preview'){
+        window.TAMSICGate.showMemberGate({ message: meta.note });
+      } else if(meta.state === 'locked'){
+        window.TAMSICGate.showComingSoon({ message: meta.note });
+      } else {
+        window.TAMSICGate.show({
+          kicker:'LOCKED', title:'この曲はまだ利用できません',
+          message: meta.note || 'フル試聴はまだ利用できません。',
+          tertiary:{ label:'閉じる' }
+        });
+      }
+    } else {
+      alert(meta.note || 'フル試聴はまだ利用できません。');
+    }
+    return;
+  }
+  const cost=Number(track.price||0);
+  const spend=TAMSICCoins.spendCoins(track.id,cost);
+  if(!spend.ok){
+    if(spend.loginRequired){
+      // v3: 会員ゲートモーダル→ログイン誘導
+      if(window.TAMSICGate){
+        window.TAMSICGate.showMemberGate({
+          title:'ここから先は会員限定です',
+          redirect: location.pathname.split('/').pop() || 'gen.html'
+        });
+      } else {
+        window.location.href=`login.html?redirect=${encodeURIComponent(location.pathname.split('/').pop() || 'gen.html')}`;
+      }
+      return;
+    }
+    // v3: コイン不足モーダル
+    if(window.TAMSICGate){
+      window.TAMSICGate.showCoinShortage({
+        trackTitle: track.title,
+        needed: cost,
+        balance: TAMSICCoins.getBalance()
+      });
+    } else {
+      alert(`コインが不足しています。\n「${track.title}」には ${cost}コイン必要です。\nMy Page でコインを追加してください。`);
+      window.location.href='mypage.html#purchase-grid';
+    }
+    return;
+  }
+  refreshCoinUI();
+  const mount=document.getElementById(`full-player-${track.id}`);
+  const lyrics=document.getElementById(`lyrics-${track.id}`);
+  const lyricsInner=document.getElementById(`lyrics-inner-${track.id}`);
+  if(lyrics) lyrics.style.display='block';
+  // v3: 歌詞保護モジュールで描画（コピー・右クリック・スクショを抑止＋透かし）
+  if(lyricsInner && window.TAMSICLyrics){
+    const userEmail = (typeof getUserInfo === 'function' && getUserInfo()) ? getUserInfo().email : 'guest';
+    window.TAMSICLyrics.protect(lyricsInner, track.lyrics || '', {
+      watermark: userEmail,
+      obfuscate: true,
+      onPrintScreen: 'blur'
+    });
+  }
+  const url=getTrackAudioSrc(track);
+  if(!url){
+    alert('音声ファイルが設定されていません。');
+    return;
+  }
+  TAMSICPlayer.playFull(track.id,url,mount);
+}
+
+
+async function init(){
+  injectCommerceStyles();
+  // tamsic-content.jsから直接読み込む（全デバイスで表示）
+  try {
+    const _ct = window.TAMSIC_CONTENT && window.TAMSIC_CONTENT.tracks ? window.TAMSIC_CONTENT.tracks : [];
+    _tracks = _ct.filter(t => t.artist === 'gen');
+  } catch(e) { _tracks = []; }
+  const n=_tracks.length||'—';
+  document.getElementById('track-count').textContent=n;
+  document.getElementById('disc-count').textContent=n;
+  if(window.TAMSICLang) window.TAMSICLang.apply(window.TAMSICLang.get());
+  if(_tracks.length&&getTrackCoverSrc(_tracks[0])){
+    const f=document.getElementById('hero-photo');
+    f.innerHTML=`<img src="assets/images/gen/nono_official_top.png" alt="no-no">`;
+  }
+  renderTracks();
+  refreshCoinUI();
+  TAMSICCoins.onChange(()=>refreshCoinUI());
+  window.addEventListener('storage',()=>refreshCoinUI());
+  // 動的生成されたdata-ja/en要素に翻訳を適用
+  if(window.TAMSICLang) window.TAMSICLang.apply(window.TAMSICLang.get());
+}
+
+function renderTracks(){
+  const c=document.getElementById('tracks-container');
+  if(!_tracks.length){c.innerHTML='<div class="empty-msg">Coming Soon — 楽曲を準備中です。</div>';return;}
+  const firstMeta = getReleaseMeta(_tracks[0]);
+  const hero = `
+    <div class="release-hero">
+      <div class="release-hero-copy">
+        <p class="release-eyebrow">TAMSIC RELEASE CONTROL</p>
+        <h3 class="release-title">${firstMeta.label}</h3>
+        <p class="release-note">${firstMeta.note}</p>
+      </div>
+      <div class="release-actions">
+        <span class="release-pill">${firstMeta.label}</span>
+        <a href="mypage.html" class="release-pill">${_L('マイページ','MY PAGE')}</a>
+      </div>
+    </div>`;
+  c.innerHTML=hero+renderCoinPanel()+_tracks.map((t,i)=>{
+    const meta=getReleaseMeta(t);
+    const num=String(i+1).padStart(2,'0');
+    const coverSrc=getTrackCoverSrc(t); const blurStyle = meta.showMask ? 'filter:blur(18px) saturate(.8); transform:scale(1.06);' : '';
+    const coverHtml=coverSrc?`<img src="${coverSrc}" alt="${t.title||''}" style="${blurStyle}">`:'<span class="cover-ph-txt">Cover</span>';
+    const dur=formatTime(parseTime(t.sampleEnd)-parseTime(t.sampleStart));
+    const chip = `<span class="release-chip">${meta.icon ? getLockIcon() : ''}<span>${meta.label}</span></span>`;
+    const mask = meta.showMask ? `<div class="cover-mask"><span class="lock-icon">${getLockIcon()}</span></div>` : '';
+    const fullMsg = meta.canFull ? '' : `<div class="full-locked-msg">${meta.note}</div>`;
+    return`<div class="track-block" id="track-${t.id}">
+      <div class="tb-cover">
+        <div class="cover-wrap">${coverHtml}${mask}</div>
+        <span class="tb-num">${num}</span>
+      </div>
+      <div class="tb-body">
+        <div class="tb-meta">${t.isNew?'<span class="badge-new">New</span>':''}<span class="tb-type">Single</span>${meta.canFull && (t.price||30) ? `<span class="tb-coin-pill">${t.price||30} coin · Full</span>` : ''}</div>
+        <div class="tb-title">${t.title||'TRACK TITLE'}</div>
+        <div class="tb-sub">gEN</div>
+        <div class="track-release-note">${chip}<div style="margin-top:8px;">${meta.note}</div></div>
+        <div class="player-modes">
+          <button class="mode-btn active" onclick="setMode('${t.id}','site',this)">${_L('▶ サイトで聴く','▶ Listen')}</button>
+          <button class="mode-btn" onclick="setMode('${t.id}','yt',this)">YouTube</button>
+          <button class="mode-btn premium ${meta.canFull ? '' : 'is-restricted'}" onclick="setMode('${t.id}','full',this)">${meta.canFull ? `${_L('フル試聴','Full')} ${t.price||30}coin` : meta.label}</button>
+        </div>
+        <div id="panel-site-${t.id}">
+          <div class="site-player">
+            <div class="sp-bar-wrap" data-bar-id="${t.id}" onclick="scrub(event,this,'${t.id}')">
+              <div class="sp-bar-bg"></div><div class="sp-bar-fill" style="width:0%"></div><div class="sp-dot" style="left:0%"></div>
+            </div>
+            <div class="sp-controls">
+              <button class="sp-btn" onclick="prevT(${i})" title="5秒戻す">&#9664;&#9664;</button>
+              <button class="sp-play" data-play-id="${t.id}" onclick="playT('${t.id}')">&#9654;</button>
+              <button class="sp-btn" onclick="nextT(${i})" title="5秒進む">&#9654;&#9654;</button>
+              <span class="sp-time" data-time-id="${t.id}">0:00 / ${dur}</span>
+            </div>
+          </div>
+        </div>
+        <div class="yt-panel" id="panel-yt-${t.id}" style="display:none">
+          ${t.youtubeUrl?ytEmbed(t.youtubeUrl):ytPh()}
+        </div>
+        <div class="full-panel" id="panel-full-${t.id}" style="display:none">
+          <div class="full-box">
+            <div class="full-main">
+              <div class="full-kicker">${meta.label}</div>
+              <div class="full-desc">${meta.canFull ? 'sample は無料です。<strong>フルは1回試聴のみ</strong>で、試聴ごとにコインを消費します。' : '公開状態に応じてフル試聴を制御しています。'}</div>
+              <div class="full-note">${meta.canFull ? 'ダウンロード不可 / ブラウザ内再生のみ / 再度再生する場合は再度コインを消費' : meta.note}</div>
+              ${fullMsg}
+              <div class="full-player-mount" id="full-player-${t.id}"></div>
+              <div class="full-lyrics" id="lyrics-${t.id}" style="display:none;--lyrics-bg-image:url('${coverSrc||''}')" data-lyrics-id="${t.id}"><div class="full-lyrics-title">lyrics</div><div class="full-lyrics-inner" id="lyrics-inner-${t.id}"></div></div>
+            </div>
+            <div class="full-side">
+              <div class="full-price"><span class="coin-num" data-track-cost="${t.price||30}">${t.price||30}</span><span class="coin-unit">coin / one listen</span></div>
+              <div class="full-wallet-line">現在の残高：<strong><span data-track-balance>${TAMSICCoins.getBalance()}</span>コイン</strong></div>
+              <button class="full-buy" onclick="unlockFullTrack('${t.id}')">${meta.canFull ? `${t.price||30}コインで1回フル試聴` : meta.label}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderGallery(){
+  const g=document.getElementById('gallery-grid');
+  const photos=getArtistPhotos('nono');
+  g.innerHTML=photos.map(src=>`<div class="g-item"><img src="${src}" alt="no-no" style="width:100%;height:100%;object-fit:cover;"></div>`).join('');
+}
+
+function ytEmbed(url){
+  let id='';
+  try{const u=new URL(url);id=u.searchParams.get('v')||u.pathname.split('/').pop();}catch(e){return ytPh();}
+  return`<iframe class="yt-embed" src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>`;
+}
+function ytPh(){return`<div class="yt-placeholder"><div class="yt-icon">▶</div><span>YouTube 動画を埋め込み予定<br><small>管理パネルでURLを設定してください</small></span></div>`;}
+
+function setMode(id,mode,btn){
+  const track=_tracks.find(x=>x.id===id);
+  const meta = track ? getReleaseMeta(track) : {canFull:true};
+  if(mode==='full' && !meta.canFull){
+    alert(meta.note || 'フル試聴はまだ利用できません。');
+    mode='site';
+  }
+  ['site','yt','full'].forEach(m=>{const el=document.getElementById(`panel-${m}-${id}`);if(el)el.style.display=m===mode?'block':'none';});
+  btn.closest('.player-modes').querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  const selected = Array.from(btn.closest('.player-modes').querySelectorAll('.mode-btn')).find(b => {
+    const oc = b.getAttribute('onclick') || '';
+    return oc.includes(`'${mode}'`);
+  });
+  (selected || btn).classList.add('active');
+  if(mode!=='site')TAMSICPlayer.stop(true);
+}
+function playT(id){
+  const t=_tracks.find(x=>x.id===id);if(!t)return;
+  const meta=getReleaseMeta(t);
+  if(!meta.canSample){
+    // v3: サンプル不可時もモーダル化
+    if(window.TAMSICGate){
+      if(meta.state === 'preview'){
+        window.TAMSICGate.showMemberGate({ message: meta.note });
+      } else if(meta.state === 'locked'){
+        window.TAMSICGate.showComingSoon({ message: meta.note });
+      } else {
+        window.TAMSICGate.show({
+          kicker:'LOCKED', title:'この曲はまだ試聴できません',
+          message: meta.note || '', tertiary:{label:'閉じる'}
+        });
+      }
+    } else {
+      alert(meta.note || 'この曲はまだ試聴できません。');
+    }
+    return;
+  }
+  const url=getTrackAudioSrc(t);
+  if(!url){alert('音声ファイルが設定されていません。');return;}
+  TAMSICPlayer.play(id,url,t.sampleStart,t.sampleEnd);
+}
+function scrub(e,wrap,id){
+  const rect=wrap.getBoundingClientRect();
+  const pct=Math.max(0,Math.min(100,((e.clientX-rect.left)/rect.width)*100));
+  const fill=wrap.querySelector('.sp-bar-fill');
+  const dot=wrap.querySelector('.sp-dot');
+  if(fill) fill.style.width=pct+'%';
+  if(dot) dot.style.left=pct+'%';
+  if(window.TAMSICPlayer) TAMSICPlayer.setSamplePosition(id,pct);
+}
+function prevT(i){
+  const t=_tracks[i];
+  if(!t) return;
+  if(window.TAMSICPlayer && TAMSICPlayer.seekSampleBy(t.id,-5)) return;
+  const el=document.getElementById('track-'+t.id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function nextT(i){
+  const t=_tracks[i];
+  if(!t) return;
+  if(window.TAMSICPlayer && TAMSICPlayer.seekSampleBy(t.id,5)) return;
+  const el=document.getElementById('track-'+t.id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+init();
+renderGallery();
+
+</script>
+</body>
+</html>

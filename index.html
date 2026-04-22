@@ -241,7 +241,7 @@ nav {
 
 .artists-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 28px;
 }
 
@@ -670,7 +670,7 @@ footer {
 
 .artists-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 34px;
   align-items: stretch;
 }
@@ -689,6 +689,12 @@ footer {
 .artist-card:nth-child(2) {
   background:
     linear-gradient(180deg, rgba(205,120,142,0.18) 0%, rgba(205,120,142,0.10) 100%),
+    #f4f2ee;
+}
+
+.artist-card:nth-child(3) {
+  background:
+    linear-gradient(180deg, rgba(74,69,64,0.22) 0%, rgba(74,69,64,0.12) 100%),
     #f4f2ee;
 }
 
@@ -722,6 +728,10 @@ footer {
   object-position: center 26%;
 }
 
+.artist-card:nth-child(3) .artist-photo img {
+  object-position: center 30%;
+}
+
 .photo-placeholder-text {
   display: none !important;
 }
@@ -738,6 +748,10 @@ footer {
 
 .artist-card:nth-child(2) .artist-bar::after {
   background: #c76580;
+}
+
+.artist-card:nth-child(3) .artist-bar::after {
+  background: #6B5E4E;
 }
 
 .artist-info {
@@ -882,7 +896,7 @@ footer {
       <p class="sec-label">Our Artists</p>
       <h2 class="sec-title">Artists</h2>
     </div>
-    <div class="artists-count">02</div>
+    <div class="artists-count">03</div>
   </div>
   <div class="artists-grid">
     <a href="nono.html" class="artist-card">
@@ -905,6 +919,17 @@ footer {
         <p class="artist-number">TAMSIC Artist 002</p>
         <h3 class="artist-name">kiki</h3>
         <p class="artist-meta" id="artist-meta-kiki">AI Idol · 5 Tracks</p>
+      </div>
+    </a>
+    <a href="gen.html" class="artist-card">
+      <div class="artist-photo">
+        <img src="assets/images/gen_main.png" alt="gEN">
+      </div>
+      <div class="artist-bar"></div>
+      <div class="artist-info">
+        <p class="artist-number">TAMSIC Artist 003</p>
+        <h3 class="artist-name">gEN</h3>
+        <p class="artist-meta" id="artist-meta-gen">AI Artist · 0 Tracks</p>
       </div>
     </a>
   </div>
@@ -965,8 +990,11 @@ async function initHome(){
 
   const nonoCount = allTracks.filter(t => t.artist === 'nono').length;
   const kikiCount = allTracks.filter(t => t.artist === 'kiki').length;
+  const genCount = allTracks.filter(t => t.artist === 'gen').length;
   document.getElementById('artist-meta-nono').textContent = `AI Idol · ${nonoCount} Tracks`;
   document.getElementById('artist-meta-kiki').textContent = `AI Idol · ${kikiCount} Tracks`;
+  const genMetaEl = document.getElementById('artist-meta-gen');
+  if (genMetaEl) genMetaEl.textContent = `AI Artist · ${genCount} Tracks`;
 
   const latest = [...allTracks].sort((a,b)=> String(b.id).localeCompare(String(a.id))).slice(0,4);
   if (latest.length) {

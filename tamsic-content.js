@@ -362,7 +362,8 @@ window.TAMSIC_CONTENT = {
     "kiki": [
       "assets/images/kiki/kiki4b.png",
       "assets/images/kiki/kiki2.png"
-    ]
+    ],
+    "gen": []
   },
   "coinPacks": [
     {
