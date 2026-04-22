@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>no-no | TAMSIC</title>
-<link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Syncopate:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <script src="tamsic-content.js"></script>
 <script src="purchase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js" async></script>
@@ -110,6 +110,17 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
 .footer-legal{display:flex;gap:20px;flex-wrap:wrap;align-items:center;}.footer-legal a{font-size:11px;letter-spacing:.15em;color:rgba(255,255,255,.4);text-decoration:none;text-transform:uppercase;transition:color .2s;}.footer-legal a:hover{color:var(--accent);}
 .nav-logo { display:flex; align-items:center; }
 
+/* artist-about (profile section) — shared visual pattern */
+.artist-about{background:var(--accent);color:#fff;padding:96px 56px;}
+.aa-inner{max-width:980px;margin:0 auto;display:grid;grid-template-columns:240px 1fr;gap:56px;align-items:start;}
+.aa-title{font-family:'Playfair Display',serif;font-size:46px;font-weight:700;line-height:1.05;color:#fff;margin:0;}
+.aa-body{min-width:0;}
+.aa-grid{display:grid;grid-template-columns:130px 1fr;gap:10px 28px;font-size:13px;line-height:1.75;margin:0 0 36px;}
+.aa-grid dt{color:rgba(255,255,255,.5);letter-spacing:.1em;font-size:10px;text-transform:uppercase;padding-top:5px;font-weight:400;margin:0;}
+.aa-grid dd{color:rgba(255,255,255,.94);margin:0;}
+.aa-desc{font-size:14px;line-height:2.1;color:rgba(255,255,255,.82);padding-top:28px;border-top:1px solid rgba(255,255,255,.16);margin:0;max-width:none;}
+@media(max-width:768px){.artist-about{padding:64px 24px;}.aa-inner{grid-template-columns:1fr;gap:32px;}.aa-title{font-size:32px;}.aa-grid{grid-template-columns:1fr;gap:2px;}.aa-grid dt{margin-top:12px;}}
+
 
 </style>
 </head>
@@ -137,6 +148,39 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
     <div class="hero-stats">
       <div class="stat-box"><div class="stat-num" id="track-count">—</div><div class="stat-label" data-ja="楽曲数" data-en="Tracks">楽曲数</div></div>
       <div class="stat-box"><div class="stat-num">AI</div><div class="stat-label">Idol</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="artist-about">
+  <div class="aa-inner">
+    <h3 class="aa-title" data-ja="About<br>no-no" data-en="About<br>no-no">About<br>no-no</h3>
+    <div class="aa-body">
+      <dl class="aa-grid">
+        <dt data-ja="性別" data-en="Gender">性別</dt>
+        <dd data-ja="女性" data-en="Female">女性</dd>
+        <dt data-ja="年齢" data-en="Age">年齢</dt>
+        <dd data-ja="非公開" data-en="Undisclosed">非公開</dd>
+        <dt data-ja="血液型" data-en="Blood Type">血液型</dt>
+        <dd data-ja="A型" data-en="Type A">A型</dd>
+        <dt data-ja="趣味" data-en="Hobbies">趣味</dt>
+        <dd data-ja="夜の散歩、言葉の収集、静かな場所を見つけること" data-en="Night walks, collecting words, finding quiet places">夜の散歩、言葉の収集、静かな場所を見つけること</dd>
+        <dt data-ja="特技" data-en="Skills">特技</dt>
+        <dd data-ja="小さな違和感に気づくこと、感情を言葉にすること" data-en="Noticing subtle unease, putting emotions into words">小さな違和感に気づくこと、感情を言葉にすること</dd>
+        <dt data-ja="好きな食べ物" data-en="Favorite Food">好きな食べ物</dt>
+        <dd data-ja="ビターチョコ、やさしい甘さの焼き菓子、カフェラテ" data-en="Bitter chocolate, gently sweet baked goods, café latte">ビターチョコ、やさしい甘さの焼き菓子、カフェラテ</dd>
+        <dt data-ja="苦手なもの" data-en="Dislikes">苦手なもの</dt>
+        <dd data-ja="軽すぎる言葉、騒がしすぎる場所、本音のない会話" data-en="Words that feel too light, overly noisy places, conversations without honesty">軽すぎる言葉、騒がしすぎる場所、本音のない会話</dd>
+        <dt data-ja="好きな時間" data-en="Favorite Time">好きな時間</dt>
+        <dd data-ja="深夜1時を過ぎた頃" data-en="Just past 1 AM">深夜1時を過ぎた頃</dd>
+        <dt data-ja="好きな場所" data-en="Favorite Place">好きな場所</dt>
+        <dd data-ja="雨上がりの道、窓際、灯りの少ない部屋" data-en="Streets after rain, by the window, dimly lit rooms">雨上がりの道、窓際、灯りの少ない部屋</dd>
+        <dt data-ja="口ぐせ" data-en="Catchphrase">口ぐせ</dt>
+        <dd data-ja="…そうなんだ" data-en="...I see">…そうなんだ</dd>
+        <dt data-ja="一言で言うと" data-en="In a word">一言で言うと</dt>
+        <dd data-ja="静かな違和感" data-en="Quiet dissonance">静かな違和感</dd>
+      </dl>
+      <p class="aa-desc" data-ja="no-noは、言葉にならない感情や、心の奥に沈んだ本音をすくい上げるアーティスト。派手に叫ぶのではなく、静かな温度で深く残る表現を大切にしている。日常の中にある揺らぎや矛盾、壊れそうな瞬間さえも否定せず、音楽として届ける存在。聴く人それぞれの感情にそっと重なるような作品を目指している。" data-en="no-no is an artist who scoops up emotions that cannot be put into words and the truths buried deep in the heart. Rather than shouting, she treasures expressions that linger with quiet warmth. She does not deny the fluctuations and contradictions of daily life — even the moments that feel on the verge of breaking — and delivers them instead as music. Her works aim to quietly overlap with each listener's feelings.">no-noは、言葉にならない感情や、心の奥に沈んだ本音をすくい上げるアーティスト。派手に叫ぶのではなく、静かな温度で深く残る表現を大切にしている。日常の中にある揺らぎや矛盾、壊れそうな瞬間さえも否定せず、音楽として届ける存在。聴く人それぞれの感情にそっと重なるような作品を目指している。</p>
     </div>
   </div>
 </section>

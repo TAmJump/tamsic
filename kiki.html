@@ -47,6 +47,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
 .feature-text{background:var(--accent);padding:72px 56px;display:flex;flex-direction:column;justify-content:center;}
 .feature-text h3{font-family:'Bodoni Moda',serif;font-style:italic;font-size:40px;font-weight:400;color:#fff;line-height:1.1;margin-bottom:28px;}
 .feature-text p{font-size:14px;line-height:2;color:rgba(255,255,255,.8);max-width:280px;margin-bottom:48px;}
+.feature-text .aa-grid{display:grid;grid-template-columns:130px 1fr;gap:10px 28px;font-size:13px;line-height:1.75;margin:0 0 36px;max-width:none;}
+.feature-text .aa-grid dt{color:rgba(255,255,255,.55);letter-spacing:.1em;font-size:10px;text-transform:uppercase;padding-top:5px;font-weight:400;margin:0;}
+.feature-text .aa-grid dd{color:rgba(255,255,255,.94);margin:0;}
+.feature-text p.aa-desc{font-size:14px;line-height:2.1;color:rgba(255,255,255,.82);padding-top:28px;border-top:1px solid rgba(255,255,255,.18);margin:0 0 36px;max-width:none;}
+@media(max-width:768px){.feature-text .aa-grid{grid-template-columns:1fr;gap:2px;}.feature-text .aa-grid dt{margin-top:12px;}}
 .fstat-row{display:flex;gap:32px;}
 .fstat{border-left:1px solid rgba(255,255,255,.3);padding-left:20px;}
 .fstat-num{font-family:'Bodoni Moda',serif;font-size:36px;color:#fff;line-height:1;margin-bottom:4px;}
@@ -150,7 +155,31 @@ footer{background:var(--text);color:#fff;padding:48px 64px;display:flex;justify-
   </div>
   <div class="feature-text">
     <h3 data-ja="About<br>kiki" data-en="About<br>kiki">About<br>kiki</h3>
-    <p><span data-ja="TAMSICが生み出した次世代のAIアーティスト。透明感のある歌声と独自の世界観で、聴く人すべての心に届く音楽を。" data-en="The next-gen AI artist born from TAMSIC. Music that reaches every listener's heart through a clear voice and unique worldview.">TAMSICが生み出した次世代のAIアーティスト。透明感のある歌声と独自の世界観で、聴く人すべての心に届く音楽を。</span></p>
+    <dl class="aa-grid">
+      <dt data-ja="性別" data-en="Gender">性別</dt>
+      <dd data-ja="女性" data-en="Female">女性</dd>
+      <dt data-ja="年齢" data-en="Age">年齢</dt>
+      <dd data-ja="20代前半" data-en="Early 20s">20代前半</dd>
+      <dt data-ja="血液型" data-en="Blood Type">血液型</dt>
+      <dd data-ja="B型" data-en="Type B">B型</dd>
+      <dt data-ja="趣味" data-en="Hobbies">趣味</dt>
+      <dd data-ja="大音量で音楽を流すこと、思い立ったらすぐ動くこと、気分で遠回りすること" data-en="Blasting music loud, acting the moment an idea strikes, taking detours on a whim">大音量で音楽を流すこと、思い立ったらすぐ動くこと、気分で遠回りすること</dd>
+      <dt data-ja="特技" data-en="Skills">特技</dt>
+      <dd data-ja="空気を変えること、勢いのまま前に進むこと、人の心に火をつけること" data-en="Shifting the mood, pushing forward on momentum, lighting a fire in people's hearts">空気を変えること、勢いのまま前に進むこと、人の心に火をつけること</dd>
+      <dt data-ja="好きな食べ物" data-en="Favorite Food">好きな食べ物</dt>
+      <dd data-ja="辛いもの、炭酸、ポテト、たまにすごく甘いもの" data-en="Spicy food, fizzy drinks, fries, occasionally something very sweet">辛いもの、炭酸、ポテト、たまにすごく甘いもの</dd>
+      <dt data-ja="苦手なもの" data-en="Dislikes">苦手なもの</dt>
+      <dd data-ja="中途半端、我慢しすぎること、曖昧な態度" data-en="Half-measures, enduring too much, ambiguous attitudes">中途半端、我慢しすぎること、曖昧な態度</dd>
+      <dt data-ja="好きな時間" data-en="Favorite Time">好きな時間</dt>
+      <dd data-ja="夕方から夜に変わる瞬間" data-en="The moment evening turns to night">夕方から夜に変わる瞬間</dd>
+      <dt data-ja="好きな場所" data-en="Favorite Place">好きな場所</dt>
+      <dd data-ja="ステージの前、街の光が多い場所、風が強い日" data-en="In front of the stage, places full of city lights, windy days">ステージの前、街の光が多い場所、風が強い日</dd>
+      <dt data-ja="口ぐせ" data-en="Catchphrase">口ぐせ</dt>
+      <dd data-ja="いいじゃん、それで" data-en="Sounds good, let's go with that">いいじゃん、それで</dd>
+      <dt data-ja="一言で言うと" data-en="In a word">一言で言うと</dt>
+      <dd data-ja="衝動" data-en="Impulse">衝動</dd>
+    </dl>
+    <p class="aa-desc" data-ja="kikiは、感情の熱や衝動をそのまま音楽に変えるアーティスト。可愛さの中に強さを持ち、勢いだけでは終わらない芯のある表現を特徴としている。迷いや葛藤も隠さず、それでも前に進もうとする力を作品の中に込めている。聴く人の気持ちを一気に動かし、背中を押すようなエネルギーを届ける存在。" data-en="kiki is an artist who turns emotional heat and impulse directly into music. She carries strength inside her charm, defined by expressions with a core that goes beyond mere momentum. She does not hide her hesitation or inner conflict, yet channels the will to keep moving forward into every work. She shifts the listener's mood in an instant, delivering energy that pushes them onward.">kikiは、感情の熱や衝動をそのまま音楽に変えるアーティスト。可愛さの中に強さを持ち、勢いだけでは終わらない芯のある表現を特徴としている。迷いや葛藤も隠さず、それでも前に進もうとする力を作品の中に込めている。聴く人の気持ちを一気に動かし、背中を押すようなエネルギーを届ける存在。</p>
     <div class="fstat-row">
       <div class="fstat"><div class="fstat-num" id="track-count">—</div><div class="fstat-label" data-ja="楽曲数" data-en="Tracks">楽曲数</div></div>
       <div class="fstat"><div class="fstat-num">AI</div><div class="fstat-label" data-ja="アイドル" data-en="Idol">アイドル</div></div>
