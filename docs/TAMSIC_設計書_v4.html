@@ -293,7 +293,7 @@ TAMSICサイトの続き作業をお願いします。<br><br>
     <tr><th>項目</th><th>内容</th></tr>
     <tr><td>サービス名</td><td>TAMSIC（タムシック）</td></tr>
     <tr><td>性質</td><td>音楽レーベル公式サイト ＋ 会員制先行試聴・コイン課金サイト</td></tr>
-    <tr><td>アーティスト</td><td>no-no（ノーノ）／ kiki（キキ）</td></tr>
+    <tr><td>アーティスト</td><td>no-no（ノーノ）／ kiki（キキ）／ gEN（ジェン）</td></tr>
     <tr><td>本番URL</td><td><span class="mono">https://tamsic.tamjump.com</span></td></tr>
     <tr><td>リポジトリ</td><td><span class="mono">https://github.com/TAmJump/tamsic</span></td></tr>
     <tr><td>音源Vault（非公開）</td><td><span class="mono">https://github.com/TAmJump/tamsic-audio-vault</span>（Private）</td></tr>
@@ -426,6 +426,7 @@ TAMSICサイトの続き作業をお願いします。<br><br>
     <tr><td class="mono">index.html</td><td>TOP（ヒーロー・アーティスト紹介・3曲プレイヤー・ニュース）</td></tr>
     <tr><td class="mono">nono.html</td><td>no-no アーティストページ（試聴・コインパネル・歌詞）</td></tr>
     <tr><td class="mono">kiki.html</td><td>kiki アーティストページ（試聴・コインパネル・歌詞）</td></tr>
+    <tr><td class="mono">gen.html</td><td>gEN アーティストページ（2026.04.23 追加・同構造）</td></tr>
     <tr><td class="mono">about.html</td><td>レーベル紹介・ビジョン・ミッション</td></tr>
     <tr><td class="mono">news.html</td><td>ニュース一覧（自動表示・フィルター・日英対応）</td></tr>
     <tr><td class="mono">login.html</td><td>インラインログイン（Cognito SDK 直結・SRP 認証）</td></tr>
@@ -455,8 +456,10 @@ TAMSICサイトの続き作業をお願いします。<br><br>
     <tr><th>パス</th><th>内容</th></tr>
     <tr><td class="mono">assets/images/nono/</td><td>no-no カバー画像（PNG）</td></tr>
     <tr><td class="mono">assets/images/kiki/</td><td>kiki カバー画像（PNG）</td></tr>
+    <tr><td class="mono">assets/images/gen/</td><td>gEN カバー画像（PNG）</td></tr>
     <tr><td class="mono">assets/audio/nono/</td><td>no-no 楽曲 MP3（<strong>公開済みのもののみ</strong>。未公開曲は Vault に保管）</td></tr>
     <tr><td class="mono">assets/audio/kiki/</td><td>kiki 楽曲 MP3（同上）</td></tr>
+    <tr><td class="mono">assets/audio/gen/</td><td>gEN 楽曲 MP3（同上）</td></tr>
   </table>
 
   <h3>GitHub Actions（自動化）</h3>
@@ -683,9 +686,10 @@ location.href = redirect ? <span class="s">`/${redirect}`</span> : <span class="
   <pre class="code">{
   id: <span class="s">'nono-004'</span>,
   title: <span class="s">'ぎりぎりだよ。'</span>,
-  price: <span class="v">100</span>,   <span class="c">// ← フル試聴コイン数</span>
+  price: <span class="v">50</span>,   <span class="c">// ← フル試聴コイン数</span>
   ...
 }</pre>
+  <p style="font-size:.85rem;color:var(--g6);margin:10px 0 6px"><strong>2026.04.23 の価格改定:</strong> 全曲の price を一律で半額化（100→50, 80→40, 50→25, 30→15, etc.）。運用中に Starter プラン (100 coin / ¥200) で 2 曲以上フル試聴できる状況を作り、コイン残存感を演出する目的。</p>
 
   <h3>コイン残高の保存場所</h3>
   <table>
@@ -994,12 +998,22 @@ TAMSICGate.<span class="v">showCoinShortage</span>({
   <h3>現在のスケジュール（kiki）</h3>
   <table>
     <tr><th>楽曲</th><th>会員先行（sample）</th><th>一般公開</th><th>MP3配置</th></tr>
+    <tr><td>unセカイ</td><td>2026/05/01</td><td>2026/05/01</td><td>repo 配置済 <span style="color:var(--red)">⚠️ 事前漏洩リスク</span></td></tr>
     <tr><td>Critical point</td><td>2026/09/01</td><td>2026/09/15</td><td>Vault で待機中</td></tr>
     <tr><td>Burn bright</td><td>2026/10/01</td><td>2026/10/15</td><td>Vault で待機中</td></tr>
     <tr><td>No Stop</td><td>2026/11/01</td><td>2026/11/15</td><td>Vault で待機中</td></tr>
     <tr><td>エンジン</td><td>2026/12/01</td><td>2026/12/15</td><td>Vault で待機中</td></tr>
     <tr><td>KIKI rising</td><td>2027/01/01</td><td>2027/01/15</td><td>Vault で待機中</td></tr>
   </table>
+
+  <h3>現在のスケジュール（gEN）</h3>
+  <table>
+    <tr><th>楽曲</th><th>会員先行（sample）</th><th>一般公開</th><th>MP3配置</th></tr>
+    <tr><td>unセカイ</td><td>2026/05/01</td><td>2026/05/01</td><td>repo 配置済 <span style="color:var(--red)">⚠️ 事前漏洩リスク</span></td></tr>
+  </table>
+  <div class="hint hint-blue">
+    <strong>2026.04.23 追加（gEN）:</strong> 3人目のアーティスト gEN を追加。1st ナンバー「unセカイ」は kiki 版と同名・同日公開（sample/full 同時解放）。sample と full の公開日を同日にする新しいスケジュールパターンを採用（従来の「1日 sample / 15日 full」と異なる）。
+  </div>
 
   <div class="hint hint-gold">
     <strong>自動切り替え＆自動配置:</strong> 日付が来ると自動でロック解除される（release-control.js）。さらに GitHub Actions が毎日 JST 00:10 に実行され、会員先行日が来た曲の MP3 を Vault から自動で本番 repo に配置する（§18 参照）。人間の介入は不要。
@@ -1013,6 +1027,35 @@ TAMSICGate.<span class="v">showCoinShortage</span>({
 }};</pre>
 
   <p style="font-size:.86rem;color:var(--g6);margin-top:8px">キーは曲の日本語タイトル。値は sample（会員先行公開日）と release（一般公開日）の 2 日付。</p>
+
+  <h3>Admin unlock（運営用全曲解放）</h3>
+  <div class="hint hint-blue">
+    <strong>2026.04.23 追加。</strong><span class="mono">release-control.js</span> の冒頭に <span class="mono">ADMIN_EMAILS</span> 配列を定義。ここに登録したメールアドレスで TAMSIC にログインしたユーザーは、公開日に関係なく全曲が <span class="mono">"full"</span> 状態として見える。運営が実機で UI 確認したい場合の救済措置。
+  </div>
+  <pre class="code"><span class="c">// release-control.js 冒頭</span>
+<span class="k">const</span> ADMIN_EMAILS = [<span class="s">"animalb001@gmail.com"</span>];
+
+<span class="k">function</span> _isAdmin() {
+  <span class="k">try</span> {
+    <span class="k">if</span> (<span class="k">typeof</span> getUserInfo === <span class="s">"function"</span>) {
+      <span class="k">const</span> u = getUserInfo();
+      <span class="k">if</span> (u &amp;&amp; u.email &amp;&amp;
+          ADMIN_EMAILS.map(e =&gt; e.toLowerCase()).includes(u.email.toLowerCase()))
+        <span class="k">return</span> <span class="v">true</span>;
+    }
+  } <span class="k">catch</span>(e) {}
+  <span class="k">return</span> <span class="v">false</span>;
+}
+
+<span class="k">function</span> getState(title) {
+  <span class="k">const</span> t = config.tracks[title];
+  <span class="k">if</span> (!t) <span class="k">return</span> <span class="s">"full"</span>;
+  <span class="k">if</span> (_isAdmin()) <span class="k">return</span> <span class="s">"full"</span>; <span class="c">// ← ここで全曲解放</span>
+  <span class="c">// ...通常の日付判定</span>
+}</pre>
+  <div class="hint hint-gold">
+    <strong>⚠️ 制約:</strong> Admin unlock は UI ロックを解除するだけで、未公開曲の MP3 が本番 repo に無ければ再生時に 404 になる（§21 の Vault 運用に従うほど、admin でも再生不可）。UI レイアウトや課金導線の動作確認には使えるが、実音源の試聴確認には別途 MP3 の手動配置が必要。複数メールを登録する場合は配列に追加（<span class="mono">["a@x","b@y"]</span>）。
+  </div>
 </section>
 
 <!-- ═══════════════════════════════════════ -->
@@ -1046,6 +1089,8 @@ TAMSICGate.<span class="v">showCoinShortage</span>({
     <tr><td><span class="mono">--sample-date</span> / <span class="mono">--release-date</span></td><td>✅</td><td>会員先行・一般公開日 YYYY-MM-DD</td></tr>
     <tr><td><span class="mono">--cover-file</span> / <span class="mono">--audio-file</span></td><td>✅</td><td>画像・音源のファイル名</td></tr>
     <tr><td><span class="mono">--youtube</span> / <span class="mono">--lyrics-file</span> / <span class="mono">--is-new</span> / <span class="mono">--dry-run</span></td><td></td><td>オプション</td></tr>
+    <tr><td><span class="mono">--allow-new-artist</span></td><td></td><td>新アーティスト用（nono/kiki 以外の id で実行する場合に必須）</td></tr>
+    <tr><td><span class="mono">--allow-duplicate-title</span></td><td></td><td>別アーティストで同名曲を追加する場合（2026.04.23 追加）。同一アーティスト内の重複はこのフラグがあっても禁止。release-control の同名エントリと日程が一致すれば共有、不一致ならエラー。</td></tr>
   </table>
 
   <h3>スクリプトが自動でやること</h3>
@@ -1078,6 +1123,21 @@ TAMSICGate.<span class="v">showCoinShortage</span>({
 
   <div class="hint hint-gold">
     <strong>v4 からはスクリプトで自動化済み。</strong><span class="mono">scripts/add-artist.js</span> を実行すれば、nono.html / kiki.html をテンプレに複製し、カラー・フォント・ID・パスを一括置換する。
+  </div>
+
+  <div class="hint hint-red">
+    <strong>⚠️ 既知のバグ（2026.04.23 発見・未修正）:</strong> スクリプトが nono テンプレの特定要素を置換しない不具合がある。生成後に必ず以下の目視チェックを実行すること（詳細は §23）:
+    <ul class="styled" style="margin-top:8px">
+      <li><span class="mono">.hero-visual-bg</span> に nono の青グラデ（#D4E2F0 → #B0C8E8）が残っていないか</li>
+      <li>nav 背景の <span class="mono">rgba(238,243,249,.9)</span> が残っていないか</li>
+      <li>JS 内に <span class="mono">rgba(0,153,204,*)</span> / <span class="mono">#007aaa</span>（nono 固有 cyan）が残っていないか</li>
+      <li>hero 画像パスが <span class="mono">nono_official_top.png</span> のままになっていないか</li>
+      <li><span class="mono">alt="no-no"</span> / <span class="mono">getArtistPhotos('nono')</span> が残っていないか</li>
+      <li>hero-index の <span class="mono">"ARTIST 001"</span> が適切な番号に更新されているか</li>
+      <li>表示名に小文字を含む場合、タイトル書体が Syncopate（大文字のみ書体）のままになっていないか → Playfair Display italic など小文字も扱える書体に差し替え</li>
+      <li>hero 構造が 2 カラム（写真+情報）のままになっていないか → kiki スタイルの中央寄せ + <span class="mono">.feature</span> 2 カラム構造に差し替え（§全アーティストで統一済み）</li>
+    </ul>
+    これらの修正は <span class="mono">docs/TAMSIC_TODO.md</span> に積まれている。<span class="mono">add-artist.js</span> 本体を直すのが本筋。
   </div>
 
   <h3>最小コマンド</h3>
@@ -1390,9 +1450,11 @@ chmod +x .git/hooks/pre-commit</pre>
   <table>
     <tr><th>ページ</th><th>アクセント</th><th>フォント（見出し）</th><th>フォント（本文）</th></tr>
     <tr><td>index / about / news</td><td>#C4960E（ゴールド）</td><td>Playfair Display</td><td>Jost</td></tr>
-    <tr><td>nono.html</td><td>#0099CC（シアンブルー）</td><td>Syncopate</td><td>DM Sans</td></tr>
+    <tr><td>nono.html</td><td>#0099CC（シアンブルー）</td><td>Playfair Display italic（2026.04.23 以降）</td><td>DM Sans</td></tr>
     <tr><td>kiki.html</td><td>#C85A72（ローズピンク）</td><td>Bodoni Moda</td><td>Nunito</td></tr>
+    <tr><td>gen.html</td><td>#4A4540（スモーキーブロンズ）</td><td>Playfair Display italic</td><td>DM Sans</td></tr>
   </table>
+  <p style="font-size:.85rem;color:var(--g6);margin-top:10px"><strong>2026.04.23 変更:</strong> nono.html の見出しフォントを Syncopate（大文字のみ書体）から Playfair Display italic に変更。no-no という表示名に小文字が含まれるため、Syncopate だと大文字として見えてしまい視認性が低かった。gEN も同じ理由で Playfair Display italic を採用し、全ページの hero-name で統一的な italic セリフ表現に。</p>
 
   <h3>新アーティストのカラー設定例</h3>
   <pre class="code">:root {
@@ -1538,6 +1600,55 @@ chmod +x .git/hooks/pre-commit</pre>
   <h4>対応</h4>
   <p style="font-size:.86rem;color:var(--g6)">未公開 9 曲を repo から削除し、非公開 Vault repo（tamsic-audio-vault）に移動。GitHub Actions で毎日 JST 00:10 に自動配置する仕組みを導入（§18）。</p>
 
+  <h3>2026.04.23 発生事案: add-artist.js の残留要素バグ（nono テンプレの置換漏れ）</h3>
+  <div class="hint hint-red">
+    <strong>症状:</strong> 3人目のアーティスト gEN を <span class="mono">scripts/add-artist.js</span> で追加した際、生成された <span class="mono">gen.html</span> に nono テンプレの要素が複数箇所残留した。実機反映後に目視で判明。
+  </div>
+  <h4>残留した要素（スクリプトが置換しなかった 8 箇所）</h4>
+  <table>
+    <tr><th>箇所</th><th>残っていた値</th><th>本来あるべき値</th></tr>
+    <tr><td><span class="mono">.hero-visual-bg</span> のグラデ</td><td>青 (#D4E2F0 → #B0C8E8)</td><td>アクセント色から自動生成</td></tr>
+    <tr><td>nav 背景</td><td><span class="mono">rgba(238,243,249,.9)</span>（青寄り）</td><td>温色ニュートラル</td></tr>
+    <tr><td>JS 内の rgba</td><td><span class="mono">rgba(0,153,204,*)</span>（nono 固有 cyan）</td><td>アクセント色の rgba</td></tr>
+    <tr><td>JS 内の HEX</td><td><span class="mono">#007aaa</span></td><td>アクセント色の濃色版</td></tr>
+    <tr><td>hero 画像パス</td><td><span class="mono">nono_official_top.png</span></td><td><span class="mono">{id}_official_top.png</span></td></tr>
+    <tr><td>alt / getArtistPhotos</td><td><span class="mono">alt="no-no"</span> / <span class="mono">getArtistPhotos('nono')</span></td><td>新アーティスト id</td></tr>
+    <tr><td>hero-index</td><td><span class="mono">"ARTIST 001"</span></td><td>"ARTIST 003" など動的</td></tr>
+    <tr><td>タイトル書体</td><td>Syncopate（大文字のみ書体）</td><td>小文字を含む名は Playfair Display italic など</td></tr>
+  </table>
+
+  <h4>対応</h4>
+  <p style="font-size:.86rem;color:var(--g6)">
+    gen.html を手動で修正し commit <span class="mono">bd1dbf5</span> で反映。さらに <span class="mono">nono.html</span> の Syncopate も Playfair Display italic に差し替えて全アーティストページで hero-name の書体を統一（commit <span class="mono">cdd9c64</span>）。<span class="mono">add-artist.js</span> 本体のバグ修正は未対応（<span class="mono">docs/TAMSIC_TODO.md</span> に記録）。次回新アーティスト追加時は、生成後に目視での残留チェックが必要。
+  </p>
+
+  <h3>2026.04.23 発生事案: アーティストページの構造が揃っていなかった</h3>
+  <div class="hint hint-red">
+    <strong>症状:</strong> nono.html / gen.html と kiki.html で hero セクションの構造が別物。nono/gen は 2 カラム（写真+情報）で hero 内にステータス箱、kiki は中央寄せで About セクション内にステータス箱。add-about セクションだけ揃えた段階では「全体統一」と言えない状態だった。
+  </div>
+  <h4>対応</h4>
+  <p style="font-size:.86rem;color:var(--g6)">
+    kiki.html を基準テンプレとして、nono.html / gen.html の hero と About を全面リファクタ。hero は <span class="mono">decor-l/r</span> + <span class="mono">hero-orn</span> + italic セリフ大名前 + 3 部 <span class="mono">hero-rule</span> の中央寄せ構造に、About は <span class="mono">.feature</span> / <span class="mono">.feature-photo</span> / <span class="mono">.feature-text</span> の 2 カラム構造に変更。ステータス箱（楽曲数 / AI）も hero 内から About 内の <span class="mono">.fstat-row</span> に移動（commit <span class="mono">cdd9c64</span>）。
+  </p>
+
+  <h3>2026.04.23 発生事案: 別アーティストの同名曲が add-track.js で追加できない</h3>
+  <div class="hint hint-red">
+    <strong>症状:</strong> gen と kiki 両方に同日公開の「unセカイ」を追加する運用が発生。<span class="mono">add-track.js</span> はタイトル重複を無条件で弾くため、2曲目で <span class="mono">❌ title "unセカイ" はすでに存在します</span> エラー。
+  </div>
+  <h4>対応</h4>
+  <p style="font-size:.86rem;color:var(--g6)">
+    <span class="mono">--allow-duplicate-title</span> フラグを新設。このフラグがある場合のみ、別アーティストでの同名曲を許容。同一アーティスト内の重複はフラグがあっても禁止（タイプミス防止）。<span class="mono">release-control.js</span> は title 単位で state を管理する構造のため、既存エントリと日程が一致すれば新規追加をスキップして共有、日程不一致ならエラー（commit <span class="mono">5ccfb13</span>）。
+  </p>
+
+  <h3>2026.04.23 発生事案: MP3 事前漏洩リスク（未解消・監視中）</h3>
+  <div class="hint hint-gold">
+    <strong>現状:</strong> 公開日 2026-05-01 の gen-001「unセカイ」と kiki-006「unセカイ」の MP3 が、4/23 時点で本番 repo の <span class="mono">assets/audio/{gen,kiki}/</span> に配置されている。8 日間の事前漏洩リスクウィンドウあり。preflight で 2 件の Warn。
+  </div>
+  <h4>方針</h4>
+  <p style="font-size:.86rem;color:var(--g6)">
+    §18 の自動リリース仕組みに従うなら、MP3 を <span class="mono">tamsic-audio-vault</span> に移動し、GitHub Actions の自動リリース Workflow（要セットアップ）で 5/1 に配置するのが正攻法。現状は保留中、<span class="mono">docs/TAMSIC_TODO.md</span> で追跡。
+  </p>
+
   <h3>汎用応急処置</h3>
   <pre class="code"><span class="c">// tamsic-content.js の構文エラー疑い時、F12 Console で実行</span>
 console.log(window.TAMSIC_CONTENT)
@@ -1582,8 +1693,9 @@ console.log(window.TAMSIC_CONTENT)
 </section>
 
 <footer style="padding:48px 0 60px;text-align:center;color:var(--g4);font-size:.8rem;border-top:1px solid var(--g2)">
-  TAMSIC 設計書 v4.0 Standalone Edition　／　2026.04.22　／　Confidential<br>
-  <span style="display:inline-block;margin-top:6px">v1 / v2 / v3 の全情報を統合。本ファイル 1 つで 100% 引き継ぎ可能。</span>
+  TAMSIC 設計書 v4.1 Standalone Edition　／　2026.04.23　／　Confidential<br>
+  <span style="display:inline-block;margin-top:6px">v1 / v2 / v3 の全情報を統合。本ファイル 1 つで 100% 引き継ぎ可能。</span><br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.1 更新: gEN 追加 / 3ページ構造統一 / 価格半額 / Admin unlock / unセカイ 2曲 / add-track 同名曲対応 / add-artist 既知バグ記録</span>
 </footer>
 
 </body>
