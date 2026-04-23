@@ -147,7 +147,18 @@ const existingIds = (data.tracks || []).map(t => t.id);
 if (existingIds.includes(id)) die(`id "${id}" はすでに存在します: ${existingIds.join(', ')}`);
 
 const existingTitles = (data.tracks || []).map(t => t.title);
-if (existingTitles.includes(args.title)) die(`title "${args.title}" はすでに存在します`);
+if (existingTitles.includes(args.title) && !args['allow-duplicate-title']) {
+  const sameTitle = (data.tracks || []).filter(t => t.title === args.title);
+  const artists = sameTitle.map(t => `${t.id}(${t.artist})`).join(', ');
+  die(`title "${args.title}" はすでに存在します: ${artists}\n別アーティストで同名曲を追加する場合は --allow-duplicate-title を付けてください。`);
+}
+// 同一アーティストでの title 重複は --allow-duplicate-title があっても禁止
+if (args['allow-duplicate-title']) {
+  const sameArtistSameTitle = (data.tracks || []).filter(t => t.title === args.title && t.artist === artist);
+  if (sameArtistSameTitle.length > 0) {
+    die(`同じアーティスト (${artist}) 内で title "${args.title}" がすでに存在します: ${sameArtistSameTitle.map(t=>t.id).join(', ')}`);
+  }
+}
 
 // artist が photos にない場合は作る（通常 nono/kiki のみだが念のため）
 if (data.photos && !data.photos[artist]) {
@@ -216,24 +227,41 @@ const releaseRaw = fs.readFileSync(releasePath, 'utf8');
 const newReleaseLine = `"${args.title}":{sample:"${sampleDate}",release:"${releaseDate}"}`;
 
 // 既に同じタイトルがあるか確認
-if (new RegExp(`"${args.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"\s*:`).test(releaseRaw)) {
-  die(`release-control.js に既に "${args.title}" が存在します`);
+const releaseExistsRe = new RegExp(`"${args.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"\s*:\s*\\{\\s*sample\\s*:\\s*"([^"]+)"\\s*,\\s*release\\s*:\\s*"([^"]+)"\\s*\\}`);
+const releaseExistsMatch = releaseRaw.match(releaseExistsRe);
+let skipReleaseAdd = false;
+if (releaseExistsMatch) {
+  if (args['allow-duplicate-title']) {
+    // 別アーティストで同名曲を追加するケース
+    // 日程が一致するなら既存エントリを共有 (release-control は title 単位で state を返すので問題なし)
+    const [_full, existingSample, existingRelease] = releaseExistsMatch;
+    if (existingSample === sampleDate && existingRelease === releaseDate) {
+      console.log(`ℹ️  release-control.js の "${args.title}" エントリは既存 (sample:${existingSample} / release:${existingRelease}) と一致。スキップ。`);
+      skipReleaseAdd = true;
+    } else {
+      die(`release-control.js に "${args.title}" が既にあり (sample:${existingSample} / release:${existingRelease}) ですが、今回指定 (sample:${sampleDate} / release:${releaseDate}) と一致しません。別タイトルにしてください。`);
+    }
+  } else {
+    die(`release-control.js に既に "${args.title}" が存在します`);
+  }
 }
 
 // config={tracks:{ ... }}; の } を見つけて、その直前に挿入
 // tracks オブジェクトの閉じ括弧 }};\n の位置を特定
-let newReleaseRaw;
-const releaseMatch = releaseRaw.match(/(const\s+config\s*=\s*\{\s*tracks\s*:\s*\{)([\s\S]*?)(\}\s*\}\s*;)/);
-if (!releaseMatch) {
-  die('release-control.js の config={tracks:{...}}; パターンが見つからない');
-}
-const [whole, head, body, tail] = releaseMatch;
+let newReleaseRaw = releaseRaw;
+if (!skipReleaseAdd) {
+  const releaseMatch = releaseRaw.match(/(const\s+config\s*=\s*\{\s*tracks\s*:\s*\{)([\s\S]*?)(\}\s*\}\s*;)/);
+  if (!releaseMatch) {
+    die('release-control.js の config={tracks:{...}}; パターンが見つからない');
+  }
+  const [whole, head, body, tail] = releaseMatch;
 
-// body の末尾に改行＋新行を追加（既存の最終エントリの末尾にカンマがあるか確認）
-const trimmedBody = body.replace(/\s*$/, '');
-const needsComma = !trimmedBody.endsWith(',') && trimmedBody.length > 0;
-const newBody = (needsComma ? trimmedBody + ',' : trimmedBody) + '\n' + newReleaseLine + '\n';
-newReleaseRaw = releaseRaw.replace(whole, head + newBody + tail);
+  // body の末尾に改行＋新行を追加（既存の最終エントリの末尾にカンマがあるか確認）
+  const trimmedBody = body.replace(/\s*$/, '');
+  const needsComma = !trimmedBody.endsWith(',') && trimmedBody.length > 0;
+  const newBody = (needsComma ? trimmedBody + ',' : trimmedBody) + '\n' + newReleaseLine + '\n';
+  newReleaseRaw = releaseRaw.replace(whole, head + newBody + tail);
+}
 
 // ──────────────────────────────────────────
 // 書き込み (dry-run なら stdout のみ)

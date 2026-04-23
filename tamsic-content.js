@@ -176,6 +176,22 @@ window.TAMSIC_CONTENT = {
       "lyrics": "Cold morning\r\nDry street\r\nNo one’s voice\r\nReaches me\r\n\r\n見ないまま\r\n過ぎるたび\r\n何かひとつ\r\n消えていく\r\n\r\nRotten morning\r\nRotten night\r\nRotten voices\r\nIn this town\r\n\r\n綺麗ごとで\r\n包むなよ\r\nその手も その目も\r\n腐ってる\r\n\r\nThis world again\r\nWith its own hands\r\nIs choking down\r\nIts broken neck\r\n\r\n壊したあと\r\n失くしたあと\r\n何を残して\r\n眠るんだよ\r\n\r\nHow many times\r\nWill you break this world\r\nWhat do you need\r\nTo feel enough\r\n\r\n僕の命を\r\n奪うなよ\r\nMy precious light\r\nDon’t touch it now\r\n\r\n痛みの上に\r\n立つなよ\r\nWith your dirty hands\r\nDon’t touch me now\r\n\r\nTurning away\r\nDay by day\r\nSomeone’s tomorrow\r\nFades to gray\r\n\r\n正しさなんて\r\nもういらない\r\n生きてる声を\r\n踏むなよ\r\n\r\nWho decided\r\nThis cruel order\r\nWho allowed\r\nThis living hell\r\n\r\n泣いた跡に\r\n値札を貼って\r\nそれでもまだ\r\n人間なのか\r\n\r\nStill so warm\r\nThat beating chest\r\n冷たい理屈で\r\n奪うなよ\r\n\r\nA tiny light\r\nStill breathing here\r\n都合のいい明日で\r\n消すなよ\r\n\r\nHow many times\r\nWill you steal from us\r\nHow many scars\r\nWill make you smile\r\n\r\n僕の命を\r\n奪うなよ\r\nMy only treasure\r\nDon’t burn it out\r\n\r\n連れていくな\r\n消していくな\r\nWith your hollow justice\r\nDon’t raise that flag\r\n\r\nRotten sky\r\nRotten streets\r\nRotten language\r\nUnderneath\r\n\r\n腐ってる\r\n腐ってる\r\nなのにおまえは\r\n黙ってる\r\n\r\nI still scream\r\nEven if I tear\r\nI still scream\r\nEven if I burn\r\n\r\n返せよ\r\n返せよ\r\n奪ったものを\r\n返せよ\r\n\r\nHow many times\r\nWill you break this world\r\nHow many lives\r\nWill never return\r\n\r\n僕の命を\r\n奪うなよ\r\nMy precious future\r\nDon’t take it away\r\n\r\n奪うなよ\r\nもう二度と\r\n僕の大切に\r\n触れるなよ\r\n\r\nDon’t take it away\r\nDon’t take it away\r\n奪うな\r\nもう二度と",
       "lyricsPreview": "僕の命を\n奪うなよ\nMy precious light\nDon't touch it now",
       "durationSec": 0
+    },
+    {
+      "id": "kiki-006",
+      "artist": "kiki",
+      "order": 6,
+      "title": "unセカイ",
+      "price": 50,
+      "isNew": true,
+      "sampleStart": "0:40",
+      "sampleEnd": "1:10",
+      "youtubeUrl": "https://youtube.com/shorts/XhnWCVeDKe0",
+      "coverPath": "assets/images/kiki/kiki_unsekai.png",
+      "audioPath": "assets/audio/kiki/kiki_unsekai.mp3",
+      "lyrics": "何度 壊す？\r\n何度 壊すの？\r\nまだ壊すのか\r\nこのセカイ\r\n\r\n誰が壊す？\r\n誰が殺すの？\r\n誰が黙って\r\n見てるだけ\r\n\r\n腐った朝\r\n腐った夜\r\n腐った声で\r\n笑う街\r\n\r\n綺麗ごとで\r\n包むなよ\r\nその手 その目も\r\n腐ってる\r\n\r\n世界はまた\r\n自分の手で\r\n自分の首を\r\n締めてる\r\n\r\n何度 壊せば\r\n気が済むんだ\r\n何を奪えば\r\n足りるんだよ\r\n\r\n僕の命を\r\n奪うな\r\n僕の宝に\r\n触るなよ\r\n\r\n触るなよ\r\n壊すなよ\r\nその汚れた手で\r\n触るな\r\n\r\n見ないふりで\r\n過ぎるたび\r\n誰かの明日が\r\n消えていく\r\n\r\n正しさなど\r\nもういらない\r\n生きてる声を\r\n踏むな\r\n\r\n誰が決めた\r\nこの順番\r\n誰が許した\r\nこの地獄\r\n\r\n泣いた跡に\r\n値札を貼って\r\nそれでもまだ\r\n人間と言うの？\r\n\r\n何度 壊せば\r\n気が済むんだ\r\n何度 奪えば\r\n笑えるんだ\r\n\r\n僕の命を\r\n奪うなよ\r\n僕の宝を\r\n消すなよ\r\n\r\n連れていくな\r\n消していくな\r\nその鈍い正義で\r\n旗をあげるな\r\n\r\n腐ってる\r\n腐ってる\r\n空も街も\r\n言葉も\r\n\r\n腐ってる\r\n腐ってる\r\nなのにおまえは\r\n黙ってる\r\n\r\nまだ温かい\r\nその胸を\r\n冷たい理屈で\r\n奪うなよ\r\n\r\nまだ小さい\r\nこの光を\r\n都合のいい明日で\r\n消すなよ\r\n\r\n僕は叫ぶ\r\n裂けても叫ぶ\r\n僕は叫び続ける\r\n焼けても叫び続ける\r\n\r\n返せよ\r\n返せよ\r\n奪ったものを\r\n返せよ\r\n\r\n返せないなら\r\nもう二度と\r\n僕の大切に\r\n触れるなよ\r\n\r\n何度 壊す\r\n何度 壊すの？\r\nまだ壊し続けるの？\r\nこのセカイ\r\n\r\n僕の命を\r\n奪うな\r\n僕の宝を\r\n奪うなよ\r\n\r\n奪うな\r\n奪うな\r\n奪うな\r\nもう二度と",
+      "lyricsPreview": "僕の命を\n奪うな\n僕の宝に\n触るなよ",
+      "durationSec": 0
     }
   ],
   "news": [
@@ -382,6 +398,24 @@ window.TAMSIC_CONTENT = {
       "date": "2026.05.01",
       "title": "gen「unセカイ」一般公開",
       "titleEn": "gen \"unSekai\" — Now Available to Everyone",
+      "tag": "Release",
+      "showAfter": "2026-05-01",
+      "addedAt": "2026-05-01T00:00:00+09:00"
+    },
+    {
+      "id": "news-kiki-006-sample",
+      "date": "2026.05.01",
+      "title": "kiki「unセカイ」会員先行視聴スタート",
+      "titleEn": "kiki \"unSekai\" — Member Early Access Now Live",
+      "tag": "Release",
+      "showAfter": "2026-05-01",
+      "addedAt": "2026-05-01T00:00:00+09:00"
+    },
+    {
+      "id": "news-kiki-006-release",
+      "date": "2026.05.01",
+      "title": "kiki「unセカイ」一般公開",
+      "titleEn": "kiki \"unSekai\" — Now Available to Everyone",
       "tag": "Release",
       "showAfter": "2026-05-01",
       "addedAt": "2026-05-01T00:00:00+09:00"
