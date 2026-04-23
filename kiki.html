@@ -151,7 +151,7 @@ footer{background:var(--text);color:#fff;padding:48px 64px;display:flex;justify-
   <div class="feature-photo">
     <div class="feature-photo-bg"></div>
     <div class="feature-photo-frame" id="hero-photo">
-      <div class="feature-photo-ph">Photo</div>
+      <img src="assets/images/kiki/kiki_official_top.png" alt="kiki" style="width:100%;height:100%;object-fit:cover;">
     </div>
   </div>
   <div class="feature-text">
@@ -450,10 +450,7 @@ async function init(){
   const n=_tracks.length||'—';
   document.getElementById('track-count').textContent=n;
   
-  if(_tracks.length&&getTrackCoverSrc(_tracks[0])){
-    const f=document.getElementById('hero-photo');
-    f.innerHTML=`<img src="${getTrackCoverSrc(_tracks[0])}" alt="kiki" style="width:100%;height:100%;object-fit:cover;">`;
-  }
+  if(window.TAMSICLang) window.TAMSICLang.apply(window.TAMSICLang.get());
   renderTracks();
   refreshCoinUI();
   TAMSICCoins.onChange(()=>refreshCoinUI());
