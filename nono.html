@@ -25,23 +25,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
 .nav-links{display:flex;gap:36px;list-style:none;}
 .nav-links a{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color .25s;}
 .nav-links a:hover{color:var(--accent);}
-.hero{min-height:100vh;display:grid;grid-template-columns:55% 45%;padding-top:72px;}
-.hero-visual{position:relative;background:var(--light);display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:calc(100vh - 72px);}
-.hero-visual-bg{position:absolute;inset:0;background:linear-gradient(135deg,#D4E2F0 0%,#C0D5EC 50%,#B0C8E8 100%);}
-.hero-visual-pattern{position:absolute;inset:0;opacity:.06;background-image:linear-gradient(var(--text) 1px,transparent 1px),linear-gradient(90deg,var(--text) 1px,transparent 1px);background-size:48px 48px;}
-.hero-photo-frame{position:relative;z-index:1;width:75%;max-width:380px;aspect-ratio:3/4;overflow:hidden;border:1px solid rgba(255,255,255,.4);}
-.hero-photo-frame img{width:100%;height:100%;object-fit:cover;}
-.hero-photo-ph{display:flex;align-items:center;justify-content:center;height:100%;font-family:'Syncopate',sans-serif;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--mid);background:rgba(255,255,255,.15);}
-.hero-index{position:absolute;bottom:40px;left:40px;font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.3em;color:var(--mid);text-transform:uppercase;}
-.hero-info{padding:60px 56px;display:flex;flex-direction:column;justify-content:center;}
-.hero-number{font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.5em;color:var(--accent);text-transform:uppercase;margin-bottom:28px;opacity:0;animation:sIn .8s cubic-bezier(.22,1,.36,1) forwards .15s;}
-.hero-name{font-family:'Syncopate',sans-serif;font-size:clamp(52px,7vw,100px);font-weight:700;line-height:1;letter-spacing:.08em;opacity:0;animation:sIn .8s cubic-bezier(.22,1,.36,1) forwards .28s;}
-.hero-rule{width:40px;height:2px;background:var(--accent);margin:36px 0;opacity:0;animation:sIn .8s cubic-bezier(.22,1,.36,1) forwards .4s;}
-.hero-bio{font-size:14px;line-height:2;color:var(--mid);max-width:300px;margin-bottom:52px;opacity:0;animation:sIn .8s cubic-bezier(.22,1,.36,1) forwards .5s;}
-.hero-stats{display:flex;gap:32px;opacity:0;animation:sIn .8s cubic-bezier(.22,1,.36,1) forwards .62s;}
-.stat-box{border:1px solid var(--light);padding:20px 24px;background:var(--white);}
-.stat-num{font-family:'Syncopate',sans-serif;font-size:28px;font-weight:700;line-height:1;margin-bottom:6px;}
-.stat-label{font-size:10px;letter-spacing:.25em;color:var(--mid);text-transform:uppercase;}
+/* Hero — kiki スタイル中央寄せ */
+.decor-l{position:absolute;left:64px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--light) 20%,var(--light) 80%,transparent);}
+.decor-r{position:absolute;right:64px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--light) 20%,var(--light) 80%,transparent);}
+.hero{position:relative;min-height:calc(100vh - 72px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px;text-align:center;}
+.hero-orn{width:1px;height:64px;background:linear-gradient(to bottom,transparent,var(--accent));margin:0 auto 40px;opacity:0;animation:dIn 1s cubic-bezier(.22,1,.36,1) forwards .1s;}
+.hero-num{font-family:'Syncopate',sans-serif;font-size:10px;letter-spacing:.5em;color:var(--mid);text-transform:uppercase;margin-bottom:32px;opacity:0;animation:dIn 1s cubic-bezier(.22,1,.36,1) forwards .2s;}
+.hero-name{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(80px,12vw,160px);font-weight:900;color:var(--text);line-height:1;letter-spacing:-.01em;opacity:0;animation:dIn 1s cubic-bezier(.22,1,.36,1) forwards .35s;}
+.hero-rule{display:flex;align-items:center;gap:16px;margin:48px 0;opacity:0;animation:dIn 1s cubic-bezier(.22,1,.36,1) forwards .5s;}
+.rule-line{width:80px;height:1px;background:var(--accent);}
+.rule-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+.hero-bio{font-size:15px;line-height:2.1;color:var(--mid);max-width:420px;opacity:0;animation:dIn 1s cubic-bezier(.22,1,.36,1) forwards .65s;}
+@keyframes dIn{to{opacity:1;}}
 @keyframes sIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
 .discography{padding:100px 56px;background:var(--white);}
 .sec-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:48px;border-bottom:1px solid var(--light);padding-bottom:24px;}
@@ -106,25 +101,39 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
 .footer-name{font-family:'Syncopate',sans-serif;font-size:18px;font-weight:700;letter-spacing:.4em;}
 .footer-label{font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.2em;text-transform:uppercase;}
 .footer-copy{font-size:11px;color:rgba(255,255,255,.25);}
-@media(max-width:768px){nav{padding:16px 20px;}.nav-links{display:none;}.hero{grid-template-columns:1fr;grid-template-rows:50vh auto;padding-top:64px;}.hero-visual{min-height:50vh;}.hero-info{padding:48px 24px;}.discography,.gallery{padding:80px 24px;}.track-block{grid-template-columns:110px 1fr;gap:16px;}.gallery-grid{grid-template-columns:1fr 1fr;}.g-item:nth-child(1){grid-row:span 1;}footer{padding:32px 24px;flex-direction:column;gap:16px;text-align:center;}}
+@media(max-width:768px){nav{padding:16px 20px;}.nav-links{display:none;}.discography,.gallery{padding:80px 24px;}.track-block{grid-template-columns:110px 1fr;gap:16px;}.gallery-grid{grid-template-columns:1fr 1fr;}.g-item:nth-child(1){grid-row:span 1;}footer{padding:32px 24px;flex-direction:column;gap:16px;text-align:center;}}
 .footer-legal{display:flex;gap:20px;flex-wrap:wrap;align-items:center;}.footer-legal a{font-size:11px;letter-spacing:.15em;color:rgba(255,255,255,.4);text-decoration:none;text-transform:uppercase;transition:color .2s;}.footer-legal a:hover{color:var(--accent);}
 .nav-logo { display:flex; align-items:center; }
 
-/* artist-about (profile section) — kiki の feature と同じ 2カラム構造 */
-.artist-about{display:grid;grid-template-columns:3fr 2fr;min-height:70vh;}
-.aa-photo-side{position:relative;background:var(--light);display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:60vh;}
-.aa-photo-bg{position:absolute;inset:0;background:linear-gradient(160deg,#E8F2F8 0%,#CFE4EF 60%,#B5D4E5 100%);}
-.aa-photo-frame{position:relative;z-index:1;width:75%;max-width:420px;aspect-ratio:3/4;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,0.12);}
-.aa-photo-frame img{width:100%;height:100%;object-fit:cover;display:block;}
-.aa-text-side{background:var(--accent);padding:72px 56px;display:flex;flex-direction:column;justify-content:center;color:#fff;}
-.aa-title{font-family:'Playfair Display',serif;font-size:46px;font-weight:700;line-height:1.05;color:#fff;margin:0 0 32px;}
-.aa-grid{display:grid;grid-template-columns:130px 1fr;gap:10px 28px;font-size:13px;line-height:1.75;margin:0 0 36px;max-width:560px;}
-.aa-grid dt{color:rgba(255,255,255,.5);letter-spacing:.1em;font-size:10px;text-transform:uppercase;padding-top:5px;font-weight:400;margin:0;}
-.aa-grid dd{color:rgba(255,255,255,.94);margin:0;}
-.aa-desc{font-size:14px;line-height:2.1;color:rgba(255,255,255,.82);padding-top:28px;border-top:1px solid rgba(255,255,255,.16);margin:0;max-width:560px;}
-@media(max-width:1200px){.aa-grid{grid-template-columns:1fr;gap:2px;}.aa-grid dt{margin-top:12px;}.aa-grid dt:first-child{margin-top:0;}}
-@media(max-width:1024px){.artist-about{grid-template-columns:1fr;}.aa-photo-side{min-height:50vh;padding:40px;}.aa-grid{grid-template-columns:130px 1fr;gap:10px 28px;}.aa-grid dt{margin-top:0;}}
-@media(max-width:768px){.aa-text-side{padding:56px 24px;}.aa-title{font-size:32px;}.aa-grid{grid-template-columns:1fr;gap:2px;}.aa-grid dt{margin-top:12px;}.aa-grid dt:first-child{margin-top:0;}}
+/* feature — kiki スタイル 2カラム (写真+About) */
+.feature{display:grid;grid-template-columns:3fr 2fr;min-height:70vh;}
+.feature-photo{background:var(--light);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;min-height:60vh;}
+.feature-photo-bg{position:absolute;inset:0;background:linear-gradient(160deg,#E8F2F8 0%,#CFE4EF 60%,#B5D4E5 100%);}
+.feature-photo-frame{position:relative;z-index:1;width:75%;max-width:420px;aspect-ratio:3/4;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,0.12);}
+.feature-photo-frame img{width:100%;height:100%;object-fit:cover;display:block;}
+.feature-photo-ph{display:flex;align-items:center;justify-content:center;height:100%;font-family:'Syncopate',sans-serif;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--mid);background:rgba(255,255,255,.4);}
+.feature-text{background:var(--accent);padding:72px 56px;display:flex;flex-direction:column;justify-content:center;color:#fff;}
+.feature-text h3{font-family:'Playfair Display',serif;font-style:italic;font-size:40px;font-weight:400;color:#fff;line-height:1.1;margin:0 0 28px;}
+.feature-text .aa-grid{display:grid;grid-template-columns:130px 1fr;gap:10px 28px;font-size:13px;line-height:1.75;margin:0 0 28px;}
+.feature-text .aa-grid dt{color:rgba(255,255,255,.55);letter-spacing:.1em;font-size:10px;text-transform:uppercase;padding-top:5px;font-weight:400;margin:0;}
+.feature-text .aa-grid dd{color:rgba(255,255,255,.94);margin:0;}
+.feature-text p.aa-desc{font-size:14px;line-height:2.1;color:rgba(255,255,255,.82);padding-top:24px;border-top:1px solid rgba(255,255,255,.18);margin:0 0 28px;}
+.fstat-row{display:flex;gap:40px;margin-top:8px;padding-top:24px;border-top:1px solid rgba(255,255,255,.18);}
+.fstat{flex:0 0 auto;}
+.fstat-num{font-family:'Playfair Display',serif;font-style:italic;font-size:36px;font-weight:400;color:#fff;line-height:1;}
+.fstat-label{font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.2em;color:rgba(255,255,255,.6);text-transform:uppercase;margin-top:6px;}
+@media(max-width:1200px){.feature-text .aa-grid{grid-template-columns:1fr;gap:2px;}.feature-text .aa-grid dt{margin-top:12px;}.feature-text .aa-grid dt:first-child{margin-top:0;}}
+@media(max-width:1024px){.feature{grid-template-columns:1fr;}.feature-photo{min-height:50vh;padding:40px;}.feature-text .aa-grid{grid-template-columns:130px 1fr;gap:10px 28px;}.feature-text .aa-grid dt{margin-top:0;}}
+@media(max-width:768px){
+  .decor-l,.decor-r{display:none;}
+  .hero{padding:80px 24px;min-height:auto;}
+  .hero-name{font-size:clamp(56px,16vw,90px);}
+  .feature-text{padding:56px 24px;}
+  .feature-text h3{font-size:32px;}
+  .feature-text .aa-grid{grid-template-columns:1fr;gap:2px;}
+  .feature-text .aa-grid dt{margin-top:12px;}
+  .feature-text .aa-grid dt:first-child{margin-top:0;}
+}
 
 
 </style>
@@ -137,35 +146,23 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
 </nav>
 
 <section class="hero">
-  <div class="hero-visual">
-    <div class="hero-visual-bg"></div>
-    <div class="hero-visual-pattern"></div>
-    <div class="hero-photo-frame" id="hero-photo">
-      <div class="hero-photo-ph">Photo</div>
-    </div>
-    <span class="hero-index">TAMSIC / ARTIST 001</span>
-  </div>
-  <div class="hero-info">
-    <p class="hero-number">TAMSIC Artist 001</p>
-    <h1 class="hero-name">no-no</h1>
-    <div class="hero-rule"></div>
-    <p class="hero-bio"><span data-ja="言葉にならない感情を<br>そっとすくい上げるAIアーティスト。<br>静かな温度で、<br>深く残る音楽を届ける。" data-en="An AI artist who gently lifts<br>the emotions that cannot be spoken.<br>Music that lingers,<br>at a quiet warmth.">言葉にならない感情を<br>そっとすくい上げるAIアーティスト。<br>静かな温度で、<br>深く残る音楽を届ける。</span></p>
-    <div class="hero-stats">
-      <div class="stat-box"><div class="stat-num" id="track-count">—</div><div class="stat-label" data-ja="楽曲数" data-en="Tracks">楽曲数</div></div>
-      <div class="stat-box"><div class="stat-num">AI</div><div class="stat-label">Idol</div></div>
-    </div>
-  </div>
+  <div class="decor-l"></div><div class="decor-r"></div>
+  <div class="hero-orn"></div>
+  <p class="hero-num" data-ja="TAMSICアーティスト 001" data-en="TAMSIC Artist 001">TAMSICアーティスト 001</p>
+  <h1 class="hero-name">no-no</h1>
+  <div class="hero-rule"><div class="rule-line"></div><div class="rule-dot"></div><div class="rule-line"></div></div>
+  <p class="hero-bio"><span data-ja="言葉にならない感情を<br>そっとすくい上げるAIアーティスト。<br>静かな温度で、<br>深く残る音楽を届ける。" data-en="An AI artist who gently lifts<br>the emotions that cannot be spoken.<br>Music that lingers,<br>at a quiet warmth.">言葉にならない感情を<br>そっとすくい上げるAIアーティスト。<br>静かな温度で、<br>深く残る音楽を届ける。</span></p>
 </section>
 
-<section class="artist-about">
-  <div class="aa-photo-side">
-    <div class="aa-photo-bg"></div>
-    <div class="aa-photo-frame">
+<div class="feature">
+  <div class="feature-photo">
+    <div class="feature-photo-bg"></div>
+    <div class="feature-photo-frame">
       <img src="assets/images/nono/nono_girigiridayo.png" alt="no-no">
     </div>
   </div>
-  <div class="aa-text-side">
-    <h3 class="aa-title" data-ja="About<br>no-no" data-en="About<br>no-no">About<br>no-no</h3>
+  <div class="feature-text">
+    <h3 data-ja="About<br>no-no" data-en="About<br>no-no">About<br>no-no</h3>
     <dl class="aa-grid">
       <dt data-ja="性別" data-en="Gender">性別</dt>
       <dd data-ja="女性" data-en="Female">女性</dd>
@@ -191,8 +188,12 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
       <dd data-ja="静かな違和感" data-en="Quiet dissonance">静かな違和感</dd>
     </dl>
     <p class="aa-desc" data-ja="no-noは、言葉にならない感情や、心の奥に沈んだ本音をすくい上げるアーティスト。派手に叫ぶのではなく、静かな温度で深く残る表現を大切にしている。日常の中にある揺らぎや矛盾、壊れそうな瞬間さえも否定せず、音楽として届ける存在。聴く人それぞれの感情にそっと重なるような作品を目指している。" data-en="no-no is an artist who scoops up emotions that cannot be put into words and the truths buried deep in the heart. Rather than shouting, she treasures expressions that linger with quiet warmth. She does not deny the fluctuations and contradictions of daily life — even the moments that feel on the verge of breaking — and delivers them instead as music. Her works aim to quietly overlap with each listener's feelings.">no-noは、言葉にならない感情や、心の奥に沈んだ本音をすくい上げるアーティスト。派手に叫ぶのではなく、静かな温度で深く残る表現を大切にしている。日常の中にある揺らぎや矛盾、壊れそうな瞬間さえも否定せず、音楽として届ける存在。聴く人それぞれの感情にそっと重なるような作品を目指している。</p>
+    <div class="fstat-row">
+      <div class="fstat"><div class="fstat-num" id="track-count">—</div><div class="fstat-label" data-ja="楽曲数" data-en="Tracks">楽曲数</div></div>
+      <div class="fstat"><div class="fstat-num">AI</div><div class="fstat-label" data-ja="アイドル" data-en="Idol">アイドル</div></div>
+    </div>
   </div>
-</section>
+</div>
 
 <section class="discography" id="music">
   <div class="sec-header">
@@ -457,10 +458,6 @@ async function init(){
   document.getElementById('track-count').textContent=n;
   document.getElementById('disc-count').textContent=n;
   if(window.TAMSICLang) window.TAMSICLang.apply(window.TAMSICLang.get());
-  if(_tracks.length&&getTrackCoverSrc(_tracks[0])){
-    const f=document.getElementById('hero-photo');
-    f.innerHTML=`<img src="assets/images/nono/nono_official_top.png" alt="no-no">`;
-  }
   renderTracks();
   refreshCoinUI();
   TAMSICCoins.onChange(()=>refreshCoinUI());
