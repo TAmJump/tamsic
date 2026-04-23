@@ -160,6 +160,22 @@ window.TAMSIC_CONTENT = {
       "lyrics": "静かな夜の奥で  \n誰かが呼んでいる  \n\nまだ知らない世界が  \n扉の向こうで揺れてる\n\n闇を越えて  \n光へ  \n\n今　私は  \n変わる\n\nFly away  \nFly away  \n\nこの空を越えて  \n\nShining light  \nShining light  \n\n未来を照らす  \n\nKIKI rising  \nKIKI rising  \n\n新しいストーリー\n\n遠い記憶の中  \n眠っていた夢  \n\n閉じ込めたままの  \n心を今ほどく\n\n壊れてもいい  \nこの瞬間  \n\n私は  \n生まれ変わる\n\nFly away  \nFly away  \n\n限界を越えて  \n\nShining light  \nShining light  \n\n世界を変える  \n\nKIKI rising  \nKIKI rising  \n\n私が未来",
       "lyricsPreview": "Fly away\nFly away\nこの空を越えて\n\nShining light\nShining light",
       "durationSec": 172
+    },
+    {
+      "id": "gen-001",
+      "artist": "gen",
+      "order": 1,
+      "title": "unセカイ",
+      "price": 50,
+      "isNew": true,
+      "sampleStart": "0:40",
+      "sampleEnd": "1:10",
+      "youtubeUrl": "https://youtube.com/shorts/QWlumhIeGqg",
+      "coverPath": "assets/images/gen/gen_unsekai.png",
+      "audioPath": "assets/audio/gen/gen_unsekai.mp3",
+      "lyrics": "Cold morning\r\nDry street\r\nNo one’s voice\r\nReaches me\r\n\r\n見ないまま\r\n過ぎるたび\r\n何かひとつ\r\n消えていく\r\n\r\nRotten morning\r\nRotten night\r\nRotten voices\r\nIn this town\r\n\r\n綺麗ごとで\r\n包むなよ\r\nその手も その目も\r\n腐ってる\r\n\r\nThis world again\r\nWith its own hands\r\nIs choking down\r\nIts broken neck\r\n\r\n壊したあと\r\n失くしたあと\r\n何を残して\r\n眠るんだよ\r\n\r\nHow many times\r\nWill you break this world\r\nWhat do you need\r\nTo feel enough\r\n\r\n僕の命を\r\n奪うなよ\r\nMy precious light\r\nDon’t touch it now\r\n\r\n痛みの上に\r\n立つなよ\r\nWith your dirty hands\r\nDon’t touch me now\r\n\r\nTurning away\r\nDay by day\r\nSomeone’s tomorrow\r\nFades to gray\r\n\r\n正しさなんて\r\nもういらない\r\n生きてる声を\r\n踏むなよ\r\n\r\nWho decided\r\nThis cruel order\r\nWho allowed\r\nThis living hell\r\n\r\n泣いた跡に\r\n値札を貼って\r\nそれでもまだ\r\n人間なのか\r\n\r\nStill so warm\r\nThat beating chest\r\n冷たい理屈で\r\n奪うなよ\r\n\r\nA tiny light\r\nStill breathing here\r\n都合のいい明日で\r\n消すなよ\r\n\r\nHow many times\r\nWill you steal from us\r\nHow many scars\r\nWill make you smile\r\n\r\n僕の命を\r\n奪うなよ\r\nMy only treasure\r\nDon’t burn it out\r\n\r\n連れていくな\r\n消していくな\r\nWith your hollow justice\r\nDon’t raise that flag\r\n\r\nRotten sky\r\nRotten streets\r\nRotten language\r\nUnderneath\r\n\r\n腐ってる\r\n腐ってる\r\nなのにおまえは\r\n黙ってる\r\n\r\nI still scream\r\nEven if I tear\r\nI still scream\r\nEven if I burn\r\n\r\n返せよ\r\n返せよ\r\n奪ったものを\r\n返せよ\r\n\r\nHow many times\r\nWill you break this world\r\nHow many lives\r\nWill never return\r\n\r\n僕の命を\r\n奪うなよ\r\nMy precious future\r\nDon’t take it away\r\n\r\n奪うなよ\r\nもう二度と\r\n僕の大切に\r\n触れるなよ\r\n\r\nDon’t take it away\r\nDon’t take it away\r\n奪うな\r\nもう二度と",
+      "lyricsPreview": "僕の命を\n奪うなよ\nMy precious light\nDon't touch it now",
+      "durationSec": 0
     }
   ],
   "news": [
@@ -351,6 +367,24 @@ window.TAMSIC_CONTENT = {
       "tag": "Release",
       "showAfter": "2027-01-15",
       "addedAt": "2027-01-15T00:00:00+09:00"
+    },
+    {
+      "id": "news-gen-001-sample",
+      "date": "2026.05.01",
+      "title": "gen「unセカイ」会員先行視聴スタート",
+      "titleEn": "gen \"unSekai\" — Member Early Access Now Live",
+      "tag": "Release",
+      "showAfter": "2026-05-01",
+      "addedAt": "2026-05-01T00:00:00+09:00"
+    },
+    {
+      "id": "news-gen-001-release",
+      "date": "2026.05.01",
+      "title": "gen「unセカイ」一般公開",
+      "titleEn": "gen \"unSekai\" — Now Available to Everyone",
+      "tag": "Release",
+      "showAfter": "2026-05-01",
+      "addedAt": "2026-05-01T00:00:00+09:00"
     }
   ],
   "photos": {

@@ -28,7 +28,8 @@ const config={tracks:{
 "Burn bright":{sample:"2026-10-01",release:"2026-10-15"},
 "No Stop":{sample:"2026-11-01",release:"2026-11-15"},
 "エンジン":{sample:"2026-12-01",release:"2026-12-15"},
-"KIKI rising":{sample:"2027-01-01",release:"2027-01-15"}
+"KIKI rising":{sample:"2027-01-01",release:"2027-01-15"},
+"unセカイ":{sample:"2026-05-01",release:"2026-05-01"}
 }};
 
 function parseDate(str){const [y,m,d]=String(str).split("-").map(Number);return new Date(y,(m||1)-1,d||1,0,0,0,0);}
