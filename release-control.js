@@ -24,12 +24,12 @@ const config={tracks:{
 "to Walk":{sample:"2026-06-01",release:"2026-06-15"},
 "シグナル●":{sample:"2026-07-01",release:"2026-07-15"},
 "Breathless":{sample:"2026-08-01",release:"2026-08-15"},
-"Critical point":{sample:"2026-09-01",release:"2026-09-15"},
-"Burn bright":{sample:"2026-10-01",release:"2026-10-15"},
-"No Stop":{sample:"2026-11-01",release:"2026-11-15"},
-"エンジン":{sample:"2026-12-01",release:"2026-12-15"},
-"KIKI rising":{sample:"2027-01-01",release:"2027-01-15"},
-"unセカイ":{sample:"2026-05-01",release:"2026-05-01"}
+"unセカイ":{sample:"2026-05-01",release:"2026-05-15"},
+"Burn bright":{sample:"2026-05-10",release:"2026-05-20"},
+"Critical point":{sample:"2026-06-20",release:"2026-06-28"},
+"No Stop":{sample:"2026-07-11",release:"2026-07-11"},
+"エンジン":{sample:"2026-08-15",release:"2026-08-23"},
+"KIKI rising":{sample:"2026-09-12",release:"2026-09-20"}
 }};
 
 function parseDate(str){const [y,m,d]=String(str).split("-").map(Number);return new Date(y,(m||1)-1,d||1,0,0,0,0);}

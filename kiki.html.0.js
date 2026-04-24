@@ -156,7 +156,7 @@ function renderTracks(){
         <div class="player-modes">
           <button class="mode-btn active" onclick="setMode('${t.id}','site',this)">▶ サイトで聴く</button>
           <button class="mode-btn" onclick="setMode('${t.id}','yt',this)">YouTube</button>
-          <button class="mode-btn premium" onclick="setMode('${t.id}','full',this)">フル試聴 ${t.price||30}コイン</button>
+          <button class="mode-btn premium" onclick="setMode('${t.id}','full',this)">フル試聴 ${t.price===0?"FREE":(t.price||30)+"コイン"}</button>
         </div>
         <div id="panel-site-${t.id}">
           <div class="site-player">
@@ -177,11 +177,11 @@ function renderTracks(){
         <div class="full-panel" id="panel-full-${t.id}" style="display:none">
           <div class="full-box">
             <div class="full-desc">sample は無料です。<strong>フルは1回試聴のみ</strong>で、試聴ごとにコインを消費します。</div>
-            <div class="full-price"><span class="coin-num" data-track-cost="${t.price||30}">${t.price||30}</span><span class="coin-unit">coin / one listen</span></div>
+            <div class="full-price"><span class="coin-num" data-track-cost="${t.price==null?30:t.price}">${t.price===0?"FREE":(t.price||30)}</span>${t.price===0?"":'<span class="coin-unit">coin / one listen</span>'}</div>
             <div class="full-wallet-line">現在の残高：<strong><span data-track-balance>${TAMSICCoins.getBalance()}</span>コイン</strong></div>
             <div class="lyrics-preview">${(t.lyricsPreview||'歌詞はフル試聴時に表示されます。').replace(/\n/g,'<br>')}</div>
             <div class="full-note">ダウンロード不可 / ブラウザ内再生のみ / 再度再生する場合は再度コインを消費</div>
-            <button class="full-buy" onclick="unlockFullTrack('${t.id}')">${t.price||30}コインで1回フル試聴</button>
+            <button class="full-buy" onclick="unlockFullTrack('${t.id}')">${t.price===0?"FREEで1回フル試聴":(t.price||30)+"コインで1回フル試聴"}</button>
             <div class="full-player-mount" id="full-player-${t.id}"></div>
             <div class="full-lyrics" id="lyrics-${t.id}" style="display:none">${(t.lyrics||'').replace(/\n/g,'<br>')}</div>
           </div>
