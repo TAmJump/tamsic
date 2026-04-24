@@ -197,21 +197,28 @@ const todayIso = new Date().toISOString();
 const sampleDateDisplay = sampleDate.replace(/-/g, '.');
 const releaseDateDisplay = releaseDate.replace(/-/g, '.');
 
+// アーティスト id → 表示名マップ (no-no / kiki / gEN など、視認性のため)
+const artistDisplayMap = { nono: 'no-no', kiki: 'kiki', gen: 'gEN' };
+const artistDisplay = artistDisplayMap[artist] || artist;
+
 data.news = data.news || [];
-data.news.push({
-  id: `news-${id}-sample`,
-  date: sampleDateDisplay,
-  title: `${artist}「${args.title}」会員先行視聴スタート`,
-  titleEn: `${artist} "${args['title-en']}" — Member Early Access Now Live`,
-  tag: 'Release',
-  showAfter: sampleDate,
-  addedAt: `${sampleDate}T00:00:00+09:00`
-});
+// sample と release が同日なら sample news は生成しない (No Stop 型)
+if (sampleDate !== releaseDate) {
+  data.news.push({
+    id: `news-${id}-sample`,
+    date: sampleDateDisplay,
+    title: `${artistDisplay}「${args.title}」会員先行視聴スタート`,
+    titleEn: `${artistDisplay} "${args['title-en']}" — Member Early Access Now Live`,
+    tag: 'Release',
+    showAfter: sampleDate,
+    addedAt: `${sampleDate}T00:00:00+09:00`
+  });
+}
 data.news.push({
   id: `news-${id}-release`,
   date: releaseDateDisplay,
-  title: `${artist}「${args.title}」一般公開`,
-  titleEn: `${artist} "${args['title-en']}" — Now Available to Everyone`,
+  title: `${artistDisplay}「${args.title}」一般公開`,
+  titleEn: `${artistDisplay} "${args['title-en']}" — Now Available to Everyone`,
   tag: 'Release',
   showAfter: releaseDate,
   addedAt: `${releaseDate}T00:00:00+09:00`

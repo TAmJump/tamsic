@@ -208,210 +208,210 @@ window.TAMSIC_CONTENT = {
     },
     {
       "id": "news-nono-004-sample",
-      "date": "2026-04-01",
+      "date": "2026.04.01",
+      "title": "no-no「ぎりぎりだよ。」会員先行視聴スタート",
+      "titleEn": "no-no \"ぎりぎりだよ。\" — Member Early Access Now Live",
+      "tag": "Release",
       "showAfter": "2026-04-01",
-      "category": "RELEASE",
-      "title": "[nono] ぎりぎりだよ。 sample公開",
-      "body": "ぎりぎりだよ。のsampleが公開されました。会員先行視聴が可能です。",
-      "url": "nono.html"
+      "addedAt": "2026-04-01T00:00:00+09:00"
     },
     {
       "id": "news-nono-004-release",
-      "date": "2026-04-15",
+      "date": "2026.04.15",
+      "title": "no-no「ぎりぎりだよ。」一般公開",
+      "titleEn": "no-no \"ぎりぎりだよ。\" — Now Available to Everyone",
+      "tag": "Release",
       "showAfter": "2026-04-15",
-      "category": "RELEASE",
-      "title": "[nono] ぎりぎりだよ。 一般公開",
-      "body": "ぎりぎりだよ。が一般公開されました。",
-      "url": "nono.html"
+      "addedAt": "2026-04-15T00:00:00+09:00"
     },
     {
       "id": "news-nono-002-sample",
-      "date": "2026-05-01",
+      "date": "2026.05.01",
+      "title": "no-no「RE+」会員先行視聴スタート",
+      "titleEn": "no-no \"RE+\" — Member Early Access Now Live",
+      "tag": "Release",
       "showAfter": "2026-05-01",
-      "category": "RELEASE",
-      "title": "[nono] RE+ sample公開",
-      "body": "RE+のsampleが公開されました。会員先行視聴が可能です。",
-      "url": "nono.html"
+      "addedAt": "2026-05-01T00:00:00+09:00"
     },
     {
       "id": "news-nono-002-release",
-      "date": "2026-05-15",
+      "date": "2026.05.15",
+      "title": "no-no「RE+」一般公開",
+      "titleEn": "no-no \"RE+\" — Now Available to Everyone",
+      "tag": "Release",
       "showAfter": "2026-05-15",
-      "category": "RELEASE",
-      "title": "[nono] RE+ 一般公開",
-      "body": "RE+が一般公開されました。",
-      "url": "nono.html"
+      "addedAt": "2026-05-15T00:00:00+09:00"
     },
     {
       "id": "news-nono-003-sample",
-      "date": "2026-06-01",
+      "date": "2026.06.01",
+      "title": "no-no「to Walk」会員先行視聴スタート",
+      "titleEn": "no-no \"to Walk\" — Member Early Access Now Live",
+      "tag": "Release",
       "showAfter": "2026-06-01",
-      "category": "RELEASE",
-      "title": "[nono] to Walk sample公開",
-      "body": "to Walkのsampleが公開されました。会員先行視聴が可能です。",
-      "url": "nono.html"
+      "addedAt": "2026-06-01T00:00:00+09:00"
     },
     {
       "id": "news-nono-003-release",
-      "date": "2026-06-15",
+      "date": "2026.06.15",
+      "title": "no-no「to Walk」一般公開",
+      "titleEn": "no-no \"to Walk\" — Now Available to Everyone",
+      "tag": "Release",
       "showAfter": "2026-06-15",
-      "category": "RELEASE",
-      "title": "[nono] to Walk 一般公開",
-      "body": "to Walkが一般公開されました。",
-      "url": "nono.html"
+      "addedAt": "2026-06-15T00:00:00+09:00"
     },
     {
       "id": "news-nono-005-sample",
-      "date": "2026-07-01",
+      "date": "2026.07.01",
+      "title": "no-no「シグナル●」会員先行視聴スタート",
+      "titleEn": "no-no \"シグナル●\" — Member Early Access Now Live",
+      "tag": "Release",
       "showAfter": "2026-07-01",
-      "category": "RELEASE",
-      "title": "[nono] シグナル● sample公開",
-      "body": "シグナル●のsampleが公開されました。会員先行視聴が可能です。",
-      "url": "nono.html"
+      "addedAt": "2026-07-01T00:00:00+09:00"
     },
     {
       "id": "news-nono-005-release",
-      "date": "2026-07-15",
+      "date": "2026.07.15",
+      "title": "no-no「シグナル●」一般公開",
+      "titleEn": "no-no \"シグナル●\" — Now Available to Everyone",
+      "tag": "Release",
       "showAfter": "2026-07-15",
-      "category": "RELEASE",
-      "title": "[nono] シグナル● 一般公開",
-      "body": "シグナル●が一般公開されました。",
-      "url": "nono.html"
+      "addedAt": "2026-07-15T00:00:00+09:00"
     },
     {
       "id": "news-nono-001-sample",
-      "date": "2026-08-01",
+      "date": "2026.08.01",
+      "title": "no-no「Breathless」会員先行視聴スタート",
+      "titleEn": "no-no \"Breathless\" — Member Early Access Now Live",
+      "tag": "Release",
       "showAfter": "2026-08-01",
-      "category": "RELEASE",
-      "title": "[nono] Breathless sample公開",
-      "body": "Breathlessのsampleが公開されました。会員先行視聴が可能です。",
-      "url": "nono.html"
+      "addedAt": "2026-08-01T00:00:00+09:00"
     },
     {
       "id": "news-nono-001-release",
-      "date": "2026-08-15",
+      "date": "2026.08.15",
+      "title": "no-no「Breathless」一般公開",
+      "titleEn": "no-no \"Breathless\" — Now Available to Everyone",
+      "tag": "Release",
       "showAfter": "2026-08-15",
-      "category": "RELEASE",
-      "title": "[nono] Breathless 一般公開",
-      "body": "Breathlessが一般公開されました。",
-      "url": "nono.html"
+      "addedAt": "2026-08-15T00:00:00+09:00"
     },
     {
       "id": "news-kiki-006-sample",
-      "date": "2026-05-01",
+      "date": "2026.05.01",
+      "title": "kiki「unセカイ」会員先行視聴スタート",
+      "titleEn": "kiki \"unSekai\" — Member Early Access Now Live",
+      "tag": "Release",
       "showAfter": "2026-05-01",
-      "category": "RELEASE",
-      "title": "[kiki] unセカイ sample公開",
-      "body": "unセカイのsampleが公開されました。会員先行視聴が可能です。",
-      "url": "kiki.html"
+      "addedAt": "2026-05-01T00:00:00+09:00"
     },
     {
       "id": "news-kiki-006-release",
-      "date": "2026-05-15",
+      "date": "2026.05.15",
+      "title": "kiki「unセカイ」一般公開",
+      "titleEn": "kiki \"unSekai\" — Now Available to Everyone",
+      "tag": "Release",
       "showAfter": "2026-05-15",
-      "category": "RELEASE",
-      "title": "[kiki] unセカイ 一般公開",
-      "body": "unセカイが一般公開されました。",
-      "url": "kiki.html"
+      "addedAt": "2026-05-15T00:00:00+09:00"
     },
     {
       "id": "news-kiki-001-sample",
-      "date": "2026-05-10",
+      "date": "2026.05.10",
+      "title": "kiki「Burn bright」会員先行視聴スタート",
+      "titleEn": "kiki \"Burn bright\" — Member Early Access Now Live",
+      "tag": "Release",
       "showAfter": "2026-05-10",
-      "category": "RELEASE",
-      "title": "[kiki] Burn bright sample公開",
-      "body": "Burn brightのsampleが公開されました。会員先行視聴が可能です。",
-      "url": "kiki.html"
+      "addedAt": "2026-05-10T00:00:00+09:00"
     },
     {
       "id": "news-kiki-001-release",
-      "date": "2026-05-20",
+      "date": "2026.05.20",
+      "title": "kiki「Burn bright」一般公開",
+      "titleEn": "kiki \"Burn bright\" — Now Available to Everyone",
+      "tag": "Release",
       "showAfter": "2026-05-20",
-      "category": "RELEASE",
-      "title": "[kiki] Burn bright 一般公開",
-      "body": "Burn brightが一般公開されました。",
-      "url": "kiki.html"
+      "addedAt": "2026-05-20T00:00:00+09:00"
     },
     {
       "id": "news-kiki-002-sample",
-      "date": "2026-06-20",
+      "date": "2026.06.20",
+      "title": "kiki「Critical point」会員先行視聴スタート",
+      "titleEn": "kiki \"Critical point\" — Member Early Access Now Live",
+      "tag": "Release",
       "showAfter": "2026-06-20",
-      "category": "RELEASE",
-      "title": "[kiki] Critical point sample公開",
-      "body": "Critical pointのsampleが公開されました。会員先行視聴が可能です。",
-      "url": "kiki.html"
+      "addedAt": "2026-06-20T00:00:00+09:00"
     },
     {
       "id": "news-kiki-002-release",
-      "date": "2026-06-28",
+      "date": "2026.06.28",
+      "title": "kiki「Critical point」一般公開",
+      "titleEn": "kiki \"Critical point\" — Now Available to Everyone",
+      "tag": "Release",
       "showAfter": "2026-06-28",
-      "category": "RELEASE",
-      "title": "[kiki] Critical point 一般公開",
-      "body": "Critical pointが一般公開されました。",
-      "url": "kiki.html"
+      "addedAt": "2026-06-28T00:00:00+09:00"
     },
     {
       "id": "news-kiki-003-release",
-      "date": "2026-07-11",
+      "date": "2026.07.11",
+      "title": "kiki「No Stop」一般公開",
+      "titleEn": "kiki \"No Stop\" — Now Available to Everyone",
+      "tag": "Release",
       "showAfter": "2026-07-11",
-      "category": "RELEASE",
-      "title": "[kiki] No Stop 一般公開",
-      "body": "No Stopが一般公開されました。",
-      "url": "kiki.html"
+      "addedAt": "2026-07-11T00:00:00+09:00"
     },
     {
       "id": "news-kiki-004-sample",
-      "date": "2026-08-15",
+      "date": "2026.08.15",
+      "title": "kiki「エンジン」会員先行視聴スタート",
+      "titleEn": "kiki \"エンジン\" — Member Early Access Now Live",
+      "tag": "Release",
       "showAfter": "2026-08-15",
-      "category": "RELEASE",
-      "title": "[kiki] エンジン sample公開",
-      "body": "エンジンのsampleが公開されました。会員先行視聴が可能です。",
-      "url": "kiki.html"
+      "addedAt": "2026-08-15T00:00:00+09:00"
     },
     {
       "id": "news-kiki-004-release",
-      "date": "2026-08-23",
+      "date": "2026.08.23",
+      "title": "kiki「エンジン」一般公開",
+      "titleEn": "kiki \"エンジン\" — Now Available to Everyone",
+      "tag": "Release",
       "showAfter": "2026-08-23",
-      "category": "RELEASE",
-      "title": "[kiki] エンジン 一般公開",
-      "body": "エンジンが一般公開されました。",
-      "url": "kiki.html"
+      "addedAt": "2026-08-23T00:00:00+09:00"
     },
     {
       "id": "news-kiki-005-sample",
-      "date": "2026-09-12",
+      "date": "2026.09.12",
+      "title": "kiki「KIKI rising」会員先行視聴スタート",
+      "titleEn": "kiki \"KIKI rising\" — Member Early Access Now Live",
+      "tag": "Release",
       "showAfter": "2026-09-12",
-      "category": "RELEASE",
-      "title": "[kiki] KIKI rising sample公開",
-      "body": "KIKI risingのsampleが公開されました。会員先行視聴が可能です。",
-      "url": "kiki.html"
+      "addedAt": "2026-09-12T00:00:00+09:00"
     },
     {
       "id": "news-kiki-005-release",
-      "date": "2026-09-20",
+      "date": "2026.09.20",
+      "title": "kiki「KIKI rising」一般公開",
+      "titleEn": "kiki \"KIKI rising\" — Now Available to Everyone",
+      "tag": "Release",
       "showAfter": "2026-09-20",
-      "category": "RELEASE",
-      "title": "[kiki] KIKI rising 一般公開",
-      "body": "KIKI risingが一般公開されました。",
-      "url": "kiki.html"
+      "addedAt": "2026-09-20T00:00:00+09:00"
     },
     {
       "id": "news-gen-001-sample",
-      "date": "2026-05-01",
+      "date": "2026.05.01",
+      "title": "gEN「unセカイ」会員先行視聴スタート",
+      "titleEn": "gEN \"unSekai\" — Member Early Access Now Live",
+      "tag": "Release",
       "showAfter": "2026-05-01",
-      "category": "RELEASE",
-      "title": "[gen] unセカイ sample公開",
-      "body": "unセカイのsampleが公開されました。会員先行視聴が可能です。",
-      "url": "gen.html"
+      "addedAt": "2026-05-01T00:00:00+09:00"
     },
     {
       "id": "news-gen-001-release",
-      "date": "2026-05-15",
+      "date": "2026.05.15",
+      "title": "gEN「unセカイ」一般公開",
+      "titleEn": "gEN \"unSekai\" — Now Available to Everyone",
+      "tag": "Release",
       "showAfter": "2026-05-15",
-      "category": "RELEASE",
-      "title": "[gen] unセカイ 一般公開",
-      "body": "unセカイが一般公開されました。",
-      "url": "gen.html"
+      "addedAt": "2026-05-15T00:00:00+09:00"
     }
   ],
   "photos": {
