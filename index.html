@@ -889,6 +889,35 @@ footer {
 </div>
 </section>
 
+<!-- 期間限定 新規登録キャンペーン (2026-05-01 〜 2026-08-31) -->
+<section id="signup-campaign-section" style="display:none;padding:48px 24px;background:linear-gradient(135deg,#FFF8E5 0%,#FAEFC8 100%);border-top:1px solid #C4960E;border-bottom:1px solid #C4960E;">
+  <div style="max-width:880px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:260px;">
+      <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:.85rem;letter-spacing:.22em;color:#C4960E;text-transform:uppercase;margin-bottom:.5rem;">Limited Campaign</div>
+      <div style="font-size:1.5rem;font-weight:600;line-height:1.4;color:#0E0E0E;margin-bottom:.5rem;font-family:'Jost',sans-serif;">
+        <span data-ja="今だけ・新規登録で 100 coin プレゼント" data-en="Sign up now &amp; get 100 coins free">今だけ・新規登録で 100 coin プレゼント</span>
+      </div>
+      <div style="font-size:.86rem;color:#7A7A72;line-height:1.7;font-family:'Jost',sans-serif;">
+        <span data-ja="2026年5月1日 〜 8月31日 期間中の新規登録者全員に、100 coin を自動付与します。" data-en="100 coins automatically gifted to everyone who registers between May 1 and Aug 31, 2026.">2026年5月1日 〜 8月31日 期間中の新規登録者全員に、100 coin を自動付与します。</span>
+      </div>
+    </div>
+    <a href="signup.html" style="display:inline-block;padding:14px 32px;background:#0E0E0E;color:#fff;text-decoration:none;font-size:.9rem;letter-spacing:.18em;text-transform:uppercase;font-family:'Jost',sans-serif;font-weight:500;transition:opacity .2s;border-radius:2px;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+      <span data-ja="新規登録する" data-en="Sign Up Now">新規登録する</span>
+    </a>
+  </div>
+</section>
+<script>
+  (function() {
+    var now = new Date();
+    var s = new Date('2026-05-01T00:00:00+09:00');
+    var e = new Date('2026-09-01T00:00:00+09:00');
+    if (now >= s && now < e) {
+      var sec = document.getElementById('signup-campaign-section');
+      if (sec) sec.style.display = 'block';
+    }
+  })();
+</script>
+
 <section class="artists" id="artists">
   <div class="artists-header">
     <div>

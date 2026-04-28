@@ -292,6 +292,28 @@
 
     <div class="divider">or</div>
 
+    <!-- 期間限定 新規登録キャンペーン (2026-05-01 〜 2026-08-31) -->
+    <div id="signup-campaign-mini" style="display:none;margin:0 0 1rem;padding:.85rem 1rem;background:linear-gradient(135deg,#FFF8E5 0%,#FAEFC8 100%);border:1px solid #C4960E;border-radius:2px;text-align:center;">
+      <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:.7rem;letter-spacing:.18em;color:#C4960E;text-transform:uppercase;margin-bottom:.3rem;">Limited Campaign</div>
+      <div style="font-size:.92rem;font-weight:600;color:#0E0E0E;line-height:1.4;">
+        <span data-ja="新規登録で 100 coin プレゼント中" data-en="Sign up now &amp; get 100 coins free">新規登録で 100 coin プレゼント中</span>
+      </div>
+      <div style="font-size:.72rem;color:#7A7A72;margin-top:.25rem;">
+        <span data-ja="〜 2026年8月31日まで" data-en="Through Aug 31, 2026">〜 2026年8月31日まで</span>
+      </div>
+    </div>
+    <script>
+      (function() {
+        var now = new Date();
+        var s = new Date('2026-05-01T00:00:00+09:00');
+        var e = new Date('2026-09-01T00:00:00+09:00');
+        if (now >= s && now < e) {
+          var b = document.getElementById('signup-campaign-mini');
+          if (b) b.style.display = 'block';
+        }
+      })();
+    </script>
+
     <p class="signup-link">
       <span data-ja="アカウントをお持ちでない方は" data-en="New here?">アカウントをお持ちでない方は</span>
       <a href="/signup.html" data-ja="新規登録" data-en="Create account">新規登録</a>
