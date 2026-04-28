@@ -192,18 +192,47 @@ if (data.tracks.length && 'titleEn' in data.tracks[0]) {
 
 data.tracks.push(newTrack);
 
-// ── ニュース2件を追加
+// ── ニュースを追加 (最大3件: 10日前予告 / sample / release)
 const todayIso = new Date().toISOString();
 const sampleDateDisplay = sampleDate.replace(/-/g, '.');
 const releaseDateDisplay = releaseDate.replace(/-/g, '.');
+
+// release 日の 10日前を計算 (予告 news 用)
+function subtractDays(yyyymmdd, days) {
+  const d = new Date(yyyymmdd + 'T00:00:00+09:00');
+  d.setDate(d.getDate() - days);
+  return d.toISOString().slice(0, 10);
+}
+const preDate = subtractDays(releaseDate, 10);
+const preDateDisplay = preDate.replace(/-/g, '.');
+const releaseMonthDay = (() => {
+  const [, mm, dd] = releaseDate.split('-');
+  return `${parseInt(mm, 10)}月${parseInt(dd, 10)}日`;
+})();
 
 // アーティスト id → 表示名マップ (no-no / kiki / gEN など、視認性のため)
 const artistDisplayMap = { nono: 'no-no', kiki: 'kiki', gen: 'gEN' };
 const artistDisplay = artistDisplayMap[artist] || artist;
 
 data.news = data.news || [];
-// sample と release が同日なら sample news は生成しない (No Stop 型)
-if (sampleDate !== releaseDate) {
+
+// 1) 10日前 予告 news (release の 10日前から表示)
+const isSameDay = sampleDate === releaseDate;
+const preTitle = isSameDay
+  ? `${artistDisplay}「${args.title}」${releaseMonthDay} 公開決定`
+  : `${artistDisplay}「${args.title}」${releaseMonthDay} 一般公開決定`;
+data.news.push({
+  id: `news-${id}-prerelease`,
+  date: preDateDisplay,
+  title: preTitle,
+  titleEn: `${artistDisplay} "${args['title-en']}" — Public Release ${releaseDate}`,
+  tag: 'Release',
+  showAfter: preDate,
+  addedAt: `${preDate}T10:00:00+09:00`
+});
+
+// 2) sample 公開 news (sample != release のときのみ)
+if (!isSameDay) {
   data.news.push({
     id: `news-${id}-sample`,
     date: sampleDateDisplay,
@@ -214,6 +243,8 @@ if (sampleDate !== releaseDate) {
     addedAt: `${sampleDate}T00:00:00+09:00`
   });
 }
+
+// 3) release 公開 news
 data.news.push({
   id: `news-${id}-release`,
   date: releaseDateDisplay,

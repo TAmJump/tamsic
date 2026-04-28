@@ -423,6 +423,96 @@ window.TAMSIC_CONTENT = {
       "addedAt": "2026-04-20T10:30:00+09:00"
     },
     {
+      "id": "news-nono-004-prerelease",
+      "date": "2026.04.05",
+      "title": "no-no「ぎりぎりだよ。」4月15日 一般公開決定",
+      "titleEn": "no-no \"ぎりぎりだよ。\" — Public Release Apr 15, 2026",
+      "tag": "Release",
+      "showAfter": "2026-04-05",
+      "addedAt": "2026-04-05T10:00:00+09:00"
+    },
+    {
+      "id": "news-nono-002-prerelease",
+      "date": "2026.05.05",
+      "title": "no-no「RE+」5月15日 一般公開決定",
+      "titleEn": "no-no \"RE+\" — Public Release May 15, 2026",
+      "tag": "Release",
+      "showAfter": "2026-05-05",
+      "addedAt": "2026-05-05T10:00:00+09:00"
+    },
+    {
+      "id": "news-nono-003-prerelease",
+      "date": "2026.06.05",
+      "title": "no-no「to Walk」6月15日 一般公開決定",
+      "titleEn": "no-no \"to Walk\" — Public Release Jun 15, 2026",
+      "tag": "Release",
+      "showAfter": "2026-06-05",
+      "addedAt": "2026-06-05T10:00:00+09:00"
+    },
+    {
+      "id": "news-nono-005-prerelease",
+      "date": "2026.07.05",
+      "title": "no-no「シグナル●」7月15日 一般公開決定",
+      "titleEn": "no-no \"シグナル●\" — Public Release Jul 15, 2026",
+      "tag": "Release",
+      "showAfter": "2026-07-05",
+      "addedAt": "2026-07-05T10:00:00+09:00"
+    },
+    {
+      "id": "news-nono-001-prerelease",
+      "date": "2026.08.05",
+      "title": "no-no「Breathless」8月15日 一般公開決定",
+      "titleEn": "no-no \"Breathless\" — Public Release Aug 15, 2026",
+      "tag": "Release",
+      "showAfter": "2026-08-05",
+      "addedAt": "2026-08-05T10:00:00+09:00"
+    },
+    {
+      "id": "news-kiki-001-prerelease",
+      "date": "2026.05.10",
+      "title": "kiki「Burn bright」5月20日 一般公開決定",
+      "titleEn": "kiki \"Burn bright\" — Public Release May 20, 2026",
+      "tag": "Release",
+      "showAfter": "2026-05-10",
+      "addedAt": "2026-05-10T10:00:00+09:00"
+    },
+    {
+      "id": "news-kiki-002-prerelease",
+      "date": "2026.06.18",
+      "title": "kiki「Critical point」6月28日 一般公開決定",
+      "titleEn": "kiki \"Critical point\" — Public Release Jun 28, 2026",
+      "tag": "Release",
+      "showAfter": "2026-06-18",
+      "addedAt": "2026-06-18T10:00:00+09:00"
+    },
+    {
+      "id": "news-kiki-003-prerelease",
+      "date": "2026.07.01",
+      "title": "kiki「No Stop」7月11日 公開決定",
+      "titleEn": "kiki \"No Stop\" — Releasing Jul 11, 2026",
+      "tag": "Release",
+      "showAfter": "2026-07-01",
+      "addedAt": "2026-07-01T10:00:00+09:00"
+    },
+    {
+      "id": "news-kiki-004-prerelease",
+      "date": "2026.08.13",
+      "title": "kiki「エンジン」8月23日 一般公開決定",
+      "titleEn": "kiki \"エンジン\" — Public Release Aug 23, 2026",
+      "tag": "Release",
+      "showAfter": "2026-08-13",
+      "addedAt": "2026-08-13T10:00:00+09:00"
+    },
+    {
+      "id": "news-kiki-005-prerelease",
+      "date": "2026.09.10",
+      "title": "kiki「KIKI rising」9月20日 一般公開決定",
+      "titleEn": "kiki \"KIKI rising\" — Public Release Sep 20, 2026",
+      "tag": "Release",
+      "showAfter": "2026-09-10",
+      "addedAt": "2026-09-10T10:00:00+09:00"
+    },
+    {
       "id": "news-debut-kiki-2026",
       "date": "2026.04.20",
       "title": "kiki デビュー曲「unセカイ」5月1日公開決定",
