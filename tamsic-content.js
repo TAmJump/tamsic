@@ -415,30 +415,30 @@ window.TAMSIC_CONTENT = {
     },
     {
       "id": "news-signup-bonus-2026",
-      "date": "2026.04.24",
+      "date": "2026.04.20",
       "title": "【期間限定】新規登録で 100 coin プレゼントキャンペーン開催",
       "titleEn": "[Limited Campaign] 100 Coins Free for New Sign-Ups",
       "tag": "Info",
-      "showAfter": "2026-04-24",
-      "addedAt": "2026-04-24T12:00:00+09:00"
+      "showAfter": "2026-04-20",
+      "addedAt": "2026-04-20T10:30:00+09:00"
     },
     {
       "id": "news-debut-kiki-2026",
-      "date": "2026.05.01",
-      "title": "kiki デビュー曲「unセカイ」2026年5月1日公開",
-      "titleEn": "kiki Debut Single \"unSekai\" — Coming May 1, 2026",
+      "date": "2026.04.20",
+      "title": "kiki デビュー曲「unセカイ」5月1日公開決定",
+      "titleEn": "kiki Debut Single \"unSekai\" — Releasing May 1",
       "tag": "Release",
-      "showAfter": "2026-04-24",
-      "addedAt": "2026-04-24T11:00:00+09:00"
+      "showAfter": "2026-04-20",
+      "addedAt": "2026-04-20T11:00:00+09:00"
     },
     {
       "id": "news-debut-gen-2026",
-      "date": "2026.05.01",
-      "title": "gEN デビュー曲「unセカイ」2026年5月1日公開",
-      "titleEn": "gEN Debut Single \"unSekai\" — Coming May 1, 2026",
+      "date": "2026.04.20",
+      "title": "gEN デビュー曲「unセカイ」5月1日公開決定",
+      "titleEn": "gEN Debut Single \"unSekai\" — Releasing May 1",
       "tag": "Release",
-      "showAfter": "2026-04-24",
-      "addedAt": "2026-04-24T11:30:00+09:00"
+      "showAfter": "2026-04-20",
+      "addedAt": "2026-04-20T11:30:00+09:00"
     }
   ],
   "photos": {
