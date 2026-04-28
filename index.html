@@ -1007,21 +1007,25 @@ async function initHome(){
   const photos = { nono: getArtistPhotos('nono')[0], kiki: getArtistPhotos('kiki')[0] };
 
   if (photos.nono) {
-    document.getElementById('artist-photo-nono').src = photos.nono;
-    document.getElementById('artist-photo-nono').style.display = 'block';
-    document.getElementById('artist-photo-nono-ph').style.display = 'none';
+    const ph = document.getElementById('artist-photo-nono');
+    const phPh = document.getElementById('artist-photo-nono-ph');
+    if (ph) { ph.src = photos.nono; ph.style.display = 'block'; }
+    if (phPh) phPh.style.display = 'none';
   }
   if (photos.kiki) {
-    document.getElementById('artist-photo-kiki').src = photos.kiki;
-    document.getElementById('artist-photo-kiki').style.display = 'block';
-    document.getElementById('artist-photo-kiki-ph').style.display = 'none';
+    const ph = document.getElementById('artist-photo-kiki');
+    const phPh = document.getElementById('artist-photo-kiki-ph');
+    if (ph) { ph.src = photos.kiki; ph.style.display = 'block'; }
+    if (phPh) phPh.style.display = 'none';
   }
 
   const nonoCount = allTracks.filter(t => t.artist === 'nono').length;
   const kikiCount = allTracks.filter(t => t.artist === 'kiki').length;
   const genCount = allTracks.filter(t => t.artist === 'gen').length;
-  document.getElementById('artist-meta-nono').textContent = `AI Idol · ${nonoCount} Tracks`;
-  document.getElementById('artist-meta-kiki').textContent = `AI Idol · ${kikiCount} Tracks`;
+  const nonoMetaEl = document.getElementById('artist-meta-nono');
+  if (nonoMetaEl) nonoMetaEl.textContent = `AI Idol · ${nonoCount} Tracks`;
+  const kikiMetaEl = document.getElementById('artist-meta-kiki');
+  if (kikiMetaEl) kikiMetaEl.textContent = `AI Idol · ${kikiCount} Tracks`;
   const genMetaEl = document.getElementById('artist-meta-gen');
   if (genMetaEl) genMetaEl.textContent = `AI Artist · ${genCount} Tracks`;
 
