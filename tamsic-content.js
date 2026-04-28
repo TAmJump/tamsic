@@ -421,6 +421,24 @@ window.TAMSIC_CONTENT = {
       "tag": "Info",
       "showAfter": "2026-04-24",
       "addedAt": "2026-04-24T12:00:00+09:00"
+    },
+    {
+      "id": "news-debut-kiki-2026",
+      "date": "2026.05.01",
+      "title": "kiki デビュー曲「unセカイ」2026年5月1日公開",
+      "titleEn": "kiki Debut Single \"unSekai\" — Coming May 1, 2026",
+      "tag": "Release",
+      "showAfter": "2026-04-24",
+      "addedAt": "2026-04-24T11:00:00+09:00"
+    },
+    {
+      "id": "news-debut-gen-2026",
+      "date": "2026.05.01",
+      "title": "gEN デビュー曲「unセカイ」2026年5月1日公開",
+      "titleEn": "gEN Debut Single \"unSekai\" — Coming May 1, 2026",
+      "tag": "Release",
+      "showAfter": "2026-04-24",
+      "addedAt": "2026-04-24T11:30:00+09:00"
     }
   ],
   "photos": {
