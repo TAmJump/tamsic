@@ -412,6 +412,15 @@ window.TAMSIC_CONTENT = {
       "tag": "Release",
       "showAfter": "2026-05-15",
       "addedAt": "2026-05-15T00:00:00+09:00"
+    },
+    {
+      "id": "news-signup-bonus-2026",
+      "date": "2026.04.24",
+      "title": "【期間限定】新規登録で 100 coin プレゼントキャンペーン開催",
+      "titleEn": "[Limited Campaign] 100 Coins Free for New Sign-Ups",
+      "tag": "Info",
+      "showAfter": "2026-04-24",
+      "addedAt": "2026-04-24T12:00:00+09:00"
     }
   ],
   "photos": {
