@@ -211,22 +211,48 @@ const TAMSICDB = (() => {
   }
 
   async function getTracks(artist) {
-    const all = await getAll('tracks');
-    const base = all.length ? all : getDefaultTracks();
-    return base.filter(t => t.artist === artist).sort((a,b) => (a.order||999) - (b.order||999));
+    const dbItems = await getAll('tracks');
+    const defaults = getDefaultTracks();
+    const dbMap = new Map(dbItems.map(t => [t.id, t]));
+    const merged = defaults.map(t => dbMap.has(t.id) ? dbMap.get(t.id) : t);
+    const defaultIds = new Set(defaults.map(t => t.id));
+    for (const t of dbItems) {
+      if (!defaultIds.has(t.id)) merged.push(t);
+    }
+    return merged.filter(t => t.artist === artist).sort((a,b) => (a.order||999) - (b.order||999));
   }
   async function getAllTracks() {
-    const all = await getAll('tracks');
-    const base = all.length ? all : getDefaultTracks();
-    return base.sort((a,b) => a.artist.localeCompare(b.artist) || ((a.order||999) - (b.order||999)));
+    const dbItems = await getAll('tracks');
+    const defaults = getDefaultTracks();
+    const dbMap = new Map(dbItems.map(t => [t.id, t]));
+    const merged = defaults.map(t => dbMap.has(t.id) ? dbMap.get(t.id) : t);
+    const defaultIds = new Set(defaults.map(t => t.id));
+    for (const t of dbItems) {
+      if (!defaultIds.has(t.id)) merged.push(t);
+    }
+    return merged.sort((a,b) => a.artist.localeCompare(b.artist) || ((a.order||999) - (b.order||999)));
   }
   async function saveTrack(t)   { return putItem('tracks', t); }
   async function deleteTrack(id){ return removeItem('tracks', id); }
 
   async function getNews() {
-    const all = await getAll('news');
-    const base = all.length ? all : getDefaultNews();
-    return base.sort((a,b) => String(b.addedAt).localeCompare(String(a.addedAt)));
+    const dbItems = await getAll('news');
+    const defaults = getDefaultNews();
+    // defaults をベースに、DB 上の同じ id があれば DB 側で上書き (admin 編集を尊重)
+    const dbMap = new Map(dbItems.map(n => [n.id, n]));
+    const merged = defaults.map(n => dbMap.has(n.id) ? dbMap.get(n.id) : n);
+    // DB 側に defaults に無い id があれば追記
+    const defaultIds = new Set(defaults.map(n => n.id));
+    for (const n of dbItems) {
+      if (!defaultIds.has(n.id)) merged.push(n);
+    }
+    // showAfter フィルタを最終適用 (DB 側にも showAfter があれば尊重)
+    const now = new Date();
+    const filtered = merged.filter(n => {
+      if (!n.showAfter) return true;
+      return new Date(n.showAfter) <= now;
+    });
+    return filtered.sort((a,b) => String(b.addedAt).localeCompare(String(a.addedAt)));
   }
   async function saveNews(n)   { return putItem('news', n); }
   async function deleteNews(id){ return removeItem('news', id); }
