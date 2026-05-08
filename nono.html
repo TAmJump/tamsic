@@ -15,6 +15,9 @@
 <script src="tamsic.js"></script>
 <script src="lyrics-guard.js"></script>
 <script src="gate-modal.js"></script>
+<script src="letter-frames.js"></script>
+<script src="letter-content.js"></script>
+<script src="letter-renderer.js"></script>
 <style>
 :root{--bg:#EEF3F9;--text:#0B1D35;--accent:#0099CC;--light:#D4E2F0;--mid:#5B7FA0;--white:#FFFFFF;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -138,6 +141,7 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
 
 
 </style>
+<link rel="stylesheet" href="letter.css">
 </head>
 <body>
 <nav>
@@ -430,8 +434,56 @@ function unlockFullTrack(trackId){
   const lyrics=document.getElementById(`lyrics-${track.id}`);
   const lyricsInner=document.getElementById(`lyrics-inner-${track.id}`);
   if(lyrics) lyrics.style.display='block';
-  // v3: 歌詞保護モジュールで描画（コピー・右クリック・スクショを抑止＋透かし）
-  if(lyricsInner && window.TAMSICLyrics){
+  // v4.2.1: 歌詞便箋 (Web フォント直描画 + 18枠ランダム抽選 + closingランダム)
+  if(lyricsInner && window.TAMSICLetter){
+    const info = (typeof getUserInfo === 'function') ? (getUserInfo() || {}) : {};
+    const user = {
+      id:        info.sub || info['cognito:username'] || '',
+      email:     info.email || 'guest',
+      nickname:  info['custom:nickname']     || info.nickname || 'listener',
+      birthday:  info['custom:birthday']     || '',
+      registeredAt: info['custom:registeredAt'] || ''
+    };
+    const features = (window.TAMSIC_CONTENT && window.TAMSIC_CONTENT.features) || {};
+    window.TAMSICLetter.render(lyricsInner, {
+      track: track,
+      user: user,
+      today: new Date(),
+      features: features
+    });
+    // レター操作 UI (closing 引き直し / レター受信ボタン)
+    if(!lyricsInner.querySelector('.tamsic-letter-actions')){
+      const actions = document.createElement('div');
+      actions.className = 'tamsic-letter-actions';
+      const rerollBtn = document.createElement('button');
+      rerollBtn.className = 'reroll-btn';
+      rerollBtn.type = 'button';
+      rerollBtn.textContent = '↻ 別の一文';
+      rerollBtn.title = 'closing を引き直す';
+      rerollBtn.onclick = function(){
+        const letterEl = lyricsInner.querySelector('.tamsic-letter');
+        if(letterEl) window.TAMSICLetter.reroll(letterEl, { track: track, user: user, today: new Date(), features: features });
+      };
+      actions.appendChild(rerollBtn);
+      // レター受信ボタンは Phase G の feature flag が有効なときのみ表示
+      if(features['letter-receive']){
+        const receiveBtn = document.createElement('button');
+        receiveBtn.className = 'receive-btn';
+        receiveBtn.type = 'button';
+        receiveBtn.innerHTML = '📮 この手紙をメールで受け取る';
+        receiveBtn.onclick = function(){
+          if(typeof requestLetter === 'function'){
+            requestLetter(track, user);
+          } else {
+            alert('レター送信機能は準備中です。');
+          }
+        };
+        actions.appendChild(receiveBtn);
+      }
+      lyricsInner.parentNode.insertBefore(actions, lyricsInner.nextSibling);
+    }
+  } else if(lyricsInner && window.TAMSICLyrics){
+    // フォールバック: 旧来の歌詞保護
     const userEmail = (typeof getUserInfo === 'function' && getUserInfo()) ? getUserInfo().email : 'guest';
     window.TAMSICLyrics.protect(lyricsInner, track.lyrics || '', {
       watermark: userEmail,
