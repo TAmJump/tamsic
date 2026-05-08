@@ -9,6 +9,7 @@
 <script src="purchase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js" async></script>
 <script src="auth.js"></script>
+<script src="coins.js"></script>
 <script src="release-control.js"></script>
 <script src="lang.js"></script>
 <script src="tamsic.js"></script>
@@ -24,7 +25,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
 .nav-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;letter-spacing:.04em;}
 .nav-links{display:flex;gap:36px;list-style:none;}
 .nav-links a{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color .25s;}
-.nav-links a:hover{color:var(--accent);}
+.nav-links a:hover{color:var(--accent);} .nav-links a.active{color:var(--accent);}
 /* Hero — kiki スタイル中央寄せ */
 .decor-l{position:absolute;left:64px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--light) 20%,var(--light) 80%,transparent);}
 .decor-r{position:absolute;right:64px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--light) 20%,var(--light) 80%,transparent);}
@@ -142,7 +143,7 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
 <nav>
   <a href="index.html" class="nav-back">← TAMSIC</a>
   <span class="nav-title">gEN</span>
-  <ul class="nav-links"><li><a href="#music" data-ja="ミュージック" data-en="Music">ミュージック</a></li><li></li><li><a href="news.html" data-ja="ニュース" data-en="News">ニュース</a></li><li><a href="about.html" data-ja="レーベル紹介" data-en="About">レーベル紹介</a></li><li><a href="mypage.html" data-ja="マイページ" data-en="My Page">マイページ</a></li><li><button data-lang-toggle style="background:none;border:1px solid var(--light,#E6E6E0);color:var(--mid,#7A7A72);font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.1em;padding:5px 12px;cursor:pointer;border-radius:2px;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='';this.style.color=''">EN</button></li></ul>
+  <ul class="nav-links"><li><a href="nono.html" data-ja="no-no" data-en="no-no">no-no</a></li><li><a href="kiki.html" data-ja="kiki" data-en="kiki">kiki</a></li><li><a class="active" aria-current="page" href="gen.html" data-ja="gEN" data-en="gEN">gEN</a></li><li><a href="news.html" data-ja="ニュース" data-en="News">ニュース</a></li><li><a href="about.html" data-ja="レーベル紹介" data-en="About">レーベル紹介</a></li><li><a href="mypage.html" data-ja="マイページ" data-en="My Page">マイページ</a></li><li><button data-lang-toggle style="background:none;border:1px solid var(--light,#E6E6E0);color:var(--mid,#7A7A72);font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.1em;padding:5px 12px;cursor:pointer;border-radius:2px;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='';this.style.color=''">EN</button></li></ul>
 </nav>
 
 <section class="hero">
