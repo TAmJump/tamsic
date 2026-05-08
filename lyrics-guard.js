@@ -269,9 +269,67 @@
     bindEvents(container, options);
   }
 
+  /**
+   * v4.2.1: 便箋全体の保護
+   * 設計書 §10.7.3
+   *
+   * @param {HTMLElement} letter   - .tamsic-letter 要素
+   * @param {object}      user     - {id, email, nickname}
+   * @param {object}      options  - {watermark, onPrintScreen}
+   *
+   * 歌詞本文 (.body) / creator-note / closing に対して
+   *  - user-select: none
+   *  - 右クリック禁止
+   *  - PrintScreen 検知時のブラー (visibilitychange)
+   *  - SHA-256 透かし (背面、半透明)
+   * を適用する。 1文字1span 難読化は重いので便箋ではデフォルトOFF。
+   */
+  async function protectLetter(letter, user, options) {
+    if (!letter) return;
+    options = options || {};
+    user    = user    || {};
+
+    const targets = [
+      letter.querySelector('.body'),
+      letter.querySelector('.creator-note'),
+      letter.querySelector('.closing')
+    ].filter(Boolean);
+
+    targets.forEach(function(el){
+      el.style.userSelect       = 'none';
+      el.style.webkitUserSelect = 'none';
+      el.style.MozUserSelect    = 'none';
+      el.style.msUserSelect     = 'none';
+      // 右クリック・コピー・ドラッグ禁止
+      bindEvents(el, options);
+    });
+
+    // 透かし: 歌詞本文の背面に (会員特定用)
+    const wmSource = options.watermark || user.email || user.id || 'guest';
+    const bodyEl = letter.querySelector('.body');
+    if (bodyEl && wmSource) {
+      try {
+        const hash = await sha256Hex(wmSource + '|' + new Date().toISOString().slice(0, 10));
+        addWatermark(bodyEl, hash);
+      } catch (e) {}
+    }
+
+    // PrintScreen / DevTools / visibilitychange 対策
+    if (options.onPrintScreen !== null) {
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          letter.style.filter = 'blur(20px)';
+        } else {
+          setTimeout(function() { letter.style.filter = ''; }, 200);
+        }
+      });
+    }
+  }
+
   // 名前空間
   global.TAMSICLyrics = {
-    protect: protect,
+    protect:       protect,
+    protectLetter: protectLetter,
     // 開発者ガードの手動起動（必要に応じて）
     _startDevToolsGuard: startDevToolsGuard
   };
