@@ -930,6 +930,117 @@ TAMSICGate.<span class="v">showCoinShortage</span>({
       <li>lyrics-guard.js のアップデートを検討</li>
     </ol>
   </div>
+
+  <hr style="margin:36px 0; border:none; border-top:1px solid var(--g3)">
+
+  <h3>🟢 v4.1 拡張: 便箋（レター）デザインによる歌詞表示</h3>
+  <div class="hint">
+    <strong>目的:</strong> フル試聴アンロック後の歌詞表示を「Air Mail（航空便）風の便箋」として演出。アーティストごとに固有のフォント・カラーで「曲が手紙としてリスナーに届く」体験を作る。コピー保護の 5 層は維持しつつ、ビジュアル面で価値を底上げする。
+  </div>
+
+  <h4>採用デザイン（Style C — エアメール）</h4>
+  <ul class="styled">
+    <li><strong>枠線:</strong> 45° の繰り返し線（アーティストカラー × 黒のストライプ）</li>
+    <li><strong>ヘッダ:</strong> 「FROM: artist」「TRACK: 曲名」「Dear ●●（会員ニックネーム）」</li>
+    <li><strong>歌詞本体:</strong> 手書きフォントで描画した歌詞画像を中央配置</li>
+    <li><strong>フッタ:</strong> 「Air Mail · TAMSIC」+ 消印スタンプ（アーティストカラーで日付）</li>
+  </ul>
+
+  <h4>アーティスト別カラー・フォント</h4>
+  <table>
+    <tr><th>アーティスト</th><th>枠カラー</th><th>使用フォント（日本語）</th><th>消印日</th></tr>
+    <tr><td>kiki</td><td>#C85A72（ローズ）</td><td>マキ丸ハンド（手書き／女の子の字）</td><td>各曲の release 日</td></tr>
+    <tr><td>no-no</td><td>#0099CC（シアン）</td><td>マキ丸ハンド（手書き／女の子の字）</td><td>各曲の release 日</td></tr>
+    <tr><td>gEN</td><td>#4A4540（ブロンズ）</td><td>未確定（男性的な手書き／毛筆系を検討）</td><td>各曲の release 日</td></tr>
+  </table>
+
+  <h4>歌詞表示の方式: 画像化アプローチ</h4>
+  <div class="hint hint-red">
+    <strong>採用フォント「マキ丸ハンド」のライセンス問題:</strong> フォントAC 配布。<strong>商用OK・クレジット不要・しかし再配布禁止</strong>。Web フォント化（.woff2 をサーバ配置・ブラウザ配信）は事実上の再配布に該当する可能性が高いため <strong>不可</strong>。代替策として、ユーザー側で各曲歌詞をマキ丸ハンドで打って画像（PNG）として書き出し、その画像を <span class="mono">.full-lyrics</span> 内に貼り付ける方式を採用。
+  </div>
+
+  <h4>運用フロー</h4>
+  <div class="step-box">
+    <ol>
+      <li>ユーザーが Word（マキ丸ハンドインストール済み）で各曲歌詞を打つ</li>
+      <li>PDF として保存 → サーバ側で <span class="mono">pdftoppm</span> で 200dpi PNG に変換</li>
+      <li>グレースケール化・JPEG quality70 で圧縮（37KB / 900px 程度を目安）</li>
+      <li><span class="mono">assets/lyrics/{artist}_{slug}.png</span> として配置</li>
+      <li>テンプレートで便箋枠 + 画像を組み合わせて表示</li>
+    </ol>
+  </div>
+
+  <h4>歌詞画像のファイル一覧（12曲分）</h4>
+  <pre class="code">assets/lyrics/
+├── kiki_unsekai.png        kiki「unセカイ」
+├── kiki_burnbright.png     kiki「Burn bright」
+├── kiki_criticalpoint.png  kiki「Critical point」
+├── kiki_nostop.png         kiki「No Stop」
+├── kiki_enjin.png          kiki「エンジン」
+├── kiki_kikirising.png     kiki「KIKI rising」
+├── nono_girigiridayo.png   no-no「ぎりぎりだよ。」
+├── nono_replus.png         no-no「RE+」
+├── nono_towalk.png         no-no「to Walk」
+├── nono_signal.png         no-no「シグナル●」
+├── nono_breathless.png     no-no「Breathless」
+└── gen_unsekai.png         gEN「unセカイ」</pre>
+
+  <h4>保護機構の継続性</h4>
+  <ul class="styled">
+    <li>歌詞「画像」表示でも、画像コンテナに対して既存の <span class="mono">lyrics-guard.js</span> の保護を適用（user-select:none / 右クリック禁止 / ドラッグ禁止 / PrintScreen 検知 blur）</li>
+    <li>透かしレイヤー（背面 SHA-256 ハッシュ）はオーバーレイとして画像の上に重ねて維持</li>
+    <li>OCR 耐性は手書きフォントのため、印刷フォントよりは強い（だが完全ではない）</li>
+  </ul>
+
+  <hr style="margin:36px 0; border:none; border-top:1px solid var(--g3)">
+
+  <h3>🟢 v4.1 拡張: レター（手紙）メール送信機能</h3>
+  <div class="hint">
+    <strong>目的:</strong> フル音源を 1 度聴いた会員に対して、その曲の便箋デザインの歌詞を、登録メールアドレス宛に「手紙として 1 通だけ」送信できる仕組み。会員体験の特別感を高める。
+  </div>
+
+  <h4>仕様の要点</h4>
+  <table>
+    <tr><th>項目</th><th>内容</th></tr>
+    <tr><td>受け取り資格</td><td>その曲のフル試聴を 1 度以上アンロックした会員</td></tr>
+    <tr><td>受け取り回数</td><td>1 曲につき <strong>1 回まで</strong>（再送不可）</td></tr>
+    <tr><td>送信先</td><td>Cognito に登録された email アドレス</td></tr>
+    <tr><td>本文</td><td>「Dear ●●」＋便箋画像（HTMLメール or 添付）</td></tr>
+    <tr><td>「Dear ●●」の名前</td><td>会員が指定（マイページで設定 or 受け取り時に入力）</td></tr>
+    <tr><td>送信タイミング</td><td>会員が「メールで手紙を受け取る」ボタンを押下したとき（手動オプトイン）</td></tr>
+  </table>
+
+  <h4>実装に必要な要素（要決定）</h4>
+  <ul class="styled">
+    <li><strong>メール配信インフラ:</strong> AWS SES（Cognito と同アカウント、ドメイン認証要） or Resend / SendGrid（外部、無料枠あり）</li>
+    <li><strong>受信履歴の記録:</strong> Cognito の <span class="mono">custom:letter_sent</span>（曲ID 配列）に記録 → 二重送信防止</li>
+    <li><strong>送信用バックエンド:</strong> AWS Lambda + API Gateway もしくは Cloudflare Workers が必要（フロント JS だけでは送信不可）</li>
+    <li><strong>HTML メールテンプレート:</strong> 便箋デザインを HTML 化、Gmail/iCloud/Outlook での表示崩れに耐える静的レイアウト</li>
+    <li><strong>会員ニックネーム:</strong> Cognito の <span class="mono">custom:nickname</span> として保存。空ならデフォルトで「Dear listener」</li>
+  </ul>
+
+  <h4>UI フロー（想定）</h4>
+  <div class="step-box">
+    <ol>
+      <li>会員がフル試聴をアンロック（コイン消費）</li>
+      <li>歌詞便箋が表示される</li>
+      <li>便箋下部に「📮 この手紙をメールで受け取る」ボタンが表示される</li>
+      <li>会員が「Dear ●●」の名前を入力（または事前設定済みなら確認のみ）</li>
+      <li>送信実行 → メールが届く → ボタンが「📨 受け取り済み」に変わり以後グレーアウト</li>
+    </ol>
+  </div>
+
+  <h4>状態管理</h4>
+  <pre class="code"><span class="c">// Cognito custom 属性として保存</span>
+custom:letter_sent       <span class="c">// 配列: ["kiki-006", "nono-004", ...] (送信済み曲ID)</span>
+custom:nickname          <span class="c">// 任意: 「Dear ●●」の名前. なければ空</span>
+
+<span class="c">// 送信可否の判定</span>
+<span class="k">function</span> <span class="v">canReceiveLetter</span>(trackId) {
+  <span class="k">const</span> sent = <span class="v">getUserAttribute</span>(<span class="s">'letter_sent'</span>) || [];
+  <span class="k">const</span> listened = <span class="v">getListens</span>().<span class="v">includes</span>(trackId);  <span class="c">// フル試聴履歴</span>
+  <span class="k">return</span> listened && !sent.<span class="v">includes</span>(trackId);
+}</pre>
 </section>
 
 <!-- ═══════════════════════════════════════ -->
@@ -1545,6 +1656,8 @@ chmod +x .git/hooks/pre-commit</pre>
     <li><strong>限定コンテンツ</strong> — 会員限定写真・動画・メッセージ</li>
     <li><strong>再生履歴のデバイス間同期</strong> — 現状は localStorage のみ。Cognito or DynamoDB に移行</li>
     <li><strong>DynamoDB 移行</strong> — コイン・購入履歴・再生履歴を本格的なデータベースで管理</li>
+    <li><strong>レター（手紙）メール送信機能</strong> — フル試聴会員へ便箋デザインの歌詞をメール送信。AWS SES / Resend を比較検討中。詳細は §10 参照</li>
+    <li><strong>便箋デザインのフォント自動化</strong> — 現状は画像化（マキ丸ハンド）方式だが、将来的に Web フォント可なライセンスのフォントが見つかれば、サイト内で動的にレンダリング可能になる</li>
   </ul>
 
   <h3>現状の制約事項</h3>

@@ -52,3 +52,30 @@
 
 - [ ] PAT の revoke 運用（使い捨て推奨）
 - [ ] GitHub Actions (`auto-release-audio.yml`) の設定と動作確認
+
+---
+
+## 💌 レター（便箋）機能の実装タスク（v4.1 拡張）
+
+### 歌詞の便箋表示
+- [ ] kiki / no-no / gEN の各 HTML の `.full-lyrics` 構造を Style C（エアメール枠）に置換
+- [ ] `assets/lyrics/` ディレクトリを新設、12曲分の歌詞画像を配置
+  - kiki: unsekai / burnbright / criticalpoint / nostop / enjin / kikirising
+  - nono: girigiridayo / replus / towalk / signal / breathless
+  - gen: unsekai
+- [ ] ユーザーが Word + マキ丸ハンドで作成 → PDF送付 → サーバ側で PNG化 のパイプライン確立
+- [ ] gEN 用フォント未確定（毛筆系 or 男性的手書き、要選定）
+- [ ] 便箋枠内の From / Track / 消印日付を tamsic-content.js から動的生成
+- [ ] 既存 `lyrics-guard.js` の保護機構を画像表示にも適用（コンテナレベル user-select / 右クリック / PrintScreen 検知）
+
+### メール送信機能
+- [ ] 配信インフラ選定（AWS SES vs Resend / SendGrid）
+- [ ] バックエンド（AWS Lambda + API Gateway もしくは Cloudflare Workers）の構築
+- [ ] HTML メールテンプレート作成（Gmail / iCloud / Outlook の表示崩れに耐える静的レイアウト）
+- [ ] 「Dear ●●」会員ニックネーム入力 UI（マイページ or 受け取り時ダイアログ）
+- [ ] Cognito custom 属性追加: `custom:letter_sent`（送信済み曲ID配列）/ `custom:nickname`
+- [ ] 「📮 この手紙をメールで受け取る」ボタンを `.full-lyrics` 下に配置、二重送信防止ロジック実装
+
+### 将来検討（フォント自動化）
+- [ ] Web フォント可なライセンスの手書きフォントが見つかれば移行検討（マキ丸ハンドは再配布禁止のため Web フォント不可）
+- [ ] それまでは画像化方式で運用継続
