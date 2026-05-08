@@ -60,102 +60,13 @@ function getCoinBonus() {
   return Number((TAMSIC_DEFAULTS.coinBonus && TAMSIC_DEFAULTS.coinBonus.firstVisitCoins) || 100);
 }
 
-window.TAMSICCoins = (() => {
-  const STORAGE_KEY = 'TAMSIC_COIN_STATE_V1';
-  const EVENT_NAME = 'tamsic:coins-updated';
-
-  function nowIso() {
-    return new Date().toISOString();
-  }
-  function guestState() {
-    return { balance: 0, firstVisitAwarded: false, awardedAt: null, purchases: [], listens: [], guest: true };
-  }
-  function hasAuth() {
-    return !!(window.TAMSICAuth && typeof window.TAMSICAuth.getCurrentUser === 'function');
-  }
-  function isLoggedIn() {
-    return !!(hasAuth() && window.TAMSICAuth.getCurrentUser());
-  }
-  function readLegacyState() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed && typeof parsed.balance === 'number') return parsed;
-      }
-    } catch (e) {}
-    return null;
-  }
-  function writeLegacyState(state) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    return state;
-  }
-  function readState() {
-    if (hasAuth()) return window.TAMSICAuth.getCoinState();
-    const legacy = readLegacyState();
-    if (legacy) return legacy;
-    return guestState();
-  }
-  function writeState(state) {
-    if (hasAuth() && isLoggedIn()) {
-      window.TAMSICAuth.setCoinState(state);
-    } else {
-      writeLegacyState(state);
-    }
-    window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: deepClone(state) }));
-    return state;
-  }
-  function getState() {
-    return deepClone(readState());
-  }
-  function getBalance() {
-    return Number(readState().balance || 0);
-  }
-  function addCoins(packId) {
-    if (!isLoggedIn()) return { ok: false, loginRequired: true, message: 'ログインしてください。' };
-    const pack = getCoinPacks().find(x => x.id === packId);
-    if (!pack) return { ok: false, message: 'コインパックが見つかりません。' };
-    const state = readState();
-    state.balance += Number(pack.coins || 0);
-    state.purchases.unshift({
-      id: `purchase-${Date.now()}`,
-      packId: pack.id,
-      coins: Number(pack.coins || 0),
-      priceYen: Number(pack.priceYen || 0),
-      at: nowIso()
-    });
-    writeState(state);
-    return { ok: true, balance: state.balance, pack };
-  }
-  function spendCoins(trackId, coins) {
-    if (!isLoggedIn()) return { ok: false, loginRequired: true, balance: 0 };
-    const cost = Number(coins || 0);
-    const state = readState();
-    if (state.balance < cost) {
-      return { ok: false, balance: state.balance, shortage: cost - state.balance };
-    }
-    state.balance -= cost;
-    state.listens.unshift({
-      id: `listen-${Date.now()}`,
-      trackId,
-      coins: cost,
-      at: nowIso()
-    });
-    writeState(state);
-    return { ok: true, balance: state.balance, spent: cost };
-  }
-  function onChange(cb) {
-    if (typeof cb !== 'function') return () => {};
-    const handler = e => cb(deepClone(e.detail || readState()));
-    window.addEventListener(EVENT_NAME, handler);
-    window.addEventListener('storage', handler);
-    return () => {
-      window.removeEventListener(EVENT_NAME, handler);
-      window.removeEventListener('storage', handler);
-    };
-  }
-  return { getState, getBalance, addCoins, spendCoins, onChange, getPacks: getCoinPacks, getBonus: getCoinBonus, isLoggedIn };
-})();;
+// ─────────────────────────────────────────
+// v4.2 統一: TAMSICCoins は coins.js に移行。
+// 旧 IIFE (TAMSIC_COIN_STATE_V1 ベース) はここで削除済み。
+// 各ページは <script src="coins.js"></script> をロードすること。
+// 旧 TAMSICCoins.getPacks() / getBonus() / isLoggedIn() の呼び出しは、
+// それぞれ getCoinPacks() / getCoinBonus() / window.isLoggedIn() を直接使う形に変更。
+// ─────────────────────────────────────────
 
 
 /* ═══════════════════════════════════════════════════════
