@@ -1,0 +1,626 @@
+/**
+ * letter.css — TAMSIC 歌詞便箋 スタイル (v4.2.1)
+ *
+ * 設計書 §10.1 / §10.2 / §10.6 / §10.7 準拠
+ *
+ * 各アーティストページ側で <body> または親要素に
+ *   --artist-color, --artist-font  をセットして使う。
+ * デフォルトは no-no カラー (#0099CC) + Zen Kurenaido。
+ *
+ * 18枠:
+ *   .frame-a 〜 .frame-j  基本 10種
+ *   .frame-k 〜 .frame-n  季節 4種 (固定色)
+ *   .frame-o, .frame-p    記念日 2種 (固定色 + Banner)
+ *   .frame-q, .frame-r    レア 2種 (Gold/Silver、バッジ付き)
+ */
+
+/* ─────────────────────────────────────────
+ * Font loading (CDN @fontsource)
+ * ───────────────────────────────────────── */
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/zen-kurenaido@5/index.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/hachi-maru-pop@5/index.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/yuji-syuku@5/index.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5/index.css');
+
+/* ─────────────────────────────────────────
+ * CSS 変数 (アーティストごとに上書き)
+ * ───────────────────────────────────────── */
+.tamsic-letter {
+  --artist-color: #0099CC;
+  --artist-font: 'Zen Kurenaido', serif;
+  --letter-bg: #FCFAF5;
+  --letter-text: #1F1F1F;
+  --letter-muted: #888;
+  --letter-rule: #D6CFC0;
+  --postmark-color: #C8252C;
+}
+
+/* アーティスト別自動上書き (レンダラが付与する class="artist-XXX" を使う) */
+.tamsic-letter.artist-nono {
+  --artist-color: #0099CC;
+  --artist-font: 'Zen Kurenaido', serif;
+}
+.tamsic-letter.artist-kiki {
+  --artist-color: #C85A72;
+  --artist-font: 'Hachi Maru Pop', sans-serif;
+}
+.tamsic-letter.artist-gen {
+  --artist-color: #4A4540;
+  --artist-font: 'Yuji Syuku', serif;
+}
+
+/* ─────────────────────────────────────────
+ * ベースレイアウト
+ * ───────────────────────────────────────── */
+.tamsic-letter,
+.tamsic-letter.tlb {
+  position: relative;
+  max-width: 680px;
+  margin: 0 auto 24px;
+  background: var(--letter-bg);
+}
+.tamsic-letter .inner {
+  padding: 0 44px 28px;
+  position: relative;
+  z-index: 1;
+}
+.tamsic-letter .cover-strip {
+  margin: 0 -44px 22px;
+}
+.tamsic-letter .cover-strip img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 5 / 2;
+  object-fit: cover;
+}
+
+.tamsic-letter .header {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr 1fr;
+  gap: 14px;
+  border-bottom: 1px solid var(--letter-rule);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+}
+.tamsic-letter .label {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--letter-muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  font-family: system-ui, sans-serif;
+}
+.tamsic-letter .v-from {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 24px;
+  color: var(--letter-text);
+}
+.tamsic-letter .v-jp,
+.tamsic-letter .v-dear {
+  font-family: var(--artist-font);
+  font-size: 20px;
+  color: var(--letter-text);
+}
+
+.tamsic-letter .body {
+  font-family: var(--artist-font);
+  font-size: 17px;
+  line-height: 2.0;
+  column-count: 2;
+  column-gap: 42px;
+  color: var(--letter-text);
+  position: relative;
+}
+.tamsic-letter .body p {
+  margin: 0 0 1em;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.tamsic-letter .creator-note {
+  margin: 24px 0 0;
+  font-family: var(--artist-font);
+  font-size: 14.5px;
+  line-height: 1.95;
+  color: #3A3A3A;
+}
+.tamsic-letter .creator-label {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: var(--letter-muted);
+  text-transform: uppercase;
+  font-family: system-ui, sans-serif;
+}
+
+.tamsic-letter .closing {
+  margin: 22px 0 4px;
+  font-family: var(--artist-font);
+  font-size: 18px;
+  color: var(--letter-text);
+  text-align: right;
+}
+.tamsic-letter .signature {
+  margin: 4px 0 0;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--letter-text);
+  text-align: right;
+}
+
+.tamsic-letter .footer {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--letter-rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tamsic-letter .airmail {
+  font-family: system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: #999;
+  text-transform: uppercase;
+}
+.tamsic-letter .postmark {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  border: 2.5px solid var(--postmark-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-12deg);
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 11px;
+  line-height: 1.15;
+  color: var(--postmark-color);
+  opacity: 0.92;
+}
+
+/* ─────────────────────────────────────────
+ * 記念日 Banner (frame-o / frame-p)
+ * ───────────────────────────────────────── */
+.tamsic-letter .bday-banner {
+  background: linear-gradient(90deg, #E24B4A 0%, #F0997B 50%, #E24B4A 100%);
+  color: #fff;
+  text-align: center;
+  padding: 14px;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  margin: 24px -44px 18px;
+  position: relative;
+  z-index: 1;
+}
+.tamsic-letter .anniv-banner {
+  background: #993556;
+  color: #FBEAF0;
+  text-align: center;
+  padding: 14px;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  margin: 24px -44px 18px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─────────────────────────────────────────
+ * 基本枠 A〜J (アーティストカラーに連動)
+ * ───────────────────────────────────────── */
+
+/* A: シンプル1色枠 */
+.tamsic-letter.frame-a {
+  border: 2px solid var(--artist-color);
+}
+
+/* B: ノート横罫線 */
+.tamsic-letter.frame-b {
+  border-top: 6px solid var(--artist-color);
+  border-bottom: 1px solid var(--artist-color);
+}
+.tamsic-letter.frame-b .body {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 33px,
+    color-mix(in srgb, var(--artist-color) 16%, transparent) 33px,
+    color-mix(in srgb, var(--artist-color) 16%, transparent) 34px
+  );
+  padding: 6px 0 0;
+}
+.tamsic-letter.frame-b .body p {
+  margin-bottom: 1.4em;
+}
+
+/* C: エアメール (45度ストライプ) */
+.tamsic-letter.frame-c {
+  border: 14px solid transparent;
+  border-image: repeating-linear-gradient(
+    45deg,
+    var(--artist-color) 0 12px,
+    var(--letter-bg) 12px 24px,
+    var(--letter-text) 24px 36px,
+    var(--letter-bg) 36px 48px
+  ) 14;
+}
+
+/* D: 和風二重罫 */
+.tamsic-letter.frame-d {
+  border-top: 1px solid var(--artist-color);
+  border-bottom: 1px solid var(--artist-color);
+  padding: 5px 0;
+  box-shadow:
+    inset 0 4px 0 -3px var(--artist-color),
+    inset 0 -4px 0 -3px var(--artist-color);
+  background: linear-gradient(135deg, var(--letter-bg) 0%, var(--letter-bg) 60%, color-mix(in srgb, var(--artist-color) 2.5%, transparent) 100%);
+}
+
+/* E: クラフト紙アンティーク (アーティスト色に依らない固定) */
+.tamsic-letter.frame-e {
+  background: #E8DFC9;
+  border: 1px solid #B8A988;
+  box-shadow: inset 0 0 60px rgba(168,135,90,0.15);
+}
+.tamsic-letter.frame-e .header { border-bottom-color: #B8A988; }
+.tamsic-letter.frame-e .label  { color: #7A6B4A; }
+.tamsic-letter.frame-e .footer { border-top-color: #B8A988; }
+.tamsic-letter.frame-e .body p,
+.tamsic-letter.frame-e .v-from,
+.tamsic-letter.frame-e .v-jp,
+.tamsic-letter.frame-e .v-dear,
+.tamsic-letter.frame-e .closing,
+.tamsic-letter.frame-e .signature,
+.tamsic-letter.frame-e .creator-note { color: #3A2E1F; }
+
+/* F: ドット枠 */
+.tamsic-letter.frame-f {
+  border: 3px dotted var(--artist-color);
+  padding: 4px;
+}
+
+/* G: 手書き波線枠 */
+.tamsic-letter.frame-g {
+  position: relative;
+  padding: 8px;
+}
+.tamsic-letter.frame-g::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: none;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600' preserveAspectRatio='none'%3E%3Cpath d='M 4 4 Q 20 0, 36 4 T 68 4 T 100 4 T 132 4 T 164 4 T 196 4 T 228 4 T 260 4 T 292 4 T 324 4 T 356 4 T 388 4 T 420 4 T 452 4 T 484 4 T 516 4 T 548 4 T 580 4 T 596 4 L 596 596 Q 580 600 564 596 T 532 596 T 500 596 T 468 596 T 436 596 T 404 596 T 372 596 T 340 596 T 308 596 T 276 596 T 244 596 T 212 596 T 180 596 T 148 596 T 116 596 T 84 596 T 52 596 T 20 596 T 4 596 Z M 4 4 Q 0 20, 4 36 T 4 68 T 4 100 T 4 132 T 4 164 T 4 196 T 4 228 T 4 260 T 4 292 T 4 324 T 4 356 T 4 388 T 4 420 T 4 452 T 4 484 T 4 516 T 4 548 T 4 580 M 596 4 Q 600 20, 596 36 T 596 68 T 596 100 T 596 132 T 596 164 T 596 196 T 596 228 T 596 260 T 596 292 T 596 324 T 596 356 T 596 388 T 596 420 T 596 452 T 596 484 T 596 516 T 596 548 T 596 580' fill='none' stroke='%230099CC' stroke-width='2' opacity='0.7'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+/* G (kiki色): rose */
+.tamsic-letter.artist-kiki.frame-g::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600' preserveAspectRatio='none'%3E%3Cpath d='M 4 4 Q 20 0, 36 4 T 68 4 T 100 4 T 132 4 T 164 4 T 196 4 T 228 4 T 260 4 T 292 4 T 324 4 T 356 4 T 388 4 T 420 4 T 452 4 T 484 4 T 516 4 T 548 4 T 580 4 T 596 4 L 596 596 Q 580 600 564 596 T 532 596 T 500 596 T 468 596 T 436 596 T 404 596 T 372 596 T 340 596 T 308 596 T 276 596 T 244 596 T 212 596 T 180 596 T 148 596 T 116 596 T 84 596 T 52 596 T 20 596 T 4 596 Z' fill='none' stroke='%23C85A72' stroke-width='2' opacity='0.7'/%3E%3C/svg%3E");
+}
+
+/* H: 五線譜薄柄 */
+.tamsic-letter.frame-h {
+  border: 1px solid var(--artist-color);
+}
+.tamsic-letter.frame-h .inner {
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 12px,
+    color-mix(in srgb, var(--artist-color) 10%, transparent) 12px,
+    color-mix(in srgb, var(--artist-color) 10%, transparent) 13px
+  );
+}
+
+/* I: レコード溝模様 */
+.tamsic-letter.frame-i {
+  border: 2px solid var(--artist-color);
+  position: relative;
+  overflow: hidden;
+}
+.tamsic-letter.frame-i::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-radial-gradient(
+    circle at 50% 50%,
+    transparent 0,
+    transparent 8px,
+    color-mix(in srgb, var(--artist-color) 5%, transparent) 8px,
+    color-mix(in srgb, var(--artist-color) 5%, transparent) 9px,
+    transparent 9px,
+    transparent 17px
+  );
+  z-index: 0;
+}
+
+/* J: リボン端飾り */
+.tamsic-letter.frame-j {
+  border: 1px solid var(--artist-color);
+  padding-top: 4px;
+}
+.tamsic-letter.frame-j::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 30%;
+  right: 30%;
+  height: 8px;
+  background: linear-gradient(90deg, transparent 0%, var(--artist-color) 8%, var(--artist-color) 92%, transparent 100%);
+}
+.tamsic-letter.frame-j::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 30%;
+  right: 30%;
+  height: 8px;
+  background: linear-gradient(90deg, transparent 0%, #C85A72 8%, #C85A72 92%, transparent 100%);
+}
+
+/* ─────────────────────────────────────────
+ * 季節限定枠 K〜N (アーティスト非依存、季節色固定)
+ * ───────────────────────────────────────── */
+
+/* K: 桃 (桜) */
+.tamsic-letter.frame-k {
+  border: 1px solid #ED93B1;
+  background: linear-gradient(135deg, var(--letter-bg) 0%, var(--letter-bg) 70%, rgba(244,192,209,0.3) 100%);
+  position: relative;
+}
+.tamsic-letter.frame-k::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='%23F4A6B6' opacity='0.45'%3E%3Cpath d='M20 8 Q22 13 27 13 Q22 14 20 19 Q18 14 13 13 Q18 13 20 8 Z'/%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* L: 雪結晶 */
+.tamsic-letter.frame-l {
+  border: 1px solid #85B7EB;
+  background: linear-gradient(135deg, var(--letter-bg) 0%, var(--letter-bg) 70%, rgba(181,212,244,0.3) 100%);
+  position: relative;
+}
+.tamsic-letter.frame-l::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23B5D4F4' stroke-width='1.2' opacity='0.6'%3E%3Cpath d='M20 6 L20 34 M6 20 L34 20 M10 10 L30 30 M10 30 L30 10'/%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* M: 海・波 */
+.tamsic-letter.frame-m {
+  border: 1px solid #378ADD;
+  position: relative;
+}
+.tamsic-letter.frame-m::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40'%3E%3Cpath d='M0 30 Q20 18 40 30 T80 30' fill='none' stroke='%23378ADD' stroke-width='1.5' opacity='0.4'/%3E%3Cpath d='M0 36 Q20 24 40 36 T80 36' fill='none' stroke='%23378ADD' stroke-width='1.2' opacity='0.3'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 80px 40px;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+}
+.tamsic-letter.frame-m::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40'%3E%3Cpath d='M0 30 Q20 18 40 30 T80 30' fill='none' stroke='%23378ADD' stroke-width='1.5' opacity='0.4'/%3E%3Cpath d='M0 36 Q20 24 40 36 T80 36' fill='none' stroke='%23378ADD' stroke-width='1.2' opacity='0.3'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 80px 40px;
+  opacity: 0.3;
+  pointer-events: none;
+  transform: scaleY(-1);
+  z-index: 0;
+}
+
+/* N: 紅葉 */
+.tamsic-letter.frame-n {
+  border: 1px solid #D85A30;
+  background: linear-gradient(180deg, var(--letter-bg) 0%, rgba(245,196,179,0.15) 100%);
+  position: relative;
+}
+.tamsic-letter.frame-n::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Cg fill='%23D85A30' opacity='0.4'%3E%3Cpath d='M22 8 L24 16 L30 12 L26 18 L34 18 L28 22 L34 26 L26 26 L30 32 L24 28 L22 36 L20 28 L14 32 L18 26 L10 26 L16 22 L10 18 L18 18 L14 12 L20 16 Z'/%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─────────────────────────────────────────
+ * 記念日枠 O / P (Banner と組み合わせ)
+ * ───────────────────────────────────────── */
+
+/* O: 誕生日 */
+.tamsic-letter.frame-o {
+  border: 3px solid #E24B4A;
+  position: relative;
+  background: linear-gradient(135deg, #FFFCF5 0%, var(--letter-bg) 50%, #FFF5F5 100%);
+}
+.tamsic-letter.frame-o::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect x='10' y='10' width='4' height='8' fill='%23E24B4A' transform='rotate(20 12 14)'/%3E%3Crect x='80' y='20' width='4' height='8' fill='%23F09595' transform='rotate(-15 82 24)'/%3E%3Crect x='30' y='40' width='4' height='8' fill='%23BA7517' transform='rotate(45 32 44)'/%3E%3Crect x='60' y='60' width='4' height='8' fill='%231D9E75' transform='rotate(-30 62 64)'/%3E%3Crect x='15' y='75' width='4' height='8' fill='%237F77DD' transform='rotate(60 17 79)'/%3E%3Crect x='85' y='85' width='4' height='8' fill='%23378ADD' transform='rotate(-45 87 89)'/%3E%3Crect x='45' y='15' width='4' height='8' fill='%2397C459' transform='rotate(10 47 19)'/%3E%3Crect x='55' y='90' width='4' height='8' fill='%23F0997B' transform='rotate(-25 57 94)'/%3E%3C/svg%3E");
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* P: 周年 */
+.tamsic-letter.frame-p {
+  border: 2px solid #993556;
+  position: relative;
+  background: linear-gradient(135deg, #FFF8F8 0%, var(--letter-bg) 50%, #FFF8FB 100%);
+}
+.tamsic-letter.frame-p::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23F4A6B6' opacity='0.5'%3E%3Cpath d='M15 10 L17 14 L21 14 L18 17 L19 21 L15 19 L11 21 L12 17 L9 14 L13 14 Z'/%3E%3Cpath d='M65 25 L66 28 L69 28 L67 30 L68 33 L65 31 L62 33 L63 30 L61 28 L64 28 Z'/%3E%3Cpath d='M30 55 L32 59 L36 59 L33 62 L34 66 L30 64 L26 66 L27 62 L24 59 L28 59 Z' opacity='0.7'/%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─────────────────────────────────────────
+ * レア枠 Q / R (Gold / Silver、バッジ付き)
+ * ───────────────────────────────────────── */
+
+/* Q: ゴールド */
+.tamsic-letter.frame-q {
+  border: 8px solid transparent;
+  border-image: repeating-linear-gradient(
+    45deg,
+    #C9A03A 0 4px,
+    #F4D26A 4px 8px,
+    #C9A03A 8px 12px,
+    #8A6F1F 12px 16px
+  ) 8;
+  background: linear-gradient(135deg, var(--letter-bg) 0%, #FFF8E1 50%, var(--letter-bg) 100%);
+  position: relative;
+}
+.tamsic-letter.frame-q .v-from,
+.tamsic-letter.frame-q .v-jp,
+.tamsic-letter.frame-q .v-dear { color: #8A6F1F; }
+.tamsic-letter.frame-q::after {
+  content: '★ RARE ★';
+  position: absolute;
+  top: 18px;
+  right: 30px;
+  font-family: system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: #8A6F1F;
+  background: rgba(244,210,106,0.3);
+  padding: 4px 10px;
+  border: 1px solid #C9A03A;
+  z-index: 2;
+}
+
+/* R: シルバー */
+.tamsic-letter.frame-r {
+  border: 6px solid transparent;
+  border-image: repeating-linear-gradient(
+    45deg,
+    #B5B7BC 0 4px,
+    #E8E9EC 4px 8px,
+    #B5B7BC 8px 12px,
+    #6E707A 12px 16px
+  ) 6;
+  background: linear-gradient(135deg, var(--letter-bg) 0%, #F5F6F8 50%, var(--letter-bg) 100%);
+  position: relative;
+}
+.tamsic-letter.frame-r .v-from,
+.tamsic-letter.frame-r .v-jp,
+.tamsic-letter.frame-r .v-dear { color: #5F5E5A; }
+.tamsic-letter.frame-r::after {
+  content: '☆ UNCOMMON ☆';
+  position: absolute;
+  top: 18px;
+  right: 30px;
+  font-family: system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: #5F5E5A;
+  background: rgba(180,182,188,0.25);
+  padding: 4px 10px;
+  border: 1px solid #888780;
+  z-index: 2;
+}
+
+/* ─────────────────────────────────────────
+ * レター受信ボタン (Phase G)
+ * ───────────────────────────────────────── */
+.tamsic-letter-actions {
+  max-width: 680px;
+  margin: 12px auto 24px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  font-family: system-ui, sans-serif;
+}
+.tamsic-letter-actions .receive-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  background: var(--artist-color, #0099CC);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: opacity 0.2s;
+}
+.tamsic-letter-actions .receive-btn:hover { opacity: 0.85; }
+.tamsic-letter-actions .receive-btn[disabled] {
+  background: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.tamsic-letter-actions .reroll-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  background: #fff;
+  border: 1px solid var(--letter-rule);
+  color: #666;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.tamsic-letter-actions .reroll-btn:hover {
+  background: var(--artist-color);
+  color: #fff;
+  border-color: var(--artist-color);
+}
+
+/* ─────────────────────────────────────────
+ * レスポンシブ (≤600px)
+ * ───────────────────────────────────────── */
+@media (max-width: 600px) {
+  .tamsic-letter .body { column-count: 1; }
+  .tamsic-letter .header { grid-template-columns: 1fr; gap: 8px; }
+  .tamsic-letter .inner { padding: 0 22px 22px; }
+  .tamsic-letter .cover-strip { margin: 0 -22px 18px; }
+  .tamsic-letter .bday-banner,
+  .tamsic-letter .anniv-banner { margin-left: -22px; margin-right: -22px; }
+  .tamsic-letter-actions {
+    padding: 0 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
