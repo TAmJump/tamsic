@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TAMSIC Letter Preview — 統合動作確認</title>
+<style>
+body { margin:0; background:#EEE9DF; padding:24px 12px; font-family:system-ui,sans-serif; color:#222; }
+.wrap { max-width:760px; margin:0 auto; }
+h1 { font-size:18px; font-weight:600; margin:0 0 8px; }
+.meta { color:#666; font-size:12px; margin-bottom:18px; line-height:1.7; }
+.controls { background:#fff; border:1px solid #ddd; padding:14px 16px; margin-bottom:18px; border-radius:4px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; font-size:12px; }
+.controls label { display:inline-flex; align-items:center; gap:4px; }
+.controls select, .controls button, .controls input { font-size:12px; padding:5px 8px; border:1px solid #ccc; background:#fff; }
+.controls button { cursor:pointer; }
+.controls button.primary { background:#0099CC; color:#fff; border-color:#0099CC; }
+#letter-host { background:#FCFAF5; padding:24px 0; }
+.note { font-size:11px; color:#888; margin-top:6px; }
+</style>
+<link rel="stylesheet" href="letter.css">
+</head>
+<body>
+
+<div class="wrap">
+<h1>TAMSIC Letter — 統合プレビュー</h1>
+<p class="meta">
+本番投入前の確認用。letter-frames.js / letter-content.js / letter-renderer.js / letter.css の組み合わせで動作。
+枠とclosingはランダム抽選。アーティスト切替で色とフォントが変わる。
+</p>
+
+<div class="controls">
+  <label>アーティスト
+    <select id="ctrl-artist">
+      <option value="nono" selected>no-no</option>
+      <option value="kiki">kiki</option>
+      <option value="gen">gEN</option>
+    </select>
+  </label>
+  <label>枠を強制
+    <select id="ctrl-frame">
+      <option value="">ランダム</option>
+      <option value="A">A シンプル</option>
+      <option value="B">B 横罫線</option>
+      <option value="C">C エアメール</option>
+      <option value="D">D 和風二重罫</option>
+      <option value="E">E クラフト紙</option>
+      <option value="F">F ドット</option>
+      <option value="G">G 手書き波線</option>
+      <option value="H">H 五線譜</option>
+      <option value="I">I レコード溝</option>
+      <option value="J">J リボン</option>
+      <option value="K">K 桜</option>
+      <option value="L">L 雪結晶</option>
+      <option value="M">M 海・波</option>
+      <option value="N">N 紅葉</option>
+      <option value="O">O 誕生日</option>
+      <option value="P">P 周年</option>
+      <option value="Q">Q ★RARE Gold</option>
+      <option value="R">R ☆Silver</option>
+    </select>
+  </label>
+  <label>nickname
+    <input id="ctrl-nick" value="JIN" size="10">
+  </label>
+  <button class="primary" id="ctrl-render">再描画</button>
+  <button id="ctrl-reroll">↻ closing 引き直し</button>
+</div>
+
+<div id="letter-host"></div>
+
+<p class="note">
+  ※ 実装ファイル: <code>letter-frames.js</code> (枠定義/抽選), <code>letter-content.js</code> (closingプール25通り), <code>letter-renderer.js</code> (DOM構築), <code>letter.css</code> (18枠スタイル)
+</p>
+</div>
+
+<script src="letter-frames.js"></script>
+<script src="letter-content.js"></script>
+<script src="letter-renderer.js"></script>
+
+<script>
+// Sample tracks for preview
+const SAMPLE_TRACKS = {
+  nono: {
+    id: 'nono-004',
+    artist: 'nono',
+    title: 'ぎりぎりだよ。',
+    coverPath: 'assets/images/nono/nono_girigiridayo.png',
+    lyrics: '上手に笑うことだけ\n少しずつ覚えた\n泣く理由は\nまだ言えなくて\n\n強くなれって言葉が\n胸に残ったまま\nどうすればいいか\n分からずに立ってる\n\n正しい答えが\n遠すぎて\n伸ばした手が\n震えた\n\nI\u2019m still here\n消えないで\n小さな声でも\nここにいる\n\n光じゃなくていい\n星じゃなくていい\nそれでも\n約束したい\n\n大人みたいな言葉を\n探してみたけど\n間違えるたびに\n自分が嫌いになる',
+    creatorNote: '強くならなきゃって、何度も自分に言い聞かせた夜がありました。でも本当に必要だったのは「弱いままでもいい」って言ってくれる誰か。この曲は、過去の自分への手紙です。',
+    closings: [
+      '●●さん、ぎりぎりでも、ここにいてくれてありがとう。',
+      '●●さん、約束はまだ守れる。',
+      '●●さん、まだここにいるよ。'
+    ]
+  },
+  kiki: {
+    id: 'kiki-006',
+    artist: 'kiki',
+    title: 'unセカイ',
+    coverPath: 'assets/images/kiki/kiki_unsekai.png',
+    lyrics: 'これは仮の歌詞。\n本物の歌詞は\ntamsic-content.js に\n格納されています。\n\n枠と色とフォントを\nアーティストごとに切替\n動作確認の用途です。',
+    creatorNote: 'kiki の制作秘話 (placeholder)。本番では tamsic-content.js の creatorNote を表示。',
+    closings: ['●●、unセカイで会おう。']
+  },
+  gen: {
+    id: 'gen-001',
+    artist: 'gen',
+    title: 'unセカイ',
+    coverPath: 'assets/images/gen/gen_unsekai.png',
+    lyrics: 'gEN の歌詞 (placeholder)。\n本番では Yuji Syuku\n毛筆フォントで描画\n\n枠の色は #4A4540\n落ち着いたブロンズ。',
+    creatorNote: 'gEN の制作秘話 (placeholder)。',
+    closings: ['●●、その先へ。']
+  }
+};
+
+function renderNow(){
+  const artist = document.getElementById('ctrl-artist').value;
+  const frame  = document.getElementById('ctrl-frame').value;
+  const nick   = document.getElementById('ctrl-nick').value || 'listener';
+  const track  = SAMPLE_TRACKS[artist];
+  const today  = new Date();
+  const opts = {
+    track:    track,
+    user:     { nickname: nick, email: 'preview@tamsic.local' },
+    today:    today,
+    features: { 'letter-rare-frames': true, 'letter-anniversary-frames': true, 'letter-seasonal-frames': true }
+  };
+  if (frame) opts.frame = frame;
+  window.TAMSICLetter.render(document.getElementById('letter-host'), opts);
+}
+
+function rerollClosing(){
+  const artist = document.getElementById('ctrl-artist').value;
+  const nick   = document.getElementById('ctrl-nick').value || 'listener';
+  const letterEl = document.querySelector('#letter-host .tamsic-letter');
+  if (!letterEl) return renderNow();
+  window.TAMSICLetter.reroll(letterEl, {
+    track: SAMPLE_TRACKS[artist],
+    user: { nickname: nick },
+    today: new Date()
+  });
+}
+
+document.getElementById('ctrl-render').onclick = renderNow;
+document.getElementById('ctrl-reroll').onclick = rerollClosing;
+['ctrl-artist','ctrl-frame','ctrl-nick'].forEach(id => {
+  document.getElementById(id).addEventListener('change', renderNow);
+});
+
+renderNow();
+</script>
+</body>
+</html>

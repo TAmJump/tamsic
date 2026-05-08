@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>TAMSIC 設計書 §10 v4.2.1 完全版 - 歌詞便箋・レター送信仕様</title>
+<style>
+body { max-width: 980px; margin: 30px auto; padding: 0 28px; font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif; line-height: 1.8; color: #222; background: #FCFAF5; }
+h1 { font-size: 28px; padding-bottom: 12px; border-bottom: 2px solid #0099CC; }
+h2 { font-size: 22px; margin-top: 36px; padding-left: 10px; border-left: 4px solid #0099CC; }
+h3 { font-size: 18px; margin-top: 28px; color: #444; }
+h4 { font-size: 15px; margin-top: 22px; color: #555; }
+table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 14px; }
+th, td { border: 1px solid #ccc; padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f0f7fa; font-weight: 600; }
+code { background: #f0f0f0; padding: 1px 5px; border-radius: 3px; font-family: 'SF Mono', Consolas, monospace; font-size: 13px; }
+pre { background: #2c2c2c; color: #f0f0f0; padding: 14px 18px; border-radius: 4px; overflow-x: auto; font-size: 13px; line-height: 1.5; }
+.note { background: #fff8e1; border-left: 3px solid #C8252C; padding: 10px 16px; margin: 14px 0; }
+.warn { background: #fef0f0; border-left: 3px solid #E24B4A; padding: 10px 16px; margin: 14px 0; }
+.tip { background: #e8f5e9; border-left: 3px solid #1D9E75; padding: 10px 16px; margin: 14px 0; }
+.diff-add { background: #e6f9e6; padding: 1px 4px; }
+.diff-del { background: #fae0e0; text-decoration: line-through; padding: 1px 4px; }
+ul, ol { padding-left: 24px; }
+li { margin-bottom: 4px; }
+.toc { background: #f5f5f0; padding: 16px 24px; border-radius: 4px; margin: 16px 0 30px; }
+.toc ul { list-style: none; padding-left: 12px; }
+.toc li { margin-bottom: 2px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<h1>TAMSIC 設計書 §10 v4.2.1 完全版 — 歌詞便箋・レター送信仕様</h1>
+
+<p><strong>改訂日</strong>: 2026-05-08<br>
+<strong>前版</strong>: v4.2 (補完)<br>
+<strong>本改訂の目的</strong>: v4.2 で漏れていた歌詞保護仕様、CSS実装例、エラーハンドリング、テスト計画、デプロイ手順等を補完し、実装着手に必要な仕様をすべて記載する。</p>
+
+<div class="note">
+<strong>本仕様の適用範囲</strong>: §10 「歌詞画像化アプローチ」を「歌詞便箋・レター送信仕様」に全面書き換え。画像化方式は廃止。すべての歌詞は便箋枠内で<strong>Web フォント直描画</strong>に移行。
+</div>
+
+<div class="toc">
+<strong>目次</strong>
+<ul>
+<li>§10.1 設計の前提</li>
+<li>§10.2 便箋枠仕様 (合計18種)</li>
+<li>§10.3 アーティスト別の枠プール</li>
+<li>§10.4 抽選アルゴリズム</li>
+<li>§10.5 closing プール定義</li>
+<li>§10.6 ヘッダ・フッタ要素仕様</li>
+<li>§10.7 歌詞保護 (lyrics-guard.js 連携)</li>
+<li>§10.8 データモデル</li>
+<li>§10.9 レター送信フロー</li>
+<li>§10.10 メール本文HTML生成</li>
+<li>§10.11 既存 v4.1 からの差分まとめ</li>
+<li>§10.12 §22 (将来拡張) との関係</li>
+<li>§10.13 テスト計画</li>
+<li>§10.14 デプロイ手順</li>
+</ul>
+</div>
+
+<!-- ============================================================ -->
+
+<h2>§10.1 設計の前提</h2>
+
+<h3>10.1.1 採用フォント (路線Y: Google Fonts OFL)</h3>
+
+<table>
+<tr><th>アーティスト</th><th>カラー</th><th>フォント</th><th>由来</th></tr>
+<tr><td>no-no</td><td>#0099CC</td><td>Zen Kurenaido</td><td>鉛筆カジュアル手書き、繊細・震えるテーマに合う</td></tr>
+<tr><td>kiki</td><td>#C85A72</td><td>Hachi Maru Pop</td><td>まんまる手書き、ゆるカジュアル、ローズに調和</td></tr>
+<tr><td>gEN</td><td>#4A4540</td><td>Yuji Syuku</td><td>毛筆「肅」、力強く腐ってる/叫ぶ世界観に合う</td></tr>
+</table>
+
+<p>すべて SIL OFL ライセンス、@fontsource パッケージ経由で読み込み、Web フォント配信OK・商用OK・サブセット化可。</p>
+
+<p>共通フォント: <code>Playfair Display</code> (italic) — From のアーティスト名表示と消印に使用。</p>
+
+<h3>10.1.2 CSS フォールバック設計 (Adobe Fonts 移行時の保険)</h3>
+
+<pre>/* no-no */
+font-family: 'TA Koigokoro',     /* 第1: Adobe Fonts (将来切替) */
+             'Zen Kurenaido',     /* 第2: Google Fonts (現行) */
+             serif;               /* 第3: ブラウザ既定 */
+
+/* kiki */
+font-family: 'TA Koigokoro',
+             'Hachi Maru Pop',
+             serif;
+
+/* gEN */
+font-family: 'AH白洲毛筆行草体',
+             'Yuji Syuku',
+             serif;</pre>
+
+<div class="tip">
+<strong>意図</strong>: 第1の有料フォントを将来 Adobe Fonts 契約後にコメントアウト解除するだけで切替完了。CC解約時は自動的に第2のGoogle Fonts に降格、サイトが死なない。
+</div>
+
+<h3>10.1.3 便箋全体レイアウト (パターン5: ヘッダ全面cover採用)</h3>
+
+<pre>┌──────────────────────────────────────┐
+│        [cover image, 5:2 比率]        │  ← ヘッダ全面
+├──────────────────────────────────────┤
+│  FROM    │  TRACK         │  DEAR    │
+│  no-no   │  ぎりぎりだよ。│  JIN     │
+├──────────────────────────────────────┤
+│  上手に笑うことだけ │ 強くなれって…│
+│  少しずつ覚えた     │ 胸に残った…  │  ← 歌詞全文 (2カラム)
+│  ...                │ ...           │
+├──────────────────────────────────────┤
+│ Creator's note · 制作秘話の本文…    │  ← 装飾なし、普通の段落
+├──────────────────────────────────────┤
+│             JINさん、ありがとう。    │  ← ランダム closing
+│                              — no-no │  ← signature
+├──────────────────────────────────────┤
+│  Air Mail · TAMSIC      [2026 05.08] │  ← フッタ + 朱色消印
+└──────────────────────────────────────┘</pre>
+
+<table>
+<tr><th>項目</th><th>仕様</th></tr>
+<tr><td>外側コンテナ幅</td><td>max-width: 680px</td></tr>
+<tr><td>cover画像</td><td>aspect-ratio: 5/2、object-fit: cover</td></tr>
+<tr><td>歌詞カラム</td><td>column-count: 2、column-gap: 42px、画面幅 ≤600px で1カラム</td></tr>
+<tr><td>歌詞行間</td><td>line-height: 2.0</td></tr>
+<tr><td>歌詞フォントサイズ</td><td>17px (狭幅で15px)</td></tr>
+<tr><td>段落間スペース</td><td>1.4em</td></tr>
+</table>
+
+<!-- ============================================================ -->
+
+<h2>§10.2 便箋枠仕様 (合計18種)</h2>
+
+<h3>10.2.1 基本枠 10種 (A〜J)</h3>
+
+<table>
+<tr><th>ID</th><th>名称</th><th>CSS 実装</th><th>適用</th></tr>
+<tr><td>A</td><td>シンプル1色枠</td><td><code>border: 2px solid var(--accent)</code></td><td>全アーティスト</td></tr>
+<tr><td>B</td><td>ノート横罫線</td><td><code>border-top: 6px solid var(--accent); border-bottom: 1px solid var(--accent);</code> 本文に <code>repeating-linear-gradient(to bottom, transparent 0 33px, rgba(var(--accent-rgb), 0.16) 33px 34px)</code></td><td>no-no, kiki</td></tr>
+<tr><td>C</td><td>エアメール (現行)</td><td><code>border: 14px solid transparent; border-image: repeating-linear-gradient(45deg, var(--accent) 0 12px, #FCFAF5 12px 24px, #1F1F1F 24px 36px, #FCFAF5 36px 48px) 14;</code></td><td>全アーティスト</td></tr>
+<tr><td>D</td><td>和風二重罫</td><td><code>border-top: 1px solid var(--accent); border-bottom: 1px solid var(--accent); padding: 5px 0; box-shadow: inset 0 4px 0 -3px var(--accent), inset 0 -4px 0 -3px var(--accent);</code> 微グラデーション背景</td><td>gEN</td></tr>
+<tr><td>E</td><td>クラフト紙アンティーク</td><td><code>background: #E8DFC9; border: 1px solid #B8A988; box-shadow: inset 0 0 60px rgba(168,135,90,0.15);</code></td><td>gEN</td></tr>
+<tr><td>F</td><td>ドット枠</td><td><code>border: 3px dotted var(--accent)</code></td><td>no-no, kiki</td></tr>
+<tr><td>G</td><td>手書き波線枠</td><td>SVG手描き波線を <code>::before</code> に背景画像として配置</td><td>no-no</td></tr>
+<tr><td>H</td><td>五線譜薄柄</td><td><code>repeating-linear-gradient</code> で横線、本文の inner にも重ねて表示</td><td>gEN</td></tr>
+<tr><td>I</td><td>レコード溝模様</td><td><code>::before</code> に <code>repeating-radial-gradient(circle at 50% 50%, transparent 0 8px, rgba(var(--accent-rgb), 0.04) 8px 9px, transparent 9px 17px)</code></td><td>kiki</td></tr>
+<tr><td>J</td><td>リボン端飾り</td><td><code>::before</code>: 上端に色付き帯 (アーティスト色)、<code>::after</code>: 下端に色付き帯 (補色)</td><td>no-no, kiki</td></tr>
+</table>
+
+<h3>10.2.2 季節限定枠 4種 (K〜N)</h3>
+
+<table>
+<tr><th>ID</th><th>名称</th><th>期間 (MM-DD)</th><th>CSS 実装ヒント</th><th>判定</th></tr>
+<tr><td>K</td><td>桃 (桜)</td><td>03-01 〜 04-30</td><td>SVG桜花パターンを <code>::before</code> 背景、ピンク基調グラデ</td><td><code>(month >= 3 && month <= 4)</code></td></tr>
+<tr><td>L</td><td>雪結晶</td><td>12-01 〜 01-31</td><td>SVG結晶パターン、青基調グラデ</td><td><code>(month === 12 || month === 1)</code></td></tr>
+<tr><td>M</td><td>海・波</td><td>07-01 〜 08-31</td><td>上下に SVG 波線リピート、青の透過レイヤー</td><td><code>(month >= 7 && month <= 8)</code></td></tr>
+<tr><td>N</td><td>紅葉</td><td>10-01 〜 11-30</td><td>SVGもみじパターン、赤茶基調グラデ</td><td><code>(month >= 10 && month <= 11)</code></td></tr>
+</table>
+
+<div class="note">
+<strong>季節枠とアーティスト枠の関係</strong>: 季節枠は<strong>アーティスト枠プールに加算</strong>される。例: 4月のno-noの曲を送ると、no-noの6枠 + K (桃) = 7枠の中から均等抽選。
+</div>
+
+<h3>10.2.3 記念日枠 2種 (O, P) — 強制発動</h3>
+
+<table>
+<tr><th>ID</th><th>名称</th><th>発動条件</th><th>CSS要素</th><th>追加バナー</th></tr>
+<tr><td>O</td><td>誕生日</td><td>送信日 == ユーザーの誕生日 (年は無視、月日一致)</td><td>border: 3px solid #E24B4A、紙吹雪SVG背景、Pastelグラデ</td><td><code>★ HAPPY BIRTHDAY, ●● ★</code> (ヘッダ前に配置、グラデーション帯)</td></tr>
+<tr><td>P</td><td>周年</td><td>送信日が会員登録日のN周年に該当 (1年以上経過、月日一致)</td><td>border: 2px solid #993556、星SVG背景</td><td><code>— THANK YOU FOR N YEAR(S) —</code> (Nは経過年数)</td></tr>
+</table>
+
+<h4>10.2.3.1 周年判定の詳細ロジック</h4>
+
+<pre>function isUserAnniversary(user, today) {
+  if (!user.registeredAt) return false;
+  const reg = new Date(user.registeredAt);
+  const t = new Date(today);
+  // 同じ月日かつ少なくとも1年以上経過
+  return reg.getMonth() === t.getMonth() &&
+         reg.getDate() === t.getDate() &&
+         t.getFullYear() > reg.getFullYear();
+}
+
+function getYearsCount(user, today) {
+  return new Date(today).getFullYear() - new Date(user.registeredAt).getFullYear();
+}</pre>
+
+<p>「N YEAR(S)」の N は <code>getYearsCount</code> から取得。1年なら "1 YEAR"、2年以上なら "N YEARS"。</p>
+
+<h3>10.2.4 レア枠 2種 (Q, R)</h3>
+
+<table>
+<tr><th>ID</th><th>名称</th><th>出現率</th><th>判定タイミング</th><th>CSS要素</th><th>バッジ</th></tr>
+<tr><td>Q</td><td>ゴールド</td><td>1%</td><td>記念日チェック後、最初に判定</td><td>border-image 金色グラデーション、見出し色 #8A6F1F</td><td><code>★ RARE ★</code> 右上</td></tr>
+<tr><td>R</td><td>シルバー</td><td>5%</td><td>ゴールド未当選後に判定 (実質 5/99)</td><td>border-image 銀色グラデーション、見出し色 #5F5E5A</td><td><code>☆ UNCOMMON ☆</code> 右上</td></tr>
+</table>
+
+<div class="warn">
+<strong>抽選の優先順位重要</strong>: 記念日 (O,P) は強制発動なので、<strong>記念日が成立したらレア抽選はスキップ</strong>。誕生日にゴールドが出ない代わりに、記念日枠の方が「特別感」として強い。
+</div>
+
+<!-- ============================================================ -->
+
+<h2>§10.3 アーティスト別の枠プール</h2>
+
+<table>
+<tr><th>アーティスト</th><th>使用可能な基本枠</th><th>枠数</th></tr>
+<tr><td>no-no</td><td>A, B, C, F, G, J</td><td>6枠</td></tr>
+<tr><td>kiki</td><td>A, B, C, F, I, J</td><td>6枠</td></tr>
+<tr><td>gEN</td><td>A, C, D, E, H</td><td>5枠</td></tr>
+</table>
+
+<p>これに季節枠 (期間中のみ追加) と記念日枠/レア枠 (条件発動) が加わる。</p>
+
+<!-- ============================================================ -->
+
+<h2>§10.4 抽選アルゴリズム</h2>
+
+<h3>10.4.1 便箋枠の抽選 (詳細)</h3>
+
+<pre>function pickFrame(track, user, today, history) {
+  // === Priority 1: 記念日 (強制発動、レア抽選より優先) ===
+  if (isUserBirthday(user, today)) return 'O';
+  if (isUserAnniversary(user, today)) return 'P';
+  
+  // === Priority 2: レア抽選 ===
+  if (Math.random() < 0.01) return 'Q';  // 1% Gold
+  if (Math.random() < 0.05) return 'R';  // 5% Silver (Gold外し条件付き)
+  
+  // === Priority 3: 通常抽選プール構築 ===
+  let pool = [...ARTIST_FRAMES[track.artist]];
+  pool = pool.concat(activeSeasonalFrames(today));
+  
+  // === Priority 4: 直前と違う枠の保証 ===
+  const prev = history.lastFrameOf(user.id, track.id);
+  if (prev && pool.includes(prev) && pool.length > 1) {
+    pool = pool.filter(f => f !== prev);
+  }
+  
+  // === 均等抽選 ===
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function activeSeasonalFrames(today) {
+  const m = new Date(today).getMonth() + 1;
+  const result = [];
+  if (m >= 3 && m <= 4) result.push('K');   // 桃
+  if (m === 12 || m === 1) result.push('L'); // 雪結晶
+  if (m >= 7 && m <= 8) result.push('M');    // 海・波
+  if (m >= 10 && m <= 11) result.push('N');  // 紅葉
+  return result;
+}
+
+function isUserBirthday(user, today) {
+  if (!user.birthday) return false;
+  const b = new Date(user.birthday);
+  const t = new Date(today);
+  return b.getMonth() === t.getMonth() && b.getDate() === t.getDate();
+}</pre>
+
+<h4>10.4.1.1 「直前と違う枠」判定の詳細</h4>
+
+<pre>// history.lastFrameOf の実装
+function lastFrameOf(userId, trackId) {
+  const history = user.letterHistory || [];
+  // 同じトラックで送信した最新のレターの frameId を取得
+  const last = history
+    .filter(h => h.trackId === trackId)
+    .sort((a, b) => b.sentDate.localeCompare(a.sentDate))[0];
+  return last ? last.frameId : null;
+}</pre>
+
+<div class="tip">
+<strong>意図</strong>: 同じユーザーが同じ曲を再送信した時、直前と同じ枠は除外する。ただし、プールが1枠しかない場合 (例: gEN の枠が全部排他された) は除外せず、同じ枠で再送信される。
+</div>
+
+<h4>10.4.1.2 抽選ロジックの境界条件</h4>
+
+<table>
+<tr><th>状況</th><th>挙動</th></tr>
+<tr><td>誕生日 + ゴールド条件同時成立</td><td>誕生日枠O が優先 (Priority 1 > 2)</td></tr>
+<tr><td>周年 + 季節枠</td><td>周年枠P が優先 (記念日は強制)</td></tr>
+<tr><td>同じ曲を2回連続送信、プール1枠のみ</td><td>同じ枠で送信される (除外しない)</td></tr>
+<tr><td>レア未当選、季節枠+アーティスト枠合計0</td><td>発生しない (アーティスト枠は最低5枠ある)</td></tr>
+<tr><td>letterHistory が空 (初回送信)</td><td>prev=null、除外なしで全プールから抽選</td></tr>
+</table>
+
+<h3>10.4.2 closing 一文の抽選 (誕生日月特例あり)</h3>
+
+<pre>function pickClosing(track, user, today, frame) {
+  const nick = user.nickname || 'listener';
+  
+  // === Priority 1: 誕生日枠なら専用 closing ===
+  if (frame === 'O') {
+    return random(BIRTHDAY_CLOSINGS).replaceAll('●●', nick);
+  }
+  
+  // === Priority 2: 周年枠なら専用 closing ===
+  if (frame === 'P') {
+    return random(ANNIVERSARY_CLOSINGS).replaceAll('●●', nick);
+  }
+  
+  // === Priority 3: 誕生月の50%判定 ===
+  // 「誕生月で、かつ枠が誕生日枠じゃない」場合に発動
+  if (isUserBirthMonth(user, today) && Math.random() < 0.5) {
+    return random(BIRTHMONTH_CLOSINGS).replaceAll('●●', nick);
+  }
+  
+  // === Priority 4: 通常抽選 (共通+アーティスト別+曲別) ===
+  const pool = [
+    ...COMMON_CLOSINGS,
+    ...ARTIST_CLOSINGS[track.artist],
+    ...(track.closings || [])
+  ];
+  return random(pool).replaceAll('●●', nick);
+}
+
+function isUserBirthMonth(user, today) {
+  if (!user.birthday) return false;
+  return new Date(user.birthday).getMonth() === new Date(today).getMonth();
+}</pre>
+
+<h3>10.4.3 抽選優先度の整合性</h3>
+
+<table>
+<tr><th>条件</th><th>枠</th><th>closing</th></tr>
+<tr><td>誕生日当日</td><td>O 強制</td><td>BIRTHDAY_CLOSINGS から抽選 (●●置換)</td></tr>
+<tr><td>会員登録N周年当日</td><td>P 強制</td><td>ANNIVERSARY_CLOSINGS から抽選</td></tr>
+<tr><td>誕生月内、誕生日以外の日</td><td>通常抽選 + 季節枠 + レア</td><td>50%でBIRTHMONTH、50%で通常</td></tr>
+<tr><td>レア当選 (1% Gold)</td><td>Q 強制</td><td>通常抽選</td></tr>
+<tr><td>レア当選 (5% Silver)</td><td>R 強制</td><td>通常抽選</td></tr>
+<tr><td>季節期間中</td><td>アーティスト枠+季節枠から均等</td><td>通常抽選</td></tr>
+</table>
+
+<!-- ============================================================ -->
+
+<h2>§10.5 closing プール定義</h2>
+
+<h3>10.5.1 共通プール COMMON_CLOSINGS (15通り)</h3>
+<pre>●●さん、ありがとう。
+●●さんに届いたなら、それでいい。
+また、●●さんに聴いて欲しいな。
+●●さんがいてくれてよかった。
+●●さんの今日が、少しでも軽くなりますように。
+●●さん、聴いてくれて嬉しい。
+今日も●●さん、お疲れさま。
+●●さん、また会えますように。
+●●さんへ、心からありがとう。
+●●さんと、また同じ夜を。
+●●さんの隣で、もう一度歌わせて。
+●●さん、聴いてくれてうれしかった。
+●●さん、ちゃんと伝わったかな。
+●●さん、声にしてよかったって思えた。
+●●さん、ここまで読んでくれてありがとう。</pre>
+
+<h3>10.5.2 アーティスト別プール ARTIST_CLOSINGS (各5通り)</h3>
+
+<h4>no-no (弱め・優しめ)</h4>
+<pre>●●さんが大丈夫って思える日になりますように。
+●●さんの今日に、そっと寄り添えたら。
+●●さんの夜が、少しだけ静かでありますように。
+●●さん、ぎりぎりでも、ここにいてくれてありがとう。
+●●さんへ。声にできなかった分、歌いました。</pre>
+
+<h4>kiki (強め・勢い)</h4>
+<pre>●●、聴いてくれて燃えた。
+●●、また一緒に叫ぼう。
+●●に届いた、それだけでいい。
+●●、止まれない夜にこの曲を。
+●●、ぶつけきれなかった分、歌で。</pre>
+
+<h4>gEN (クール・短い)</h4>
+<pre>●●、また会おう。
+●●、覚えておけ。
+●●、その先へ。
+●●、声は枯れない。
+●●、燃え尽きるまで。</pre>
+
+<h3>10.5.3 曲別プール TRACK_CLOSINGS (各3通り、tamsic-content.js に格納)</h3>
+
+<p>例: no-no/「ぎりぎりだよ。」</p>
+<pre>●●さん、ぎりぎりでも、ここにいてくれてありがとう。
+●●さん、約束はまだ守れる。
+●●さん、まだここにいるよ。</pre>
+
+<p>各曲につき3通り、12曲で計36通り (要ユーザー執筆)。</p>
+
+<h3>10.5.4 誕生日プール BIRTHDAY_CLOSINGS (5通り)</h3>
+<pre>●●さん、誕生日おめでとう。
+●●さん、産まれてきてくれてありがとう。
+●●さんの一年が、優しい音楽で満たされますように。
+●●さん、Happy Birthday。今年もよろしくね。
+●●さんの新しい一年に、この歌を。</pre>
+
+<h3>10.5.5 周年プール ANNIVERSARY_CLOSINGS (3通り)</h3>
+<pre>●●さん、出会って1年。ありがとう。
+●●さんと過ごせた一年に、感謝を。
+●●さん、これからも隣でうたわせてね。</pre>
+
+<h3>10.5.6 誕生月プール BIRTHMONTH_CLOSINGS (3通り)</h3>
+<pre>●●さん、誕生月おめでとう。
+●●さんの誕生月、素敵な一ヶ月になりますように。
+●●さん、特別な一ヶ月に、この一曲。</pre>
+
+<h3>10.5.7 プレースホルダ ●● の置換ルール</h3>
+
+<table>
+<tr><th>ユーザー状態</th><th>●●置換結果</th></tr>
+<tr><td>nickname 設定済み (例: "JIN")</td><td>"JIN"</td></tr>
+<tr><td>nickname 未設定 (custom属性なし or 空文字列)</td><td>"listener"</td></tr>
+<tr><td>nickname に「さん」が含まれる (例: "JINさん")</td><td>そのまま使う (二重「さんさん」を避けるため、執筆者責任)</td></tr>
+</table>
+
+<div class="warn">
+<strong>注意</strong>: アーティスト別プールの kiki と gEN は意図的に「さん」を付けない口調 (●●、聴いてくれて燃えた)。共通プールは「●●さん」付き。これは設計意図なので統一しない。
+</div>
+
+<!-- ============================================================ -->
+
+<h2>§10.6 ヘッダ・フッタ要素仕様</h2>
+
+<h3>10.6.1 ヘッダ 3カラム (From / Track / Dear)</h3>
+
+<table>
+<tr><th>カラム</th><th>ラベル (UPPERCASE)</th><th>値</th><th>フォント</th><th>サイズ</th></tr>
+<tr><td>From</td><td>FROM</td><td>アーティスト名 (no-no / kiki / gEN)</td><td>Playfair Display italic</td><td>24px</td></tr>
+<tr><td>Track</td><td>TRACK</td><td>曲タイトル</td><td>アーティスト別フォント</td><td>20px</td></tr>
+<tr><td>Dear</td><td>DEAR</td><td>ユーザーのニックネーム または "listener"</td><td>アーティスト別フォント</td><td>20px</td></tr>
+</table>
+
+<p>ラベルの仕様: <code>font-size: 10px; letter-spacing: 0.25em; color: #888; text-transform: uppercase; margin-bottom: 6px;</code></p>
+
+<p>3カラムは <code>grid-template-columns: 1fr 1.3fr 1fr</code>。下に <code>border-bottom: 1px solid #D6CFC0</code>。</p>
+
+<h3>10.6.2 Creator's note の表示仕様</h3>
+
+<p><strong>仕様</strong>: 装飾なし、普通の段落として表示。背景色・ボーダー・ボックス装飾は付けない (v4.2 から変更)。</p>
+
+<pre>.creator-note {
+  margin: 24px 0 0;
+  font-family: var(--artist-font);
+  font-size: 14.5px;
+  line-height: 1.95;
+  color: #3A3A3A;
+}
+.creator-label {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: #888;
+  text-transform: uppercase;
+  font-family: system-ui, sans-serif;
+}</pre>
+
+<p>マークアップ: <code>&lt;p class="creator-note"&gt;&lt;span class="creator-label"&gt;Creator's note · &lt;/span&gt;{本文}&lt;/p&gt;</code></p>
+
+<h3>10.6.3 closing line + signature</h3>
+
+<table>
+<tr><th>要素</th><th>仕様</th></tr>
+<tr><td>closing line</td><td>右寄せ、アーティスト別フォント、18px、margin: 22px 0 4px</td></tr>
+<tr><td>signature (— アーティスト名)</td><td>右寄せ、Playfair italic、18px、margin: 4px 0 0</td></tr>
+</table>
+
+<h3>10.6.4 朱色日付印 (postmark)</h3>
+
+<table>
+<tr><th>項目</th><th>値</th></tr>
+<tr><td>形状</td><td>円形 (border-radius: 50%)</td></tr>
+<tr><td>サイズ</td><td>62px × 62px</td></tr>
+<tr><td>枠色</td><td><strong>#C8252C</strong> (印鑑朱肉色、border-width: 2.5px)</td></tr>
+<tr><td>テキスト色</td><td><strong>#C8252C</strong></td></tr>
+<tr><td>テキスト</td><td>Playfair italic、11px、2行: YYYY / MM.DD (送信日)</td></tr>
+<tr><td>回転</td><td>transform: rotate(-12deg) — 朱印を押した時の自然な傾き</td></tr>
+<tr><td>不透明度</td><td>opacity: 0.92 — 朱肉の少し褪せた感じ</td></tr>
+<tr><td>位置</td><td>フッタ右側 (justify-content: space-between)</td></tr>
+</table>
+
+<h3>10.6.5 フッタ AIR MAIL</h3>
+
+<p><code>font-family: system-ui, sans-serif; font-size: 10px; letter-spacing: 0.3em; color: #999; text-transform: uppercase;</code></p>
+
+<p>テキスト: <code>Air Mail · TAMSIC</code></p>
+
+<p>フッタ全体: <code>border-top: 1px dashed #D6CFC0; padding-top: 14px; display: flex; justify-content: space-between; align-items: center;</code></p>
+
+<!-- ============================================================ -->
+
+<h2>§10.7 歌詞保護 (lyrics-guard.js 連携)</h2>
+
+<div class="warn">
+<strong>重要</strong>: v4.1 で確立していた歌詞保護5層を新便箋にも適用する。これは v4.2 で記述漏れしていたため、本節で復元・補強する。
+</div>
+
+<h3>10.7.1 保護5層の詳細</h3>
+
+<table>
+<tr><th>層</th><th>仕様</th><th>適用範囲</th></tr>
+<tr><td>1. CSS user-select 禁止</td><td><code>user-select: none; -webkit-user-select: none;</code></td><td>歌詞本文 (.body) + creator-note + closing</td></tr>
+<tr><td>2. 右クリックメニュー禁止</td><td><code>oncontextmenu="return false"</code> または addEventListener で preventDefault</td><td>同上</td></tr>
+<tr><td>3. キーボードショートカット禁止</td><td>Ctrl+C, Ctrl+A, Ctrl+S, Ctrl+P, F12, Print Screen をキャプチャして preventDefault</td><td>document 全体</td></tr>
+<tr><td>4. PrintScreen 検知時のブラー</td><td>visibilitychange イベントで一時的に <code>filter: blur(20px)</code></td><td>歌詞本文</td></tr>
+<tr><td>5. 1文字1span 難読化</td><td>各文字を <code>&lt;span&gt;</code> でラップ、CSS で <code>::before</code> に文字を入れて DOMには別文字を表示 (オプション、強い保護モード)</td><td>歌詞本文 (オプション、デフォルトOFF)</td></tr>
+</table>
+
+<h3>10.7.2 ウォーターマーク (会員ID/メール)</h3>
+
+<p>歌詞本文の背景に、ユーザー固有のウォーターマーク (透明度 0.04) を斜め45度で繰り返し配置。</p>
+
+<pre>.body {
+  position: relative;
+}
+.body::before {
+  content: "{user.email} · {user.id}";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0,
+    transparent 80px,
+    rgba(0,0,0,0.04) 80px,
+    rgba(0,0,0,0.04) 81px
+  );
+  pointer-events: none;
+  z-index: 0;
+}</pre>
+
+<p>または SVG で文字パターンとして埋め込み (Web版のみ、メール版は別途対応)。</p>
+
+<h3>10.7.3 protectLyricsContainer 関数仕様</h3>
+
+<pre>// lyrics-guard.js (拡張)
+window.TAMSICLyrics = {
+  /**
+   * 既存: テキスト歌詞コンテナを保護
+   * @param {HTMLElement} container - 歌詞コンテナ
+   * @param {string} lyricsText - 歌詞テキスト
+   * @param {object} options - {watermark, obfuscate, onPrintScreen}
+   */
+  protect(container, lyricsText, options) { /* 既存実装 */ },
+  
+  /**
+   * 新規 v4.2.1: 便箋全体を保護
+   * @param {HTMLElement} letter - .tamsic-letter 要素
+   * @param {object} user - {id, email, nickname}
+   * @param {object} options - 上記と同じ
+   */
+  protectLetter(letter, user, options) {
+    const body = letter.querySelector('.body');
+    const note = letter.querySelector('.creator-note');
+    const closing = letter.querySelector('.closing');
+    
+    [body, note, closing].forEach(el => {
+      if (!el) return;
+      el.style.userSelect = 'none';
+      el.style.webkitUserSelect = 'none';
+      el.addEventListener('contextmenu', e => e.preventDefault());
+    });
+    
+    // ウォーターマーク
+    if (options.watermark) {
+      this._addWatermark(body, user);
+    }
+    
+    // PrintScreen 検知
+    if (options.onPrintScreen) {
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) letter.style.filter = 'blur(20px)';
+        else setTimeout(() => letter.style.filter = '', 200);
+      });
+    }
+  }
+};</pre>
+
+<h3>10.7.4 メール版での保護の限界</h3>
+
+<div class="warn">
+メール本文は受信側のクライアントで開かれるため、JavaScript による保護は効かない。Webサイト版でのみ5層保護を適用し、メール版はウォーターマークと「無断転載禁止」フッタのみで対応する。これは仕様上の制約として明記する。
+</div>
+
+<!-- ============================================================ -->
+
+<h2>§10.8 データモデル</h2>
+
+<h3>10.8.1 tamsic-content.js の各track 拡張</h3>
+
+<pre>{
+  "id": "nono-004",
+  "artist": "nono",
+  "title": "ぎりぎりだよ。",
+  "coverPath": "assets/images/nono/nono_girigiridayo.png",
+  "lyrics": "上手に笑うことだけ\n少しずつ覚えた\n...",
+  
+  // === v4.2.1 新規追加 ===
+  "creatorNote": "強くならなきゃって、何度も自分に言い聞かせた夜がありました。でも本当に必要だったのは「弱いままでもいい」って言ってくれる誰か。この曲は、過去の自分への手紙です。",
+  "closings": [
+    "●●さん、ぎりぎりでも、ここにいてくれてありがとう。",
+    "●●さん、約束はまだ守れる。",
+    "●●さん、まだここにいるよ。"
+  ]
+}</pre>
+
+<h3>10.8.2 新規ファイル: letter-frames.js</h3>
+
+<pre>// 全枠定義
+export const FRAMES = {
+  A: { name: 'シンプル1色',     type: 'common',      cssClass: 'frame-a' },
+  B: { name: 'ノート横罫線',    type: 'common',      cssClass: 'frame-b' },
+  C: { name: 'エアメール',      type: 'common',      cssClass: 'frame-c' },
+  D: { name: '和風二重罫',      type: 'common',      cssClass: 'frame-d' },
+  E: { name: 'クラフト紙',       type: 'common',      cssClass: 'frame-e' },
+  F: { name: 'ドット枠',        type: 'common',      cssClass: 'frame-f' },
+  G: { name: '手書き波線',      type: 'common',      cssClass: 'frame-g' },
+  H: { name: '五線譜薄柄',      type: 'common',      cssClass: 'frame-h' },
+  I: { name: 'レコード溝',      type: 'common',      cssClass: 'frame-i' },
+  J: { name: 'リボン端飾り',    type: 'common',      cssClass: 'frame-j' },
+  K: { name: '桃',              type: 'seasonal',    cssClass: 'frame-k', season: { startMonth: 3, endMonth: 4 } },
+  L: { name: '雪結晶',          type: 'seasonal',    cssClass: 'frame-l', season: { startMonth: 12, endMonth: 1 } },
+  M: { name: '海・波',          type: 'seasonal',    cssClass: 'frame-m', season: { startMonth: 7, endMonth: 8 } },
+  N: { name: '紅葉',            type: 'seasonal',    cssClass: 'frame-n', season: { startMonth: 10, endMonth: 11 } },
+  O: { name: '誕生日',          type: 'anniversary', cssClass: 'frame-o', trigger: 'birthday' },
+  P: { name: '周年',            type: 'anniversary', cssClass: 'frame-p', trigger: 'register-anniversary' },
+  Q: { name: 'ゴールド',        type: 'rare',        cssClass: 'frame-q', rarity: 0.01 },
+  R: { name: 'シルバー',        type: 'rare',        cssClass: 'frame-r', rarity: 0.05 }
+};
+
+// アーティスト別プール
+export const ARTIST_FRAMES = {
+  nono: ['A', 'B', 'C', 'F', 'G', 'J'],
+  kiki: ['A', 'B', 'C', 'F', 'I', 'J'],
+  gen:  ['A', 'C', 'D', 'E', 'H']
+};
+
+// 抽選関数 (上記 §10.4.1 のpickFrame をエクスポート)
+export function pickFrame(track, user, today, history) { /* ... */ }
+export function activeSeasonalFrames(today) { /* ... */ }
+export function isUserBirthday(user, today) { /* ... */ }
+export function isUserAnniversary(user, today) { /* ... */ }
+export function getYearsCount(user, today) { /* ... */ }</pre>
+
+<h3>10.8.3 新規ファイル: letter-content.js</h3>
+
+<pre>export const COMMON_CLOSINGS = [ /* §10.5.1の15通り */ ];
+export const ARTIST_CLOSINGS = {
+  nono: [ /* §10.5.2 nono の5通り */ ],
+  kiki: [ /* §10.5.2 kiki の5通り */ ],
+  gen:  [ /* §10.5.2 gEN の5通り */ ]
+};
+export const BIRTHDAY_CLOSINGS = [ /* §10.5.4の5通り */ ];
+export const ANNIVERSARY_CLOSINGS = [ /* §10.5.5の3通り */ ];
+export const BIRTHMONTH_CLOSINGS = [ /* §10.5.6の3通り */ ];
+
+export function pickClosing(track, user, today, frame) { /* §10.4.2 */ }
+export function isUserBirthMonth(user, today) { /* ... */ }</pre>
+
+<h3>10.8.4 ユーザーDB拡張 (Cognito custom属性)</h3>
+
+<table>
+<tr><th>属性名</th><th>型</th><th>必須</th><th>用途</th><th>デフォルト</th></tr>
+<tr><td>custom:nickname</td><td>String (max 32)</td><td>任意</td><td>Dear ●● の値</td><td>'listener'</td></tr>
+<tr><td>custom:birthday</td><td>String YYYY-MM-DD</td><td>任意</td><td>誕生日枠/closing判定</td><td>未設定</td></tr>
+<tr><td>custom:registeredAt</td><td>String ISO8601</td><td>必須</td><td>周年枠判定</td><td>サインアップ時に自動設定</td></tr>
+<tr><td>custom:letterHistory</td><td>String JSON (max 2048)</td><td>任意</td><td>過去送信レター履歴</td><td>'[]'</td></tr>
+</table>
+
+<h3>10.8.5 letterHistory データ構造</h3>
+
+<pre>// JSON文字列としてCognito custom属性に保存。レター送信のたびに append。
+[
+  {
+    "trackId": "nono-004",
+    "frameId": "A",
+    "closingIdx": 7,           // pool 内のインデックス (デバッグ用)
+    "closingPool": "common",   // どのプールから引かれたか ('common'|'artist'|'track'|'birthday'|'anniversary'|'birthmonth')
+    "sentDate": "2026-05-08T10:23:45+09:00",
+    "rare": false              // Q/R が出たか
+  },
+  // 以降、追加されていく
+]</pre>
+
+<div class="warn">
+<strong>容量制限</strong>: Cognito custom属性は 2048文字まで。1エントリ ≒ 200B として最大10エントリ程度しか持てない。<strong>10件超えたら古い順に削除する FIFO</strong> で運用。または、本番では DynamoDB 別テーブルに移行する設計を §22 に登録。
+</div>
+
+<!-- ============================================================ -->
+
+<h2>§10.9 レター送信フロー</h2>
+
+<h3>10.9.1 トリガー条件</h3>
+
+<ol>
+<li>ユーザーがログインしている (Cognito 認証済み)</li>
+<li>該当曲がフル試聴アンロック済み (coin消費による解除済み、§9参照)</li>
+<li>該当曲のレターを過去に送信していても、再送信可能 (制限なし、ただし枠は直前と違うものが選ばれる)</li>
+</ol>
+
+<div class="note">
+<strong>coin消費との関係</strong>: レター受信は<strong>追加coinなし</strong>。フル試聴アンロックの coin消費に含まれている (おまけ機能扱い)。これは将来「レターのみ」を追加coin で受け取る選択肢を §22 に登録するか検討。
+</div>
+
+<h3>10.9.2 確認モーダル仕様</h3>
+
+<p>「レターを受け取る」ボタン押下後の確認モーダル:</p>
+
+<pre>┌─────────────────────────────────────┐
+│ レターを受け取りますか?              │
+├─────────────────────────────────────┤
+│ 送信先: jin@example.com  [変更]      │
+│ Dear:   JIN              [変更]      │
+│                                       │
+│ ※ 送信日と便箋デザインはランダムで    │
+│   決まります。同じ曲でも毎回違う      │
+│   一通になります。                    │
+│                                       │
+│      [キャンセル]    [送信する]      │
+└─────────────────────────────────────┘</pre>
+
+<table>
+<tr><th>UI項目</th><th>仕様</th></tr>
+<tr><td>送信先メール</td><td>Cognito の email属性を表示。「変更」リンクで mypage の「アカウント設定」に遷移</td></tr>
+<tr><td>Dear ニックネーム</td><td>custom:nickname を表示。未設定なら "listener" + 「設定する」リンクを表示し、入力モーダルへ</td></tr>
+<tr><td>キャンセル</td><td>モーダル閉じる、何も起きない</td></tr>
+<tr><td>送信する</td><td>抽選 → メール送信 → 完了画面</td></tr>
+</table>
+
+<h3>10.9.3 抽選実行とサーバ保存</h3>
+
+<pre>// クライアント or サーバで実行
+async function sendLetter(trackId, user) {
+  const today = new Date().toISOString();
+  const track = getTrack(trackId);
+  const history = JSON.parse(user.letterHistory || '[]');
+  
+  // 抽選
+  const frame = pickFrame(track, user, today, { lastFrameOf: (u,t) => 
+    history.filter(h => h.trackId === t).sort((a,b) => 
+      b.sentDate.localeCompare(a.sentDate))[0]?.frameId 
+  });
+  const closing = pickClosing(track, user, today, frame);
+  
+  // メール本文HTML生成
+  const html = renderLetterHTML({ track, user, frame, closing, sentDate: today });
+  
+  // メール送信
+  await fetch('https://tamjump-member-api.animalb001.workers.dev/send-letter', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${user.idToken}` },
+    body: JSON.stringify({ to: user.email, html, subject: `${track.title} from ${track.artist}` })
+  });
+  
+  // 履歴更新 (Cognito custom属性へ書き戻し)
+  history.push({ trackId, frameId: frame, sentDate: today, rare: ['Q','R'].includes(frame) });
+  if (history.length > 10) history.shift(); // FIFO
+  await updateUserAttribute('custom:letterHistory', JSON.stringify(history));
+}</pre>
+
+<h3>10.9.4 メール送信 (Resend API、§タスク②で確定後)</h3>
+
+<p>Cloudflare Workers (<code>tamjump-member-api</code>) 経由で Resend API を叩く。直接呼び出すとAPIキーがクライアント露出するため、Workers をプロキシとして使う。</p>
+
+<pre>// Workers エンドポイント擬似コード
+export default {
+  async fetch(req, env) {
+    if (req.url.endsWith('/send-letter')) {
+      const auth = req.headers.get('Authorization');
+      const user = await verifyJWT(auth, env.COGNITO_JWKS);
+      if (!user) return new Response('Unauthorized', { status: 401 });
+      
+      const { to, html, subject } = await req.json();
+      // 送信先がユーザー本人のメールと一致するか確認
+      if (to !== user.email) return new Response('Forbidden', { status: 403 });
+      
+      const resp = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: 'TAMSIC <letter@tamsic.tamjump.com>',
+          to, subject, html
+        })
+      });
+      
+      return new Response(JSON.stringify({ success: resp.ok }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+};</pre>
+
+<h3>10.9.5 完了画面</h3>
+
+<pre>┌─────────────────────────────────────┐
+│           ✓ 送信しました              │
+│                                       │
+│  受信ボックスを確認してください。     │
+│  数分以内に届きます。                 │
+│                                       │
+│  ※ 迷惑メールフォルダもご確認を       │
+│                                       │
+│             [閉じる]                  │
+└─────────────────────────────────────┘</pre>
+
+<h3>10.9.6 失敗時の挙動</h3>
+
+<table>
+<tr><th>失敗シナリオ</th><th>挙動</th></tr>
+<tr><td>Workers が 5xx エラー</td><td>「送信に失敗しました。時間を置いて再度お試しください」表示。<strong>coin は消費しない</strong> (フル試聴の coin は元から消費済みなので、追加コストなし)</td></tr>
+<tr><td>Workers が 401/403</td><td>ログイン期限切れ → ログイン画面にリダイレクト</td></tr>
+<tr><td>Resend が 4xx エラー (アドレス不正)</td><td>「メールアドレスを確認してください」表示。アドレス変更を促す</td></tr>
+<tr><td>letterHistory 書き込み失敗</td><td>サイレント (メール送信はすでに成功済み、履歴は次回正常時に同期)</td></tr>
+<tr><td>抽選ロジック例外 (プール空)</td><td>フォールバック: 枠 'A'、closing は COMMON_CLOSINGS[0]</td></tr>
+</table>
+
+<!-- ============================================================ -->
+
+<h2>§10.10 メール本文HTML生成</h2>
+
+<h3>10.10.1 制約</h3>
+
+<ul>
+<li>すべての CSS をインライン化 (<code>style</code> 属性)。<code>&lt;style&gt;</code>ブロックは Outlook で部分的にサポートされない</li>
+<li>Webフォントは <code>&lt;style&gt;</code> ブロックで <code>@import</code>。Gmail/iCloud/Outlook で動作確認済み</li>
+<li>SVGはインライン記述 (data URL)。外部参照は迷惑メール判定リスクあり</li>
+<li>幅は 680px 固定。<code>&lt;table style="max-width:100%"&gt;</code> でレスポンシブ対応</li>
+<li>cover画像は public URL で参照: <code>https://tamsic.tamjump.com/assets/images/...</code></li>
+<li>JavaScript は使用不可 (どのメーラーでも実行されない)</li>
+</ul>
+
+<h3>10.10.2 メーラー互換性チェックリスト</h3>
+
+<table>
+<tr><th>機能</th><th>Gmail</th><th>iCloud</th><th>Outlook (Web)</th><th>Outlook (Win32)</th></tr>
+<tr><td>border-image</td><td>✅</td><td>✅</td><td>⚠️ 部分</td><td>❌ → border-style:solid にフォールバック</td></tr>
+<tr><td>linear-gradient</td><td>✅</td><td>✅</td><td>✅</td><td>⚠️ → 単色フォールバック</td></tr>
+<tr><td>SVG inline</td><td>✅</td><td>✅</td><td>✅</td><td>⚠️ → PNG 代替を data URL で用意</td></tr>
+<tr><td>Web Fonts (@import)</td><td>✅</td><td>✅</td><td>⚠️</td><td>❌ → fallback フォントで表示</td></tr>
+<tr><td>flexbox</td><td>✅</td><td>✅</td><td>⚠️</td><td>❌ → table レイアウトにフォールバック</td></tr>
+<tr><td>position: absolute</td><td>⚠️</td><td>⚠️</td><td>❌</td><td>❌ → 使用しない</td></tr>
+</table>
+
+<div class="warn">
+<strong>Outlook (Win32) は最後の砦</strong>: border-image, gradient, flexbox 全部死ぬので、テーブルレイアウト + 単色枠で簡略化したフォールバック版を別途生成。User-Agent は判別できないので、<strong>Outlook 用のセーフ版を共通HTML内に @media クエリで仕込む</strong>。
+</div>
+
+<h3>10.10.3 cover画像参照</h3>
+
+<p>絶対 URL で参照: <code>https://tamsic.tamjump.com/assets/images/{artist}/{slug}.png</code></p>
+
+<p>画像は GitHub Pages (CNAME) 経由で配信。CDN化は §22 で検討。</p>
+
+<!-- ============================================================ -->
+
+<h2>§10.11 既存 v4.1 からの差分まとめ</h2>
+
+<table>
+<tr><th>項目</th><th>v4.1 (旧)</th><th>v4.2.1 (新)</th></tr>
+<tr><td>歌詞表現</td><td><span class="diff-del">画像化 (マキ丸ハンド + Word)</span></td><td><span class="diff-add">Web フォント直描画 (Zen Kurenaido / Hachi Maru Pop / Yuji Syuku)</span></td></tr>
+<tr><td>ライセンス</td><td><span class="diff-del">マキ丸ハンド (再配布禁止)</span></td><td><span class="diff-add">SIL OFL (Web 配信OK)</span></td></tr>
+<tr><td>新曲追加コスト</td><td><span class="diff-del">30分〜1時間 (画像作成)</span></td><td><span class="diff-add">0分 (テキスト追加のみ)</span></td></tr>
+<tr><td>便箋枠</td><td><span class="diff-del">Style C エアメール 1種のみ</span></td><td><span class="diff-add">18種 (基本10 + 季節4 + 記念日2 + レア2)、ランダム抽選</span></td></tr>
+<tr><td>Dear ●●</td><td><span class="diff-del">未実装</span></td><td><span class="diff-add">Cognito custom:nickname 連動、未設定時 'listener'</span></td></tr>
+<tr><td>消印日付</td><td><span class="diff-del">曲のリリース日</span></td><td><span class="diff-add">レター送信日 (YYYY.MM.DD)、朱色 #C8252C</span></td></tr>
+<tr><td>creator note</td><td><span class="diff-del">未仕様</span></td><td><span class="diff-add">曲ごとに3-5文の制作秘話を装飾なしで表示</span></td></tr>
+<tr><td>closing 一文</td><td><span class="diff-del">未仕様</span></td><td><span class="diff-add">プールから抽選、誕生日月は自動切替</span></td></tr>
+<tr><td>記念日演出</td><td><span class="diff-del">未仕様</span></td><td><span class="diff-add">誕生日/周年で強制発動の特別枠 + バナー</span></td></tr>
+<tr><td>レア要素</td><td><span class="diff-del">未仕様</span></td><td><span class="diff-add">ゴールド1% / シルバー5% でコレクション要素</span></td></tr>
+<tr><td>歌詞保護</td><td>5層保護 (画像対象)</td><td><span class="diff-add">5層保護 (Webフォント描画歌詞対象に再構築、protectLetter API 追加)</span></td></tr>
+<tr><td>レター送信</td><td>未仕様</td><td><span class="diff-add">Cloudflare Workers + Resend API、確認モーダル、letterHistory記録</span></td></tr>
+<tr><td>メール本文</td><td>未仕様</td><td><span class="diff-add">Outlook含む全主要メーラー対応のインラインCSS版を生成</span></td></tr>
+</table>
+
+<!-- ============================================================ -->
+
+<h2>§10.12 §22 (将来拡張) との関係</h2>
+
+<h3>10.12.1 §22 から削除 (v4.2.1で完了)</h3>
+<ul>
+<li>フォント自動化 (Web フォントへの移行) — Google Fonts 採用で完了</li>
+</ul>
+
+<h3>10.12.2 §22 へ新規追加</h3>
+<ul>
+<li>Adobe Fonts (TA恋心) への切替検証 — 月額契約の費用対効果評価</li>
+<li>レターコレクション機能 (mypage で過去レター閲覧、レア枠の集計表示)</li>
+<li>新規季節枠の追加 (中秋の月、ハロウィン、クリスマス等)</li>
+<li>letterHistory の DynamoDB 移行 (Cognito 2048B制限対策)</li>
+<li>レター単独購入オプション (フル試聴とは別 coin で受け取る)</li>
+<li>マキ丸ハンドを「特別曲」専用で復活させる選択肢 (画像化方式の限定的併用)</li>
+</ul>
+
+<!-- ============================================================ -->
+
+<h2>§10.13 テスト計画</h2>
+
+<h3>10.13.1 単体テスト (Jest or Vitest)</h3>
+
+<ul>
+<li><strong>pickFrame</strong>: 各アーティスト × 各日付 (誕生日 / 周年 / 季節中 / 通常日) で適切な枠が選ばれる</li>
+<li><strong>pickClosing</strong>: 誕生日枠 → BIRTHDAY、周年枠 → ANNIVERSARY、誕生月50%判定が確率通り</li>
+<li><strong>activeSeasonalFrames</strong>: 月ごとに正しい枠リストを返す (1月→L、3月→K、12月→L 等)</li>
+<li><strong>isUserBirthday / isUserAnniversary</strong>: 日付境界 (うるう年、月末) で正しく判定</li>
+<li><strong>レア確率</strong>: 10万回試行で Q ≒ 1000±50回、R ≒ 5000±200回</li>
+</ul>
+
+<h3>10.13.2 結合テスト</h3>
+
+<ul>
+<li>クライアント→ Workers → Resend のメール送信フローのE2E</li>
+<li>letterHistory が正しく append され、10件超で古い順に削除される</li>
+<li>失敗シナリオ (Workers 5xx, Resend 4xx, JWTタイムアウト) で適切なメッセージ表示</li>
+</ul>
+
+<h3>10.13.3 視覚回帰テスト (Playwright snapshot)</h3>
+
+<table>
+<tr><th>項目</th><th>カバー</th></tr>
+<tr><td>全18枠</td><td>各枠 × 3アーティスト = 54パターン</td></tr>
+<tr><td>レスポンシブ</td><td>320px / 768px / 1280px</td></tr>
+<tr><td>歌詞長さ</td><td>短曲 (gen-001) / 中曲 (kiki-006) / 長曲 (nono-004) でレイアウト崩れなし</td></tr>
+<tr><td>誕生日/周年枠のバナー</td><td>ニックネーム長 1文字 / 10文字 / 32文字 で崩れなし</td></tr>
+<tr><td>レア枠のバッジ</td><td>右上配置がcover画像と被らない</td></tr>
+</table>
+
+<h3>10.13.4 メーラー互換テスト (実機)</h3>
+
+<table>
+<tr><th>クライアント</th><th>OS/Web</th><th>確認項目</th></tr>
+<tr><td>Gmail</td><td>Web / iOS / Android</td><td>枠表示、cover画像、closing、postmark</td></tr>
+<tr><td>iCloud Mail</td><td>Web / macOS / iOS</td><td>同上</td></tr>
+<tr><td>Outlook</td><td>Web / Win32 / Mac</td><td>枠フォールバック動作、フォント代替</td></tr>
+<tr><td>Yahoo!メール</td><td>Web / iOS</td><td>SVG表示</td></tr>
+<tr><td>ProtonMail</td><td>Web</td><td>セキュリティ設定で画像ブロック時のテキスト読み</td></tr>
+</table>
+
+<h3>10.13.5 セキュリティテスト</h3>
+
+<ul>
+<li>歌詞保護5層がすべて動作 (DevTools, 右クリック, Ctrl+S, PrintScreen)</li>
+<li>Workers エンドポイントが他ユーザーのメールに送信できない (JWT検証)</li>
+<li>Workers が Resend APIキーを露出しない</li>
+</ul>
+
+<!-- ============================================================ -->
+
+<h2>§10.14 デプロイ手順</h2>
+
+<h3>10.14.1 段階的リリース</h3>
+
+<ol>
+<li><strong>Phase A (今セッション後)</strong>: 設計書 v4.2.1 を <code>docs/</code> に push、レビュー期間 1日</li>
+<li><strong>Phase B</strong>: フロント実装 (no-no/kiki/gen.html の便箋化、letter-frames.js / letter-content.js 追加、CSS18枠) を feature ブランチで開発、no-no.html だけ本番投入してテスト</li>
+<li><strong>Phase C</strong>: 残り kiki / gen も本番投入、同時に lyrics-guard.js の protectLetter を切替</li>
+<li><strong>Phase D</strong>: Cognito custom属性追加、mypage に nickname/birthday 入力UI</li>
+<li><strong>Phase E</strong>: Cloudflare Workers (send-letter エンドポイント) 開発・デプロイ</li>
+<li><strong>Phase F</strong>: Resend ドメイン認証 (SPF/DKIM/DMARC) 完了後、本番送信ON</li>
+<li><strong>Phase G</strong>: レター受信ボタンを各曲ページに表示、本格稼働</li>
+</ol>
+
+<h3>10.14.2 ロールバック計画</h3>
+
+<table>
+<tr><th>段階</th><th>ロールバック方法</th></tr>
+<tr><td>Phase B (フロント実装)</td><td>git revert で前回コミットに戻す。lyrics-guard.js は前バージョンを保持</td></tr>
+<tr><td>Phase D (Cognito)</td><td>custom属性追加自体は破壊的でない。フロントが古ければ無視される</td></tr>
+<tr><td>Phase E (Workers)</td><td>Workers をデプロイ取り消し。クライアントの送信ボタンを feature flag で無効化</td></tr>
+<tr><td>Phase G (本格稼働)</td><td>送信ボタンを feature flag で隠す。データはそのまま残す</td></tr>
+</table>
+
+<h3>10.14.3 feature flag</h3>
+
+<p><code>tamsic-content.js</code> に新規セクション追加:</p>
+<pre>{
+  "features": {
+    "letter-receive": true,           // レター受信ボタン表示
+    "letter-rare-frames": true,        // レア枠を有効
+    "letter-anniversary-frames": true, // 記念日枠を有効
+    "letter-seasonal-frames": true     // 季節限定枠を有効
+  }
+}</pre>
+
+<p>各機能を独立して切れる。本番障害時に該当 flag だけ false にできる。</p>
+
+</body>
+</html>
