@@ -40,12 +40,96 @@ const STORAGE_KEYS = {
 function _saveTokens(t) {
   localStorage.setItem(STORAGE_KEYS.accessToken,  t.access_token  || '');
   localStorage.setItem(STORAGE_KEYS.idToken,      t.id_token      || '');
-  localStorage.setItem(STORAGE_KEYS.refreshToken, t.refresh_token || '');
+  // refresh_token は refresh API のレスポンスに含まれない場合がある → 既存値を保持
+  if (t.refresh_token) {
+    localStorage.setItem(STORAGE_KEYS.refreshToken, t.refresh_token);
+  }
   localStorage.setItem(STORAGE_KEYS.expiry, String(Date.now() + (t.expires_in||3600)*1000));
 }
 function _clearTokens() {
   Object.values(STORAGE_KEYS).forEach(k => localStorage.removeItem(k));
   localStorage.removeItem('tamsic_wallet_cache');
+}
+
+/* ─── トークン自動更新 (v4.2) ─── */
+let _refreshInFlight = null;
+
+async function _refreshTokens() {
+  if (_refreshInFlight) return _refreshInFlight;
+
+  const refreshToken = localStorage.getItem(STORAGE_KEYS.refreshToken);
+  if (!refreshToken) return false;
+
+  _refreshInFlight = (async () => {
+    try {
+      const body = new URLSearchParams({
+        grant_type:    'refresh_token',
+        client_id:     AUTH_CONFIG.clientId,
+        refresh_token: refreshToken
+      });
+      const res = await fetch(`https://${AUTH_CONFIG.domain}/oauth2/token`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:    body.toString()
+      });
+      if (!res.ok) {
+        console.warn('[auth] refresh failed:', res.status);
+        // refresh_token が失効 (revoked/expired) → 完全クリアしてログイン画面誘導の準備
+        if (res.status === 400 || res.status === 401) _clearTokens();
+        return false;
+      }
+      const data = await res.json();
+      _saveTokens(data);
+      window.dispatchEvent(new CustomEvent('tamsic:token-refreshed'));
+      _scheduleNextRefresh();
+      return true;
+    } catch (e) {
+      console.warn('[auth] refresh network error:', e);
+      return false;
+    } finally {
+      _refreshInFlight = null;
+    }
+  })();
+
+  return _refreshInFlight;
+}
+
+// 期限の 5 分前に自動リフレッシュをスケジュール (長時間タブを開きっぱなし対応)
+let _refreshTimer = null;
+function _scheduleNextRefresh() {
+  if (_refreshTimer) { clearTimeout(_refreshTimer); _refreshTimer = null; }
+  const expiry = Number(localStorage.getItem(STORAGE_KEYS.expiry) || 0);
+  const refreshToken = localStorage.getItem(STORAGE_KEYS.refreshToken);
+  if (!refreshToken || !expiry) return;
+  const msUntil = expiry - Date.now() - 5*60*1000;
+  if (msUntil <= 0) return; // 今すぐリフレッシュは ensureFresh が拾う
+  _refreshTimer = setTimeout(_refreshTokens, msUntil);
+}
+
+// ページロード時: 期限切れまたは間近 (1分以内) なら同期的に更新を試みる
+async function _ensureFreshTokenOnLoad() {
+  const token = localStorage.getItem(STORAGE_KEYS.accessToken);
+  const expiry = Number(localStorage.getItem(STORAGE_KEYS.expiry) || 0);
+  const refreshToken = localStorage.getItem(STORAGE_KEYS.refreshToken);
+  if (!refreshToken) return;                         // 未ログイン (or 完全失効後)
+  if (token && Date.now() < expiry - 60*1000) {      // まだ十分新鮮 → スケジューリングだけ
+    _scheduleNextRefresh();
+    return;
+  }
+  // 期限切れ / 間近 → 即更新
+  const ok = await _refreshTokens();
+  if (ok && typeof _syncWalletFromCognito === 'function') {
+    setTimeout(() => _syncWalletFromCognito(), 300);
+  }
+}
+
+// auto-trigger
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _ensureFreshTokenOnLoad);
+  } else {
+    _ensureFreshTokenOnLoad();
+  }
 }
 
 /* ─── 認証状態 ─── */
