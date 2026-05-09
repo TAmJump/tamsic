@@ -304,13 +304,12 @@
       bindEvents(el, options);
     });
 
-    // 透かし: 歌詞本文の背面に (会員特定用)
+    // 透かし: 便箋全体に絶対位置レイヤーで重ねる (歌詞テキストには干渉しない)
     const wmSource = options.watermark || user.email || user.id || 'guest';
-    const bodyEl = letter.querySelector('.body');
-    if (bodyEl && wmSource) {
+    if (wmSource) {
       try {
         const hash = await sha256Hex(wmSource + '|' + new Date().toISOString().slice(0, 10));
-        addWatermark(bodyEl, hash);
+        addLetterWatermark(letter, hash);
       } catch (e) {}
     }
 
@@ -324,6 +323,53 @@
         }
       });
     }
+  }
+
+  /**
+   * 便箋全体の背面に透かしレイヤーを敷く (v4.2.1)
+   * `.body` に直接 append すると 2-column レイアウト内で文字フローに混入するため、
+   * 便箋ルート (.tamsic-letter) の背面に position:absolute で配置する。
+   * z-index は本文より背面 (-1) ではなく、本文 (.inner) の z-index:1 に対して 0 で背面化。
+   */
+  function addLetterWatermark(letter, hash) {
+    if (!letter || !hash) return;
+    // 既存があれば置き換え
+    const existing = letter.querySelector(':scope > .tlg-wm-letter');
+    if (existing) existing.remove();
+
+    const short = hash.slice(0, 12).toUpperCase();
+    const wm = document.createElement('div');
+    wm.className = 'tlg-wm-letter';
+    wm.setAttribute('aria-hidden', 'true');
+    wm.textContent = (`TAMSIC · ${short} · `).repeat(600);
+
+    // インラインスタイルで完全自己完結 (CSSロード順に依存しない)
+    Object.assign(wm.style, {
+      position:        'absolute',
+      top:             '0',
+      left:            '0',
+      right:           '0',
+      bottom:          '0',
+      pointerEvents:   'none',
+      opacity:         '0.045',
+      fontFamily:      "'JetBrains Mono', 'Courier New', monospace",
+      fontSize:        '11px',
+      lineHeight:      '1.5',
+      letterSpacing:   '0.04em',
+      color:           '#000',
+      overflow:        'hidden',
+      userSelect:      'none',
+      webkitUserSelect:'none',
+      mixBlendMode:    'multiply',
+      wordBreak:       'break-all',
+      zIndex:          '0',  // .inner の z-index:1 より下、便箋背景の上
+      padding:         '20px'
+    });
+
+    // 便箋ルートに position:relative を保証してから append
+    const cur = window.getComputedStyle(letter).position;
+    if (cur === 'static') letter.style.position = 'relative';
+    letter.appendChild(wm);
   }
 
   // 名前空間
