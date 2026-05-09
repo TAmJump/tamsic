@@ -430,6 +430,10 @@ function unlockFullTrack(trackId){
   if(lyrics) lyrics.style.display='block';
   // v4.2.1: 歌詞便箋 (Web フォント直描画 + 18枠ランダム抽選 + closingランダム)
   if(lyricsInner && window.TAMSICLetter){
+    // 多重描画ガード: 同一便箋が既にレンダリング済みならスキップ
+    if(lyricsInner.querySelector('.tamsic-letter')){
+      // 既に便箋がある場合は何もしない (closing 引き直しは reroll-btn から)
+    } else {
     const info = (typeof getUserInfo === 'function') ? (getUserInfo() || {}) : {};
     const user = {
       id:        info.sub || info['cognito:username'] || '',
@@ -479,6 +483,7 @@ function unlockFullTrack(trackId){
       }
       lyricsInner.parentNode.insertBefore(actions, lyricsInner.nextSibling);
     }
+    }  // /else (multi-render guard)
   } else if(lyricsInner && window.TAMSICLyrics){
     // フォールバック: 旧来の歌詞保護
     const userEmail = (typeof getUserInfo === 'function' && getUserInfo()) ? getUserInfo().email : 'guest';

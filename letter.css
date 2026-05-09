@@ -23,6 +23,51 @@
 @import url('https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5/index.css');
 
 /* ─────────────────────────────────────────
+ * 便箋を含む親コンテナの column-flow を解除 (重要)
+ *
+ * 設計上、便箋は `lyrics-inner-{id}` (= `.full-lyrics-inner`) の中に挿入される。
+ * しかし `.full-lyrics-inner` には既存の `column-count: 2` ルールが当たっており、
+ * このまま放置すると便箋全体が 2 カラムに分割表示されてしまう (透かしも歌詞も縦半分)。
+ *
+ * `data-letter-mode="true"` の `.full-lyrics` 内では column 化を打ち消す。
+ * 加えて便箋自身に column-span:all を当てて、万一の column 環境でも全幅占有させる。
+ * ───────────────────────────────────────── */
+.full-lyrics[data-letter-mode="true"] .full-lyrics-inner,
+.full-lyrics[data-letter-mode="true"] {
+  column-count: 1 !important;
+  column-gap: 0 !important;
+}
+
+/* lyrics-inner 内にいる便箋ルートは column フローから完全離脱 */
+.full-lyrics-inner > .tamsic-letter,
+.full-lyrics > .tamsic-letter {
+  column-span: all !important;
+  -webkit-column-span: all !important;
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+  column-count: 1 !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+/* 便箋モード時は親コンテナ (.full-lyrics) の装飾 (背景画像/グラデ/border/padding) を無効化。
+   そうしないと便箋の上にこれらが乗って枠線が見えなくなったり 2 重背景になる */
+.full-lyrics[data-letter-mode="true"] {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 18px 0 0 !important;
+  overflow: visible !important;
+}
+.full-lyrics[data-letter-mode="true"]::before,
+.full-lyrics[data-letter-mode="true"]::after {
+  display: none !important;
+}
+.full-lyrics[data-letter-mode="true"] .full-lyrics-title {
+  margin-bottom: 8px;
+}
+
+/* ─────────────────────────────────────────
  * v4.2.1: 旧 .full-lyrics コンテナの装飾を無効化 (便箋モード時)
  *
  * 旧仕様: .full-lyrics が cover画像オーバーレイ + 白マスクを持ち、
