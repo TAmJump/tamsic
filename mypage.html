@@ -45,7 +45,7 @@
 }
 </style>
 </head><body>
-<nav><a class="nav-logo" href="index.html">TAMSIC</a><ul class="nav-links"><li></li><li><a href="nono.html">no-no</a></li><li><a href="kiki.html">kiki</a></li><li><a href="gen.html">gEN</a></li><li><a class="active" aria-current="page" href="mypage.html">My Page</a></li><li><a href="javascript:void(0)" onclick="handleLogout()">Logout</a></li><li><button data-lang-toggle style="background:none;border:1px solid var(--light,#E6E6E0);color:var(--mid,#7A7A72);font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.1em;padding:5px 12px;cursor:pointer;border-radius:2px;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='';this.style.color=''">EN</button></li></ul></nav>
+<nav><a class="nav-logo" href="index.html">TAMSIC</a><ul class="nav-links"><li></li><li><a data-artist-link href="nono.html">no-no</a></li><li><a data-artist-link href="kiki.html">kiki</a></li><li><a data-artist-link href="gen.html">gEN</a></li><li><a class="active" aria-current="page" href="mypage.html">My Page</a></li><li><a href="javascript:void(0)" onclick="handleLogout()">Logout</a></li><li><button data-lang-toggle style="background:none;border:1px solid var(--light,#E6E6E0);color:var(--mid,#7A7A72);font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.1em;padding:5px 12px;cursor:pointer;border-radius:2px;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='';this.style.color=''">EN</button></li></ul></nav>
 
 <main class="page-shell mypage-shell">
   <div class="mypage-topline">
@@ -96,9 +96,74 @@
     </div>
   </section>
 
-  <div class="section-block">
-    <div id="purchase-note" class="muted-banner"></div>
-  </div>
+  <!-- v4.2.1: プロフィール (nickname / 誕生日) — レター便箋の Dear ●● 用 -->
+  <section class="section-block" id="profile-section">
+    <div class="section-card" style="padding:28px 32px;">
+      <div class="section-title" data-ja="プロフィール" data-en="Profile">プロフィール</div>
+      <p class="purchase-hero-copy" style="margin:6px 0 22px;">
+        <span data-ja="お名前を登録すると、フル試聴アンロック時の歌詞便箋とメールレターで「Dear ●●」として表示されます。誕生日と登録日には特別な便箋が届きます。"
+              data-en="Your name shows up as &quot;Dear ●●&quot; on the lyric letter when you unlock full songs and on the email letter. Birthday and anniversary get special letter frames.">
+          お名前を登録すると、フル試聴アンロック時の歌詞便箋とメールレターで「Dear ●●」として表示されます。誕生日と登録日には特別な便箋が届きます。
+        </span>
+      </p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:end;max-width:560px;">
+        <div>
+          <label for="profile-nickname" style="display:block;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--mid);margin-bottom:8px;">
+            <span data-ja="お名前 (Dear ●●)" data-en="Your name (Dear ●●)">お名前 (Dear ●●)</span>
+          </label>
+          <input id="profile-nickname" type="text" maxlength="40" placeholder="JIN"
+                 style="width:100%;box-sizing:border-box;padding:10px 12px;font-size:15px;border:1px solid var(--light);background:#fff;font-family:system-ui,sans-serif;">
+        </div>
+        <div>
+          <label for="profile-birthday" style="display:block;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--mid);margin-bottom:8px;">
+            <span data-ja="お誕生日 (任意)" data-en="Birthday (optional)">お誕生日 (任意)</span>
+          </label>
+          <input id="profile-birthday" type="date"
+                 style="width:100%;box-sizing:border-box;padding:10px 12px;font-size:15px;border:1px solid var(--light);background:#fff;font-family:system-ui,sans-serif;">
+        </div>
+      </div>
+
+      <div style="margin-top:18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        <button id="profile-save" type="button" class="btn-primary" style="padding:10px 22px;cursor:pointer;">
+          <span data-ja="保存する" data-en="Save">保存する</span>
+        </button>
+        <span id="profile-status" style="font-size:12px;color:var(--mid);"></span>
+      </div>
+    </div>
+  </section>
+  <script>
+    // プロフィールロード & 保存
+    (async function initProfileSection(){
+      const nickInput = document.getElementById('profile-nickname');
+      const bdayInput = document.getElementById('profile-birthday');
+      const saveBtn   = document.getElementById('profile-save');
+      const status    = document.getElementById('profile-status');
+      if (!nickInput || !window.TAMSICAuth || !window.TAMSICAuth.fetchUserProfile) return;
+      try {
+        const p = await window.TAMSICAuth.fetchUserProfile();
+        if (p) {
+          nickInput.value = p.nickname || '';
+          bdayInput.value = p.birthday || '';
+        }
+      } catch(e) {}
+      saveBtn.onclick = async function() {
+        const nick = (nickInput.value || '').trim();
+        const bday = (bdayInput.value || '').trim();
+        saveBtn.disabled = true;
+        status.textContent = '保存中…';
+        let ok = true;
+        try {
+          if (nick && window.TAMSICAuth.setUserNickname) ok = await window.TAMSICAuth.setUserNickname(nick) && ok;
+          if (window.TAMSICAuth.setUserBirthday) ok = await window.TAMSICAuth.setUserBirthday(bday) && ok;
+        } catch(e) { ok = false; }
+        saveBtn.disabled = false;
+        status.textContent = ok ? '✓ 保存しました' : '✗ 保存に失敗しました';
+        status.style.color = ok ? '#2a8a2a' : '#C8252C';
+        setTimeout(()=>{ status.textContent = ''; status.style.color = 'var(--mid)'; }, 4000);
+      };
+    })();
+  </script>
 
   <div class="section-block">
     <div class="section-card purchase-section">

@@ -19,6 +19,7 @@ nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between
 .nav-logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;letter-spacing:.35em;color:var(--text);text-decoration:none;}
 .nav-links{display:flex;gap:32px;list-style:none;align-items:center;}
 .nav-links a{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);transition:color .25s;}
+.nav-links a[data-artist-link]{text-transform:none;letter-spacing:.12em;}
 .nav-links a:hover,.nav-links a.active{color:var(--accent);}
 .page-shell{padding:120px 64px 72px;max-width:1240px;margin:0 auto;}
 .page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:28px;margin-bottom:32px;border-bottom:1px solid var(--light);}
