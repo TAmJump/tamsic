@@ -316,8 +316,96 @@ async function handleCallback() {
     _saveTokens(await res.json());
     localStorage.removeItem(STORAGE_KEYS.verifier);
     localStorage.removeItem(STORAGE_KEYS.state);
-    // SDKロード後に同期
-    setTimeout(() => _syncWalletFromCognito(), 1000);
+    // SDKロード後に同期 + 初回ログイン時の registeredAt セット
+    setTimeout(() => {
+      _syncWalletFromCognito();
+      _ensureRegisteredAt();
+    }, 1000);
     return true;
   } catch { return false; }
 }
+
+/* ─── レター関連: nickname / birthday / registeredAt / letterHistory (v4.2.1) ─── */
+
+/**
+ * Cognito custom属性をまとめて取得 (キャッシュなし、最新値)
+ * 返り値: { nickname, birthday, registeredAt, letterHistory: [...] }
+ */
+async function fetchUserProfile() {
+  const attrs = await _fetchUserAttributesFromSDK();
+  if (!attrs) return null;
+  let history = [];
+  try { history = JSON.parse(attrs['custom:letterHistory'] || '[]'); }
+  catch { history = []; }
+  return {
+    sub:           attrs.sub || '',
+    email:         attrs.email || '',
+    nickname:      attrs['custom:nickname']     || '',
+    birthday:      attrs['custom:birthday']     || '',
+    registeredAt:  attrs['custom:registeredAt'] || '',
+    letterHistory: history
+  };
+}
+
+async function setUserNickname(nickname) {
+  const v = String(nickname || '').slice(0, 40);
+  return _updateUserAttributes({ 'custom:nickname': v });
+}
+
+async function setUserBirthday(yyyymmdd) {
+  // YYYY-MM-DD
+  if (yyyymmdd && !/^\d{4}-\d{2}-\d{2}$/.test(yyyymmdd)) return false;
+  return _updateUserAttributes({ 'custom:birthday': String(yyyymmdd || '') });
+}
+
+/** 初回ログイン時に registeredAt が空ならセット */
+async function _ensureRegisteredAt() {
+  try {
+    const attrs = await _fetchUserAttributesFromSDK();
+    if (!attrs) return;
+    if (!attrs['custom:registeredAt']) {
+      const today = new Date().toISOString().slice(0,10); // YYYY-MM-DD
+      await _updateUserAttributes({ 'custom:registeredAt': today });
+    }
+  } catch (e) {}
+}
+
+/**
+ * letterHistory に1件追加 (FIFO 上限 10件)
+ * Cognito custom属性は 2048文字上限のため 10件超えたら古い順に削除
+ */
+async function appendLetterHistory(entry) {
+  const profile = await fetchUserProfile();
+  if (!profile) return false;
+  const history = Array.isArray(profile.letterHistory) ? profile.letterHistory : [];
+  const newEntry = {
+    trackId:       String(entry.trackId || ''),
+    frameId:       String(entry.frameId || ''),
+    closingIdx:    Number(entry.closingIdx) || 0,
+    closingPool:   String(entry.closingPool || ''),
+    sentDate:      entry.sentDate || new Date().toISOString(),
+    recipientHash: String(entry.recipientHash || '')
+  };
+  history.unshift(newEntry);
+  // 上限10件 (FIFO) — 古い順に削除
+  const capped = history.slice(0, 10);
+  return _updateUserAttributes({
+    'custom:letterHistory': JSON.stringify(capped)
+  });
+}
+
+/** その曲のレターをすでに受け取っているか */
+async function hasReceivedLetter(trackId) {
+  if (!trackId) return false;
+  const profile = await fetchUserProfile();
+  if (!profile || !Array.isArray(profile.letterHistory)) return false;
+  return profile.letterHistory.some(h => h.trackId === trackId);
+}
+
+// 公開
+window.TAMSICAuth = window.TAMSICAuth || {};
+window.TAMSICAuth.fetchUserProfile    = fetchUserProfile;
+window.TAMSICAuth.setUserNickname     = setUserNickname;
+window.TAMSICAuth.setUserBirthday     = setUserBirthday;
+window.TAMSICAuth.appendLetterHistory = appendLetterHistory;
+window.TAMSICAuth.hasReceivedLetter   = hasReceivedLetter;
