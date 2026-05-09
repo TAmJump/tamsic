@@ -19,11 +19,11 @@
  */
 (function(){
 
-  // 本番デプロイ後に書き換える Worker URL
-  // wrangler deploy 後に https://tamsic-send-letter.<your>.workers.dev または
-  // カスタムドメインを指定。tamsic-content.js の features 内に配置する手もあるが、
-  // 現状はここで定数化。
-  const ENDPOINT = (window.TAMSIC_LETTER_ENDPOINT || 'https://tamsic-send-letter.tamjump.workers.dev/');
+  // 本番デプロイ済み Worker URL
+  // (wrangler deploy 時に Cloudflare が払い出した値)
+  // 万一カスタムドメインに切り替える場合は、各HTMLで letter-send.js 読込前に
+  // <script>window.TAMSIC_LETTER_ENDPOINT = 'https://...';</script> を書けば上書き可能。
+  const ENDPOINT = (window.TAMSIC_LETTER_ENDPOINT || 'https://tamsic-send-letter.animalb001.workers.dev/');
 
   // ─────────────────────────────────────────
   // Worker 呼び出し
