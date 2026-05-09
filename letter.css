@@ -23,6 +23,42 @@
 @import url('https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5/index.css');
 
 /* ─────────────────────────────────────────
+ * v4.2.1: 旧 .full-lyrics コンテナの装飾を無効化 (便箋モード時)
+ *
+ * 旧仕様: .full-lyrics が cover画像オーバーレイ + 白マスクを持ち、
+ *         .full-lyrics-inner が column-count:2 で歌詞を2カラム化していた。
+ *         便箋を入れると、便箋自体が column 分割されたり、cover の上に
+ *         白マスクが被って透かしや内容が崩れる。
+ *
+ * 解決: 便箋が中にある場合 (data-letter-mode="true")、これらを無効化。
+ * ───────────────────────────────────────── */
+.full-lyrics[data-letter-mode="true"] {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+.full-lyrics[data-letter-mode="true"]::before,
+.full-lyrics[data-letter-mode="true"]::after {
+  display: none !important;
+  content: none !important;
+}
+.full-lyrics[data-letter-mode="true"] .full-lyrics-title {
+  display: none !important;  /* 便箋自体に LYRICS の表示はない */
+}
+.full-lyrics[data-letter-mode="true"] .full-lyrics-inner {
+  column-count: 1 !important;
+  column-gap: 0 !important;
+  position: static !important;
+  z-index: auto !important;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  background: none !important;
+}
+
+/* ─────────────────────────────────────────
  * CSS 変数 (アーティストごとに上書き)
  * ───────────────────────────────────────── */
 .tamsic-letter {

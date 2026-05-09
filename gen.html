@@ -5,20 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>gEN | TAMSIC</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="tamsic-content.js?v=4.2.1.1"></script>
+<script src="tamsic-content.js?v=4.2.1.2"></script>
 <script src="purchase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js" async></script>
-<script src="auth.js?v=4.2.1.1"></script>
-<script src="coins.js?v=4.2.1.1"></script>
+<script src="auth.js?v=4.2.1.2"></script>
+<script src="coins.js?v=4.2.1.2"></script>
 <script src="release-control.js"></script>
 <script src="lang.js"></script>
-<script src="tamsic.js?v=4.2.1.1"></script>
-<script src="lyrics-guard.js?v=4.2.1.1"></script>
+<script src="tamsic.js?v=4.2.1.2"></script>
+<script src="lyrics-guard.js?v=4.2.1.2"></script>
 <script src="gate-modal.js"></script>
-<script src="letter-frames.js?v=4.2.1.1"></script>
-<script src="letter-content.js?v=4.2.1.1"></script>
-<script src="letter-renderer.js?v=4.2.1.1"></script>
-<script src="letter-send.js?v=4.2.1.1"></script>
+<script src="letter-frames.js?v=4.2.1.2"></script>
+<script src="letter-content.js?v=4.2.1.2"></script>
+<script src="letter-renderer.js?v=4.2.1.2"></script>
+<script src="letter-send.js?v=4.2.1.2"></script>
 <style>
 :root{--bg:#f2f1ef;--text:#1A1816;--accent:#4A4540;--light:#DDDAD4;--mid:#857E76;--white:#FFFFFF;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -142,7 +142,7 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
 
 
 </style>
-<link rel="stylesheet" href="letter.css?v=4.2.1.1">
+<link rel="stylesheet" href="letter.css?v=4.2.1.2">
 </head>
 <body>
 <nav>
@@ -453,7 +453,10 @@ function unlockFullTrack(trackId){
       features: features
     });
     // レター操作 UI (closing 引き直し / レター受信ボタン)
-    if(!lyricsInner.querySelector('.tamsic-letter-actions')){
+    // 既存の actions を全削除してから新規追加 (重複ボタン防止)
+    const fullLyricsParent = lyricsInner.parentNode;
+    fullLyricsParent.querySelectorAll('.tamsic-letter-actions').forEach(el => el.remove());
+    {
       const actions = document.createElement('div');
       actions.className = 'tamsic-letter-actions';
       const rerollBtn = document.createElement('button');
@@ -584,7 +587,7 @@ function renderTracks(){
               <div class="full-note">${meta.canFull ? 'ダウンロード不可 / ブラウザ内再生のみ / 再度再生する場合は再度コインを消費' : meta.note}</div>
               ${fullMsg}
               <div class="full-player-mount" id="full-player-${t.id}"></div>
-              <div class="full-lyrics" id="lyrics-${t.id}" style="display:none;--lyrics-bg-image:url('${coverSrc||''}')" data-lyrics-id="${t.id}"><div class="full-lyrics-title">lyrics</div><div class="full-lyrics-inner" id="lyrics-inner-${t.id}"></div></div>
+              <div class="full-lyrics" id="lyrics-${t.id}" style="display:none;--lyrics-bg-image:url('${coverSrc||''}')" data-lyrics-id="${t.id}" data-letter-mode="true"><div class="full-lyrics-title">lyrics</div><div class="full-lyrics-inner" id="lyrics-inner-${t.id}"></div></div>
             </div>
             <div class="full-side">
               <div class="full-price"><span class="coin-num" data-track-cost="${t.price==null?30:t.price}">${t.price===0?"FREE":(t.price||30)}</span>${t.price===0?"":'<span class="coin-unit">coin / one listen</span>'}</div>
@@ -599,6 +602,7 @@ function renderTracks(){
 }
 function renderGallery(){
   const g=document.getElementById('gallery-grid');
+  if(!g) return;  // gallery section not present, skip
   const photos=getArtistPhotos('gen');
   g.innerHTML=photos.map(src=>`<div class="g-item"><img src="${src}" alt="gEN" style="width:100%;height:100%;object-fit:cover;"></div>`).join('');
 }
