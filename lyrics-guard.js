@@ -304,7 +304,7 @@
       bindEvents(el, options);
     });
 
-    // 透かし: 便箋全体に絶対位置レイヤーで重ねる (歌詞テキストには干渉しない)
+    // 透かし: 便箋ルートに絶対配置で重ねる
     const wmSource = options.watermark || user.email || user.id || 'guest';
     if (wmSource) {
       try {
@@ -326,14 +326,22 @@
   }
 
   /**
-   * 便箋全体の背面に透かしレイヤーを敷く (v4.2.1)
-   * `.body` に直接 append すると 2-column レイアウト内で文字フローに混入するため、
-   * 便箋ルート (.tamsic-letter) の背面に position:absolute で配置する。
-   * z-index は本文より背面 (-1) ではなく、本文 (.inner) の z-index:1 に対して 0 で背面化。
+   * 便箋背面の透かしレイヤー (v4.2.1, refactored)
+   *
+   * 戦略: 便箋ルート (.tamsic-letter) を position:relative 化し、
+   *      その直下に <div class="tlg-wm-letter"> を `position:absolute; inset:0` で重ねる。
+   *      column-count を持つ .body と同列ではなく、`.inner`の兄弟ですらない
+   *      (= .tamsic-letter 直下) ことで、column フローや flex フローに巻き込まれない。
+   *
+   *      .inner には z-index:1 が letter.css で当たっているため、
+   *      透かしは z-index:0 で背面、本文 (.inner > *) は前面となり混入しない。
+   *
+   *      テキスト要素 (`<span>` ではなく一括テキストノード) は inline でなく
+   *      block の幅一杯にし、word-break:break-all で詰める。
    */
   function addLetterWatermark(letter, hash) {
     if (!letter || !hash) return;
-    // 既存があれば置き換え
+    // 既存があれば置き換え (重複防止)
     const existing = letter.querySelector(':scope > .tlg-wm-letter');
     if (existing) existing.remove();
 
@@ -341,34 +349,49 @@
     const wm = document.createElement('div');
     wm.className = 'tlg-wm-letter';
     wm.setAttribute('aria-hidden', 'true');
-    wm.textContent = (`TAMSIC · ${short} · `).repeat(600);
+    wm.textContent = (`TAMSIC · ${short} · `).repeat(800);
 
-    // インラインスタイルで完全自己完結 (CSSロード順に依存しない)
-    Object.assign(wm.style, {
-      position:        'absolute',
-      top:             '0',
-      left:            '0',
-      right:           '0',
-      bottom:          '0',
-      pointerEvents:   'none',
-      opacity:         '0.045',
-      fontFamily:      "'JetBrains Mono', 'Courier New', monospace",
-      fontSize:        '11px',
-      lineHeight:      '1.5',
-      letterSpacing:   '0.04em',
-      color:           '#000',
-      overflow:        'hidden',
-      userSelect:      'none',
-      webkitUserSelect:'none',
-      mixBlendMode:    'multiply',
-      wordBreak:       'break-all',
-      zIndex:          '0',  // .inner の z-index:1 より下、便箋背景の上
-      padding:         '20px'
-    });
+    // !important 込みのインラインスタイルで「絶対に column フローに入らない」
+    // 設定する (CSS の .body p の display や !important より強い指定が必要なケース対応)
+    wm.style.cssText = [
+      'position: absolute !important',
+      'top: 0 !important',
+      'left: 0 !important',
+      'right: 0 !important',
+      'bottom: 0 !important',
+      'width: 100% !important',
+      'height: 100% !important',
+      'pointer-events: none !important',
+      'opacity: 0.04 !important',
+      "font-family: 'JetBrains Mono', 'Courier New', monospace !important",
+      'font-size: 11px !important',
+      'line-height: 1.5 !important',
+      'letter-spacing: 0.04em !important',
+      'color: #000 !important',
+      'overflow: hidden !important',
+      'user-select: none !important',
+      '-webkit-user-select: none !important',
+      'mix-blend-mode: multiply !important',
+      'word-break: break-all !important',
+      'z-index: 0 !important',
+      'padding: 20px !important',
+      'box-sizing: border-box !important',
+      'column-count: 1 !important',                  // 親が column-count でも自分は単一カラム
+      'display: block !important',
+      'margin: 0 !important',
+      'float: none !important',
+      'break-inside: avoid !important',
+      'page-break-inside: avoid !important',
+      'isolation: isolate !important'                // stacking context 独立
+    ].join(';');
 
-    // 便箋ルートに position:relative を保証してから append
-    const cur = window.getComputedStyle(letter).position;
-    if (cur === 'static') letter.style.position = 'relative';
+    // 便箋ルートに position:relative を強制
+    if (window.getComputedStyle(letter).position === 'static') {
+      letter.style.position = 'relative';
+    }
+    // 便箋ルートに z-index:0 で stacking context を作って .inner と分離
+    if (!letter.style.isolation) letter.style.isolation = 'isolate';
+
     letter.appendChild(wm);
   }
 
