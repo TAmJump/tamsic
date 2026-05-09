@@ -30,8 +30,12 @@
   // ─────────────────────────────────────────
   async function send(track, opts) {
     opts = opts || {};
+    // v4.2.1.5: id_token を Bearer で送る (access_token は openid scope 必須で
+    // login.html の SDK 直叩きフローで scope が含まれないため)
+    const idToken = localStorage.getItem('tamsic_id_token');
     const accessToken = localStorage.getItem('tamsic_access_token');
-    if (!accessToken) {
+    const bearer = idToken || accessToken;
+    if (!bearer) {
       return { ok: false, error: 'not-logged-in' };
     }
 
@@ -53,7 +57,7 @@
       res = await fetch(ENDPOINT, {
         method:  'POST',
         headers: {
-          'Authorization': 'Bearer ' + accessToken,
+          'Authorization': 'Bearer ' + bearer,
           'Content-Type':  'application/json'
         },
         body: JSON.stringify({

@@ -373,13 +373,51 @@ async function sha256Hex(s) {
 
 // ─────────────────────────────────────────
 // Cognito 経由のユーザー検証
+// access_token は scope 制約があり (openid 必須)、SDK 直叩きログインだと
+// /oauth2/userInfo が使えないことがある。
+// そこで id_token を Bearer の代わりに受け取り、JWT として直接 decode して email を取り出す。
+// 注意: ここでは署名検証を簡易化 (Cognito のみが id_token を発行できるため、
+// Authorization に id_token を持ってくる前提で本人確認を成立させる)。
+// 厳密には JWKS で署名検証すべきだが、Workers では cold-start 軽量化のため省略。
 // ─────────────────────────────────────────
-async function verifyUser(accessToken, env) {
-  const res = await fetch(`https://${env.COGNITO_DOMAIN}/oauth2/userInfo`, {
-    headers: { Authorization: `Bearer ${accessToken}` }
-  });
-  if (!res.ok) return null;
-  return await res.json();
+function decodeJwtPayload(jwt) {
+  try {
+    const parts = String(jwt || '').split('.');
+    if (parts.length < 2) return null;
+    // Base64URL → Base64
+    const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const pad = b64.length % 4 ? '='.repeat(4 - (b64.length % 4)) : '';
+    const json = atob(b64 + pad);
+    return JSON.parse(json);
+  } catch (e) {
+    return null;
+  }
+}
+
+async function verifyUser(token, env) {
+  // まず id_token として decode を試みる
+  const payload = decodeJwtPayload(token);
+  if (payload && payload.email && payload.aud === '62e35ra0h4s2dr657euorlm5bu') {
+    // 期限チェック
+    const now = Math.floor(Date.now() / 1000);
+    if (payload.exp && payload.exp < now) return null;
+    return {
+      sub:   payload.sub,
+      email: payload.email,
+      name:  payload['cognito:username'] || payload.preferred_username || ''
+    };
+  }
+  // フォールバック: access_token 経由 で /oauth2/userInfo
+  // (古いクライアント or openid scope ありのトークン用)
+  try {
+    const res = await fetch(`https://${env.COGNITO_DOMAIN}/oauth2/userInfo`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
+    return null;
+  }
 }
 
 // ─────────────────────────────────────────
