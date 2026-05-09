@@ -3,11 +3,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="auth.css">
 <script src="purchase-config.js"></script>
-<script src="tamsic-content.js?v=4.2.1.2"></script>
+<script src="tamsic-content.js?v=4.2.1.3"></script>
 <script src="release-control.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js"></script>
-<script src="auth.js?v=4.2.1.2"></script>
-<script src="coins.js?v=4.2.1.2"></script>
+<script src="auth.js?v=4.2.1.3"></script>
+<script src="coins.js?v=4.2.1.3"></script>
 <script src="lang.js"></script>
 <title>My Page | TAMSIC</title><script src="mypage.js"></script>
 <style>
@@ -158,7 +158,7 @@
           if (window.TAMSICAuth.setUserBirthday) ok = await window.TAMSICAuth.setUserBirthday(bday) && ok;
         } catch(e) { ok = false; }
         saveBtn.disabled = false;
-        status.textContent = ok ? '✓ 保存しました' : '✗ 保存に失敗しました';
+        status.textContent = ok ? '保存しました' : 'お名前・誕生日の保存機能は準備中です。';
         status.style.color = ok ? '#2a8a2a' : '#C8252C';
         setTimeout(()=>{ status.textContent = ''; status.style.color = 'var(--mid)'; }, 4000);
       };

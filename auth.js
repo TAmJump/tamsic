@@ -185,8 +185,16 @@ async function _updateUserAttributes(attrs) {
       new AmazonCognitoIdentity.CognitoUserAttribute({ Name, Value })
     );
     cognitoUser.updateAttributes(attributeList, (err, result) => {
-      if (err) { console.error('updateAttributes error:', err); resolve(false); }
-      else { resolve(true); }
+      if (err) {
+        // Phase D 未完了時は schema に custom 属性が無いので InvalidParameterException が出る。
+        // これは期待される失敗 (User Pool 側を整備すれば自然に解消) なので silent に false 返却。
+        const msg = String(err && (err.message || err.code) || err);
+        const isSchemaErr = /Attribute does not exist|InvalidParameterException/i.test(msg);
+        if (!isSchemaErr) console.warn('[auth] updateAttributes:', msg);
+        resolve(false);
+      } else {
+        resolve(true);
+      }
     });
   });
 }

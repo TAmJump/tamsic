@@ -595,7 +595,7 @@ window.TAMSIC_CONTENT = {
     "firstVisitCoins": 100
   },
   "features": {
-    "letter-receive": true,
+    "letter-receive": false,
     "letter-rare-frames": true,
     "letter-anniversary-frames": true,
     "letter-seasonal-frames": true

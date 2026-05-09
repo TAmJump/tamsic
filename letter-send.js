@@ -158,7 +158,7 @@
 
       <div style="display:flex;gap:10px;justify-content:flex-end;">
         <button id="tamsic-modal-cancel" type="button" style="padding:10px 18px;font-size:13px;background:#fff;border:1px solid #D6CFC0;color:#666;cursor:pointer;border-radius:3px;">キャンセル</button>
-        <button id="tamsic-modal-send"   type="button" style="padding:10px 22px;font-size:13px;background:#1F1F1F;color:#fff;border:none;cursor:pointer;border-radius:3px;letter-spacing:.05em;">📮 送信する</button>
+        <button id="tamsic-modal-send"   type="button" style="padding:10px 22px;font-size:13px;background:#1F1F1F;color:#fff;border:none;cursor:pointer;border-radius:3px;letter-spacing:.05em;">送信する</button>
       </div>
     `;
     overlay.appendChild(card);
@@ -191,7 +191,7 @@
         if (result && result.ok) {
           card.innerHTML = `
             <div style="text-align:center;padding:24px 0;">
-              <div style="font-size:48px;margin-bottom:12px;">📨</div>
+              
               <h2 style="font-size:18px;font-weight:600;margin:0 0 12px;">送信しました</h2>
               <p style="font-size:13px;line-height:1.7;color:#555;margin:0 0 24px;">
                 ${esc(email)} 宛に<br>
@@ -204,12 +204,12 @@
           card.querySelector('#tamsic-modal-close').onclick = close;
         } else {
           sendBtn.disabled = false;
-          sendBtn.textContent = '📮 送信する';
+          sendBtn.textContent = '送信する';
           status.textContent = '送信に失敗しました: ' + ((result && result.error) || 'unknown');
         }
       } catch (e) {
         sendBtn.disabled = false;
-        sendBtn.textContent = '📮 送信する';
+        sendBtn.textContent = '送信する';
         status.textContent = 'エラー: ' + String(e);
       }
     };

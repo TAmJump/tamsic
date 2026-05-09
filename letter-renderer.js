@@ -166,7 +166,7 @@
   }
 
   /**
-   * 同じ便箋の closing 一文だけを別抽選で差し替え (UI からの「↻ 別の一文」)
+   * 同じ便箋の closing 一文だけを別抽選で差し替え (UI からの「別の一文」)
    */
   function reroll(letterEl, opts) {
     if (!letterEl) return;
