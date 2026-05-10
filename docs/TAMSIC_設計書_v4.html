@@ -1951,13 +1951,15 @@ console.log(window.TAMSIC_CONTENT)
 </section>
 
 <footer style="padding:48px 0 60px;text-align:center;color:var(--g4);font-size:.8rem;border-top:1px solid var(--g2)">
-  TAMSIC 設計書 v4.2.1 Standalone Edition　／　2026.05.09　／　Confidential<br>
+  TAMSIC 設計書 v4.2.2 Standalone Edition　／　2026.05.10　／　Confidential<br>
   <span style="display:inline-block;margin-top:6px">v1 / v2 / v3 の全情報を統合。本ファイル 1 つで 100% 引き継ぎ可能。</span><br>
   <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.1 更新: gEN 追加 / 3ページ構造統一 / 価格半額 / Admin unlock / unセカイ 2曲 / add-track 同名曲対応 / add-artist 既知バグ記録</span>
   <br>
   <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2 更新: §10 歌詞便箋を Web フォント直描画に全面移行（マキ丸ハンド画像化を廃止、Zen Kurenaido / Hachi Maru Pop / Yuji Syuku 採用）/ 便箋枠 18種ランダム抽選（基本10 + 季節4 + 記念日2 + レア2）/ closing 一文プール25通り（誕生日月特例あり）/ レター送信を server-side 抽選 + letterHistory 永続化に拡張 / §22 のフォント自動化を完了タスクへ移動、Adobe Fonts 検証・レターコレクション・季節枠追加候補を新規列挙</span>
   <br>
   <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.1 更新 (2026.05.09): 歌詞便箋システム本番稼働開始 (Phase G 完了)。Cognito custom 属性 4個追加 (nickname/birthday/registeredAt/letterHistory)。Cloudflare Worker tamsic-send-letter 公開 (URL: https://tamsic-send-letter.animalb001.workers.dev)。Resend ドメイン tamjump.com Verified (DKIM/SPF/MX、送信元 letter@tamjump.com)。受信ボタン本格稼働。透かしレイヤーの column-flow 混入バグ修正、コイン残高3桁カンマ表示、ナビ no-no/kiki/gEN 表記固定、フル試聴アンロック後の便箋多重描画ガード追加。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.2 更新 (2026.05.10): openid scope 問題判明 — login.html の SDK 直叩きフロー (CognitoUser.authenticateUser) では access_token に scope が含まれず、Worker 側の /oauth2/userInfo が 401 invalid_token を返す。回避策として letter-send.js は Bearer に id_token を優先送信 (なければ access_token フォールバック)、workers/send-letter.js の verifyUser を id_token JWT decode 優先 + userInfo フォールバック構成に改修 (commit 8d1e8a1、cache-bust ?v=4.2.1.5)。Worker 再デプロイ済 (Version ID: 59f1888d-1db0-48eb-9df4-9093b3018e3f)。Resend ドメイン認証は Cloudflare DNS 完璧 (whatsmydns.net で世界中から確認) ながら Resend 側で Status: Not Started のまま動かない詰まり問題発生中、対処は HANDOFF_v4.md §13.3 の削除→再登録手順 or サポート問い合わせ。本番動作確認は Resend 側問題解決待ち。</span>
 </footer>
 
 </body>

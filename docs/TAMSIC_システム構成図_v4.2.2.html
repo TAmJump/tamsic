@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>TAMSIC システム構成図 v4.2.2</title>
+<style>
+:root {
+  --bg: #0F1116;
+  --panel: #1A1D26;
+  --panel-2: #232734;
+  --text: #E8E9EC;
+  --mid: #8A8E9C;
+  --accent: #00B8FF;
+  --warn: #F4D26A;
+  --ok: #5BC785;
+  --err: #E36A6A;
+  --line: #2D3142;
+}
+* { box-sizing: border-box; }
+body { margin: 0; padding: 30px 16px; background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, system-ui, sans-serif; line-height: 1.6; font-size: 14px; }
+h1 { font-size: 22px; font-weight: 600; margin: 0 0 8px; letter-spacing: 0.02em; }
+h2 { font-size: 16px; font-weight: 600; margin: 32px 0 12px; letter-spacing: 0.02em; color: var(--accent); border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+h3 { font-size: 13px; font-weight: 600; margin: 16px 0 8px; color: var(--text); }
+.wrap { max-width: 1080px; margin: 0 auto; }
+.meta { color: var(--mid); font-size: 12px; margin-bottom: 20px; }
+.diagram { background: var(--panel); border-radius: 8px; padding: 24px; margin: 16px 0; overflow-x: auto; }
+.boxen { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 14px 0; }
+.box { background: var(--panel-2); padding: 14px 16px; border-radius: 6px; border-left: 3px solid var(--accent); }
+.box.ok { border-left-color: var(--ok); }
+.box.warn { border-left-color: var(--warn); }
+.box.err { border-left-color: var(--err); }
+.box-title { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 6px; }
+.box-content { font-size: 13px; }
+.box-content ul { padding: 0; margin: 6px 0 0; list-style: none; }
+.box-content li { padding: 2px 0; font-size: 12px; color: var(--text); }
+.box-content li::before { content: "›"; color: var(--mid); margin-right: 6px; }
+pre { background: #0A0C12; color: #BBE6FF; padding: 14px 18px; border-radius: 6px; font-size: 12px; line-height: 1.6; overflow-x: auto; font-family: 'JetBrains Mono', Consolas, monospace; }
+table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 12px; }
+th, td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; }
+th { background: var(--panel-2); color: var(--mid); font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; font-size: 11px; }
+td { color: var(--text); }
+.layer { background: var(--panel); border-radius: 6px; padding: 16px; margin: 12px 0; border-top: 2px solid var(--accent); }
+.layer.client { border-top-color: var(--ok); }
+.layer.api { border-top-color: var(--warn); }
+.layer.data { border-top-color: #C85A72; }
+.layer.external { border-top-color: #888; }
+.layer-title { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); margin-bottom: 10px; }
+.layer-grid { display: grid; gap: 8px; }
+.cmp { background: var(--panel-2); padding: 10px 12px; border-radius: 4px; font-size: 12px; }
+.cmp strong { color: var(--accent); font-size: 13px; }
+.flow-list { counter-reset: step; padding-left: 0; list-style: none; margin: 12px 0; }
+.flow-list li { counter-increment: step; padding: 6px 0 6px 36px; position: relative; font-size: 13px; }
+.flow-list li::before {
+  content: counter(step);
+  position: absolute; left: 0; top: 4px;
+  width: 24px; height: 24px;
+  border-radius: 50%; background: var(--accent); color: #000;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.tag { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-right: 4px; }
+.tag.ok { background: rgba(91,199,133,.2); color: var(--ok); }
+.tag.warn { background: rgba(244,210,106,.2); color: var(--warn); }
+.tag.err { background: rgba(227,106,106,.2); color: var(--err); }
+.tag.live { background: rgba(0,184,255,.2); color: var(--accent); }
+hr { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+.ascii { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 11px; line-height: 1.5; white-space: pre; color: #BBE6FF; }
+.alert { background: rgba(227,106,106,.1); border-left: 3px solid var(--err); padding: 10px 14px; border-radius: 4px; margin: 12px 0; font-size: 13px; }
+.alert-title { font-weight: 600; color: var(--err); margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<h1>TAMSIC システム構成図 v4.2.2</h1>
+<p class="meta">最終更新: 2026-05-10 (Resend ドメイン詰まり問題反映 + id_token フロー切替) — Confidential</p>
+
+<div class="alert">
+<div class="alert-title">⚠ 現在の状態</div>
+コードは完全稼働可能。Cognito custom 属性、Cloudflare Worker (id_token 対応版)、フロントすべて準備済み。
+ただし<strong>Resend ドメイン認証が「Not Started」のまま動かない問題</strong>でメール送信が 400 エラーになっている (Cloudflare DNS は完璧、whatsmydns.net で世界中から確認済、Resend 側の検証システムだけ認識せず)。
+対処は HANDOFF_v4.md §13.3 の「削除→再登録」手順、または Resend サポート問い合わせ。
+</div>
+
+<h2>1. 全体アーキテクチャ</h2>
+<div class="diagram">
+<pre class="ascii">
+                              ┌──────────────────────────────────────┐
+                              │  ENDUSER (Web Browser)               │
+                              │  https://tamsic.tamjump.com          │
+                              └────────────────┬─────────────────────┘
+                                               │
+                       ┌───────────────────────┴────────────────────────┐
+                       │                                                │
+                       ▼                                                ▼
+        ┌──────────────────────────┐                ┌──────────────────────────┐
+        │  Cloudflare Pages        │                │  AWS Cognito (OAuth)     │
+        │  ┌────────────────────┐  │                │  ap-northeast-1_         │
+        │  │  Static Site       │  │ ◄────────────► │     vozRgCY5k            │
+        │  │  HTML/JS/CSS       │  │   id_token     │  - User Pool             │
+        │  └────────────────────┘  │  (Bearer)      │  - 6 custom attrs        │
+        │  GitHub: TAmJump/tamsic  │                │  - JWT issuance          │
+        └──────────────┬───────────┘                └──────────────────────────┘
+                       │ POST + Bearer id_token
+                       │ (v4.2.1.5 で access_token から変更)
+                       ▼
+        ┌──────────────────────────┐                ┌──────────────────────────┐
+        │  Cloudflare Worker       │                │  Resend                  │
+        │  tamsic-send-letter      │ ──────────────►│  api.resend.com/emails   │
+        │  - id_token decode → email                │  ⚠ tamjump.com           │
+        │  - Frame/Closing 抽選    │   400 ERROR    │     Status: Not Started  │
+        │  - HTML メール組立       │ ◄──────────────│  (DNS は完璧、検証詰まり)│
+        └──────────────────────────┘                └──────────┬───────────────┘
+                                                               │ (Verify 通過後)
+                                                               ▼
+                                                ┌──────────────────────────────┐
+                                                │  ENDUSER メールボックス      │
+                                                │  (Gmail / iCloud / Outlook)  │
+                                                └──────────────────────────────┘
+</pre>
+</div>
+
+<h2>2. 各レイヤーの責務</h2>
+
+<div class="layer client">
+<div class="layer-title">Client Layer (ブラウザ JS)</div>
+<div class="layer-grid">
+<div class="cmp"><strong>auth.js</strong> — Cognito SDK 直叩き (login.html) + OAuth helper、token 管理 (refresh自動)、custom 属性 read/write、`window.TAMSICAuth`</div>
+<div class="cmp"><strong>coins.js</strong> — コイン残高 (localStorage `tamsic_wallet` + Cognito `custom:coins` 同期)、`window.TAMSICCoins`</div>
+<div class="cmp"><strong>letter-frames.js</strong> — 18枠定義 + `pickFrame()` 抽選 (誕生日 → O / 周年 → P / レア Q 1% / R 5% / 通常)</div>
+<div class="cmp"><strong>letter-content.js</strong> — closing プール 26+通り + `pickClosing()` (誕生日月50%混入)</div>
+<div class="cmp"><strong>letter-renderer.js</strong> — 便箋 DOM 構築、`window.TAMSICLetter.render()`</div>
+<div class="cmp"><strong>letter-send.js</strong> v4.2.1.5 — Worker 呼出 + 確認モーダル + letterHistory 追加。<br>Bearer に <strong>id_token を優先送信</strong>、なければ access_token フォールバック</div>
+<div class="cmp"><strong>lyrics-guard.js</strong> — 5層保護 + `protectLetter()` (透かし isolation)</div>
+<div class="cmp"><strong>release-control.js</strong> — 公開日と会員先行14日前の判定</div>
+</div>
+</div>
+
+<div class="layer api">
+<div class="layer-title">API Layer (Cloudflare Workers)</div>
+<div class="layer-grid">
+<div class="cmp"><strong>tamsic-send-letter</strong> (workers/send-letter.js) <span class="tag live">LIVE v4.2.1.5</span> <br>
+URL: <code>https://tamsic-send-letter.animalb001.workers.dev</code><br>
+Version ID: <code>59f1888d-1db0-48eb-9df4-9093b3018e3f</code><br>
+役割: <strong>id_token decode → email 取得</strong>、Frame/Closing 抽選 → HTML 組立 → Resend 送信</div>
+<div class="cmp"><strong>(将来) tamsic-square-webhook</strong> <span class="tag warn">UNBUILT</span> <br>
+役割: Square 決済完了 webhook を受けて Cognito custom:coins を AdminUpdateUserAttributes で増やす</div>
+</div>
+</div>
+
+<div class="layer data">
+<div class="layer-title">Data Layer</div>
+<div class="layer-grid">
+<div class="cmp"><strong>AWS Cognito User Pool</strong> <code>ap-northeast-1_vozRgCY5k</code><br>
+custom:coins / custom:purchases / custom:nickname / custom:birthday / custom:registeredAt / custom:letterHistory</div>
+<div class="cmp"><strong>localStorage</strong> (Web only)<br>
+tamsic_wallet (cache) / tamsic_access_token (scope なし) / <strong>tamsic_id_token (Worker認証)</strong> / tamsic_refresh_token / tamsic_token_expiry</div>
+<div class="cmp"><strong>tamsic-content.js</strong> (静的 JSON)<br>
+全 track データ、creatorNote / closings / features flags</div>
+</div>
+</div>
+
+<div class="layer external">
+<div class="layer-title">External Services</div>
+<div class="layer-grid">
+<div class="cmp"><strong>Resend</strong> (api.resend.com) <span class="tag err">DOMAIN STUCK</span><br>
+ドメイン: tamjump.com (DKIM Verified、SPF/MX Not Started 詰まり)<br>
+API key: tamsic-letter-prod (Sending access、Domain: tamjump.com 紐付け)</div>
+<div class="cmp"><strong>Square</strong><br>
+コインパック決済、現状は手動「購入を反映する」ボタン</div>
+<div class="cmp"><strong>YouTube</strong><br>
+サンプル試聴の埋込 (15-30秒、coin 不要)</div>
+<div class="cmp"><strong>Cloudflare Pages</strong><br>
+静的サイトホスティング、main ブランチ自動デプロイ</div>
+</div>
+</div>
+
+<h2>3. レター送信フロー (主要ユースケース) v4.2.1.5</h2>
+
+<ol class="flow-list">
+<li>ユーザーがアーティストページで「30 coin で1回フル試聴」ボタン押下</li>
+<li><code>coins.js spendCoins()</code> → <code>auth.js spendCoinsOnCognito()</code> で <code>custom:coins</code> 減算 + localStorage 更新</li>
+<li><code>unlockFullTrack(track)</code> で audio 再生開始 + <code>lyrics-inner-{trackId}</code> 内に <code>TAMSICLetter.render()</code> 呼出</li>
+<li><code>letter-frames.js pickFrame()</code> で 18枠から抽選 (誕生日/周年/レア/通常の優先順位)</li>
+<li><code>letter-content.js pickClosing()</code> で closing 一文抽選</li>
+<li>DOM 組立 → <code>lyrics-guard.protectLetter()</code> で 5層保護適用</li>
+<li>便箋表示 + 「別の一文」「この手紙をメールで受け取る」ボタン</li>
+<li>受信ボタン押下 → <code>TAMSICAuth.hasReceivedLetter()</code> で重複チェック</li>
+<li>確認モーダル (Dear ●● 入力 + 送信先メアド表示)</li>
+<li>送信ボタン → nickname を Cognito に保存 → <code>POST /tamsic-send-letter.workers.dev/</code> (Bearer <strong>id_token</strong>)</li>
+<li>Worker 側で <code>id_token</code> を decode → payload.aud == client_id 検証 → email 取得 (フォールバック: <code>/oauth2/userInfo</code>)</li>
+<li>抽選を再実行 (クライアント信用しない) + HTML メール構築 (インライン CSS、@fontsource @import) → Resend API</li>
+<li>Resend → SMTP → ユーザー受信箱 <span class="tag err">現在ここで 400 エラー</span></li>
+<li>Worker から フロントへ <code>{ ok, frame, closingText, sentDate, recipientHash }</code> 返却</li>
+<li><code>TAMSICAuth.appendLetterHistory()</code> で <code>custom:letterHistory</code> に1件追加 (FIFO 上限10件)</li>
+<li>完了モーダル表示</li>
+</ol>
+
+<h2>4. 18枠の優先順位</h2>
+
+<table>
+<tr><th>順位</th><th>判定</th><th>結果枠</th><th>備考</th></tr>
+<tr><td>1</td><td>誕生日 (今日 = custom:birthday の月日)</td><td>O</td><td>強制、紙吹雪 + Banner</td></tr>
+<tr><td>2</td><td>周年 (今日 = custom:registeredAt の月日)</td><td>P</td><td>強制、星 + N YEAR Banner</td></tr>
+<tr><td>3</td><td>レア Q 抽選 (1%)</td><td>Q</td><td>当選で確定、★ RARE ★ バッジ</td></tr>
+<tr><td>4</td><td>レア R 抽選 (Q未当選後の 5%)</td><td>R</td><td>結果出現率 ≈ 4.95%、☆ UNCOMMON ☆</td></tr>
+<tr><td>5</td><td>通常抽選 (artist プール ∪ 季節枠)</td><td>A〜J + 期間中の K〜N</td><td>直前と違う枠を優先</td></tr>
+</table>
+
+<h3>アーティスト別 基本枠プール</h3>
+<table>
+<tr><th>Artist</th><th>Base Frames</th><th>Color</th><th>Font</th></tr>
+<tr><td>no-no</td><td>A, B, C, F, G, J (6枠)</td><td>#0099CC (シアン)</td><td>Zen Kurenaido</td></tr>
+<tr><td>kiki</td><td>A, B, C, F, I, J (6枠)</td><td>#C85A72 (ローズ)</td><td>Hachi Maru Pop</td></tr>
+<tr><td>gEN</td><td>A, C, D, E, H (5枠)</td><td>#4A4540 (ブロンズ)</td><td>Yuji Syuku</td></tr>
+</table>
+
+<h3>季節枠 (期間中のみアクティブ)</h3>
+<table>
+<tr><th>ID</th><th>名称</th><th>期間</th><th>主色</th></tr>
+<tr><td>K</td><td>桃 (桜)</td><td>3/1 - 4/30</td><td>#ED93B1 (ピンク)</td></tr>
+<tr><td>L</td><td>雪結晶</td><td>12/1 - 1/31</td><td>#85B7EB (青)</td></tr>
+<tr><td>M</td><td>海・波</td><td>7/1 - 8/31</td><td>#378ADD (海青)</td></tr>
+<tr><td>N</td><td>紅葉</td><td>10/1 - 11/30</td><td>#D85A30 (赤茶)</td></tr>
+</table>
+
+<h2>5. データモデル</h2>
+
+<h3>Cognito custom 属性 (User Pool に保存)</h3>
+<table>
+<tr><th>Attribute</th><th>Type</th><th>Max Length</th><th>Format</th><th>用途</th></tr>
+<tr><td>custom:coins</td><td>String</td><td>2048</td><td>数値文字列 or JSON</td><td>コイン残高</td></tr>
+<tr><td>custom:purchases</td><td>String</td><td>2048</td><td>JSON 配列</td><td>購入履歴</td></tr>
+<tr><td>custom:nickname</td><td>String</td><td>40</td><td>任意文字列</td><td>Dear ●● の名前</td></tr>
+<tr><td>custom:birthday</td><td>String</td><td>10</td><td>YYYY-MM-DD</td><td>誕生日枠 frame-O 判定</td></tr>
+<tr><td>custom:registeredAt</td><td>String</td><td>25</td><td>YYYY-MM-DD or ISO8601</td><td>周年枠 frame-P 判定 (auth.js が自動セット)</td></tr>
+<tr><td>custom:letterHistory</td><td>String</td><td>2048</td><td>JSON 配列 (FIFO 上限10件)</td><td>送信済みレター履歴</td></tr>
+</table>
+
+<h3>letterHistory の項目</h3>
+<pre>[
+  {
+    "trackId":       "nono-004",
+    "frameId":       "K",                   // 送信時に当選した枠
+    "closingIdx":    7,                     // closing プール内の index
+    "closingPool":   "common" | "birthday" | "anniversary" | "birthmonth",
+    "sentDate":      "2026-05-09T14:23:00Z", // ISO8601
+    "recipientHash": "a3f5b7c2d8e1..."      // SHA-256(email + |today)
+  },
+  ...
+]</pre>
+
+<h3>localStorage キー (ブラウザ側のみ)</h3>
+<table>
+<tr><th>Key</th><th>Type</th><th>用途</th></tr>
+<tr><td>tamsic_wallet</td><td>JSON</td><td>{balance, purchases, listens} のキャッシュ</td></tr>
+<tr><td>tamsic_access_token</td><td>JWT 文字列</td><td>(参考、scope なしで Worker 検証には不使用)</td></tr>
+<tr><td><strong>tamsic_id_token</strong></td><td>JWT 文字列</td><td><strong>Worker への Bearer で送る (v4.2.1.5)</strong></td></tr>
+<tr><td>tamsic_refresh_token</td><td>JWT 文字列</td><td>auth.js _refreshTokens で利用</td></tr>
+<tr><td>tamsic_token_expiry</td><td>数値 (epoch ms)</td><td>失効判定</td></tr>
+</table>
+
+<h2>6. 環境変数 / Secret 一覧</h2>
+
+<h3>Cloudflare Worker</h3>
+<table>
+<tr><th>Variable</th><th>Type</th><th>Value (本番)</th></tr>
+<tr><td>COGNITO_DOMAIN</td><td>vars</td><td>ap-northeast-1vozrgcy5k.auth.ap-northeast-1.amazoncognito.com</td></tr>
+<tr><td>ALLOWED_ORIGINS</td><td>vars</td><td>https://tamsic.tamjump.com</td></tr>
+<tr><td>FROM_ADDRESS</td><td>vars</td><td>TAMSIC &lt;letter@tamjump.com&gt;</td></tr>
+<tr><td>RESEND_API_KEY</td><td>secret</td><td>re_eEtGXsZf... (Sending access、Domain: tamjump.com 紐付け)</td></tr>
+</table>
+
+<h3>本番フロント側</h3>
+<table>
+<tr><th>場所</th><th>Constant / 変数</th><th>用途</th></tr>
+<tr><td>auth.js</td><td>AUTH_CONFIG.domain / clientId / redirectUri / scopes</td><td>Cognito OAuth エンドポイント (scopes='openid email profile')</td></tr>
+<tr><td>letter-send.js</td><td>ENDPOINT (Worker URL)</td><td>レター送信 Worker</td></tr>
+<tr><td>tamsic-content.js</td><td>features.letter-receive (= true)</td><td>受信ボタン表示の feature flag</td></tr>
+</table>
+
+<h2>7. 連携ツール / アカウント</h2>
+
+<table>
+<tr><th>サービス</th><th>アカウント</th><th>用途</th></tr>
+<tr><td>AWS</td><td>tamj.com (310133718901)</td><td>Cognito User Pool、(将来) IAM for Square Webhook</td></tr>
+<tr><td>Cloudflare</td><td>tamj_Account (animalb001@gmail.com)</td><td>Pages、Workers、DNS</td></tr>
+<tr><td>Resend</td><td>animalb001@gmail.com (GitHub OAuth)</td><td>メール送信</td></tr>
+<tr><td>GitHub</td><td>TAmJump (Org)</td><td>repo: tamsic, vault: tamsic-audio-vault (将来)</td></tr>
+<tr><td>Square</td><td>(別管理)</td><td>コインパック決済</td></tr>
+</table>
+
+<h2>8. 既知の制約・課題</h2>
+<ul>
+<li><strong>⚠ Resend ドメイン未認証 (進行中)</strong> — DNS は完璧、Resend 側のキャッシュ詰まり。HANDOFF_v4.md §13.3 の削除→再登録手順で対処</li>
+<li><strong>letterHistory 2048字上限</strong> — FIFO 10件運用、超過時は古い順に削除。長期 DynamoDB 化検討</li>
+<li><strong>Resend 月3,000通無料枠</strong> — 超過時は有料プラン or AWS SES 移行</li>
+<li><strong>Outlook 互換性未テスト</strong> — 受信側報告ベースで微調整</li>
+<li><strong>音源 public access</strong> — assets/audio/ が直 URL 推測可能、R2 + signed URL 化が将来課題</li>
+<li><strong>Square Webhook 未実装</strong> — コイン付与は手動「購入を反映する」ボタン</li>
+<li><strong>creatorNote / closings 未投入</strong> — 12曲中 1曲のみ確定、残り 11曲 placeholder</li>
+<li><strong>login.html SDK 直叩き</strong> — access_token に scope なし、Hosted UI 経由への書換が根本対応 (現状 id_token 方式で回避)</li>
+<li><strong>Worker JWT 署名検証省略</strong> — id_token の署名を JWKS で検証してない (cold-start 軽量化のため)</li>
+</ul>
+
+<hr>
+
+<p class="meta">本文書は <code>docs/TAMSIC_設計書_v4.html</code> および <code>docs/TAMSIC_設計書_§10_v4.2.1_完全版.html</code> の補助資料。詳細仕様は本体設計書を参照。</p>
+
+</div>
+
+</body>
+</html>
