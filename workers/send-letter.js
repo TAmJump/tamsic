@@ -276,13 +276,52 @@ const ARTIST_FONTS   = {
   gen:  "'Yuji Syuku', serif"
 };
 
-function lyricsToParagraphs(text) {
+// v4.2.2: 歌詞を2列 table レイアウトでメールに描画 (Gmail/Outlook は column-count 非対応)
+// 段落単位で行数バランス最大化 → 段落の途中で切らない
+function lyricsToTwoColumnTable(text) {
   if (!text) return '';
-  return String(text).split(/\n\s*\n/).map(p => {
-    const lines = p.split('\n').map(l => escHtml(l.trim())).filter(Boolean);
-    if (!lines.length) return '';
-    return '<p style="margin:0 0 1.2em;">' + lines.join('<br>') + '</p>';
-  }).join('');
+
+  // 段落分割 (空行区切り) → 各段落は trim 済み行の配列
+  const paragraphs = String(text).split(/\n\s*\n/).map(p =>
+    p.split('\n').map(l => l.trim()).filter(Boolean)
+  ).filter(p => p.length > 0);
+
+  if (paragraphs.length === 0) return '';
+
+  const renderPara = p =>
+    '<p style="margin:0 0 1.2em;">' + p.map(escHtml).join('<br>') + '</p>';
+
+  // 段落 1 個だけは 1 列 (table 不要)
+  if (paragraphs.length === 1) {
+    return renderPara(paragraphs[0]);
+  }
+
+  // 段落単位で行数バランス最大化 (段落の途中で切らない、右に最低 1 段落残す)
+  const lineCounts = paragraphs.map(p => p.length);
+  const totalLines = lineCounts.reduce((a, b) => a + b, 0);
+  const target = totalLines / 2;
+
+  let bestSplit = 1;
+  let bestDiff = Infinity;
+  let cumLines = 0;
+  for (let i = 0; i < paragraphs.length - 1; i++) {
+    cumLines += lineCounts[i];
+    const diff = Math.abs(cumLines - target);
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      bestSplit = i + 1;
+    }
+  }
+
+  const leftHtml = paragraphs.slice(0, bestSplit).map(renderPara).join('');
+  const rightHtml = paragraphs.slice(bestSplit).map(renderPara).join('');
+
+  return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:separate;">' +
+    '<tr>' +
+      '<td valign="top" style="width:50%;padding-right:21px;vertical-align:top;">' + leftHtml + '</td>' +
+      '<td valign="top" style="width:50%;padding-left:21px;vertical-align:top;">' + rightHtml + '</td>' +
+    '</tr>' +
+  '</table>';
 }
 
 function buildMailHtml(opts) {
@@ -340,7 +379,7 @@ function buildMailHtml(opts) {
         </td>
       </tr>
     </table>
-    <div style="font-family:${font};font-size:17px;line-height:2.0;color:#1F1F1F;">${lyricsToParagraphs(track.lyrics)}</div>
+    <div style="font-family:${font};font-size:17px;line-height:2.0;color:#1F1F1F;">${lyricsToTwoColumnTable(track.lyrics)}</div>
     ${noteHtml}
     <p style="margin:22px 0 4px;font-family:${font};font-size:18px;color:#1F1F1F;text-align:right;">${escHtml(closingText)}</p>
     <p style="margin:4px 0 0;font-family:'Playfair Display',serif;font-style:italic;font-size:18px;color:#1F1F1F;text-align:right;">— ${escHtml(artistDisp)}</p>

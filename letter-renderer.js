@@ -1,24 +1,30 @@
 /**
- * letter-renderer.js — TAMSIC 歌詞便箋 DOM レンダラ
+ * letter-renderer.js — TAMSIC 歌詞便箋 DOM レンダラ (v4.2.2)
  *
- * 設計書 §10.1 / §10.6 準拠 (v4.2.1)
+ * v4.2.2 変更:
+ *   Web 便箋を「歌詞ビューア」にミニマル化。
+ *   creator's note / closing / signature / footer (Air Mail + 日付スタンプ)
+ *   は Web からは出さず、メール限定要素にする (= プレミア感)。
+ *   reroll() は廃止 (closing が Web に出ないため)。
  *
- * 役割: track + user + frame + closing から便箋 DOM を構築。
- * 抽選自体は letter-frames.js / letter-content.js が担当。
+ * 設計書 §10.1 / §10.6 準拠
+ *
+ * 役割: track + user + frame から便箋 DOM (歌詞のみ) を構築。
+ * frame 抽選は letter-frames.js が担当。
+ * closing 抽選はメール送信時に Worker 側でのみ実施 (letter-content.js は
+ * letter-send.js から候補プールを Worker へ渡すために使われる)。
  *
  * Public API:
  *   window.TAMSICLetter = {
  *     render(targetEl, opts) → letterEl
- *     reroll(letterEl, opts) → 同じ便箋の closing だけ別抽選で差し替え
  *   };
  *
  * opts:
- *   track    - 曲オブジェクト ({id, artist, title, lyrics, coverPath, creatorNote, closings})
+ *   track    - 曲オブジェクト ({id, artist, title, lyrics, coverPath, ...})
  *   user     - {id, email, nickname, birthday, registeredAt}
  *   today    - Date (省略時 new Date())
  *   features - feature flags (任意)
  *   frame    - 強制で枠を指定 (デバッグ用、省略可)
- *   forceClosingPool - 強制プール指定 (デバッグ用、省略可)
  */
 (function(){
 
@@ -46,26 +52,12 @@
     }).join('');
   }
 
-  function _formatPostmarkDate(d) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,'0');
-    const day = String(d.getDate()).padStart(2,'0');
-    return { year: String(y), monthDay: m + '.' + day };
-  }
-
   function _selectFrame(opts, track, user, today) {
     if (opts.frame) return opts.frame;
     if (window.TAMSICLetterFrames) {
       return window.TAMSICLetterFrames.pickFrame(track, user, today, opts.history, opts.features);
     }
     return 'A';
-  }
-
-  function _selectClosing(track, user, today, frame, features) {
-    if (window.TAMSICLetterContent) {
-      return window.TAMSICLetterContent.pickClosing(track, user, today, frame, features);
-    }
-    return { text: 'ありがとう。', idx: 0, pool: 'fallback' };
   }
 
   function _buildBanner(frame, user, today) {
@@ -96,9 +88,7 @@
 
     const frame = _selectFrame(opts, track, user, today);
     const frameDef = (window.TAMSICLetterFrames && window.TAMSICLetterFrames.FRAMES[frame]) || { cssClass: 'frame-a', name: 'simple' };
-    const closingResult = _selectClosing(track, user, today, frame, features);
 
-    const pm = _formatPostmarkDate(today);
     const banner = _buildBanner(frame, user, today);
     const nickname = (user && user.nickname) || 'listener';
 
@@ -106,11 +96,7 @@
       ? '<img src="' + _esc(track.coverPath) + '" alt="' + _esc(track.title || '') + ' cover">'
       : '';
 
-    const creatorNoteText = track.creatorNote || '';
-    const creatorNoteHtml = creatorNoteText
-      ? '<p class="creator-note"><span class="creator-label">Creator\'s note  ·  </span>' + _esc(creatorNoteText) + '</p>'
-      : '';
-
+    // v4.2.2: Web 便箋は歌詞ビューア化 (creator-note / closing / signature / footer はメール限定)
     const html =
       '<div class="tamsic-letter tlb ' + _esc(frameDef.cssClass) + ' artist-' + _esc(artistKey) + '"' +
         ' data-frame="' + _esc(frame) + '" data-track-id="' + _esc(track.id || '') + '">' +
@@ -123,15 +109,6 @@
             '<div><div class="label">Dear</div><div class="v-dear">' + _esc(nickname) + '</div></div>' +
           '</div>' +
           '<div class="body">' + _lyricsToParagraphs(track.lyrics) + '</div>' +
-          creatorNoteHtml +
-          '<p class="closing" data-closing-idx="' + closingResult.idx + '" data-closing-pool="' + _esc(closingResult.pool) + '">' + _esc(closingResult.text) + '</p>' +
-          '<p class="signature">— ' + _esc(artistDisp) + '</p>' +
-          '<div class="footer">' +
-            '<div class="airmail">Air Mail · TAMSIC</div>' +
-            '<div class="postmark" aria-label="送信日 ' + _esc(pm.year) + '年' + _esc(pm.monthDay) + '">' +
-              '<span>' + _esc(pm.year) + '</span><span>' + _esc(pm.monthDay) + '</span>' +
-            '</div>' +
-          '</div>' +
         '</div>' +
       '</div>';
 
@@ -165,30 +142,11 @@
     return letterEl;
   }
 
-  /**
-   * 同じ便箋の closing 一文だけを別抽選で差し替え (UI からの「別の一文」)
-   */
-  function reroll(letterEl, opts) {
-    if (!letterEl) return;
-    opts = opts || {};
-    const track = opts.track || {};
-    const user  = opts.user  || {};
-    const today = opts.today || new Date();
-    const frame = letterEl.getAttribute('data-frame') || 'A';
-    const features = opts.features || {};
-    const result = _selectClosing(track, user, today, frame, features);
-    const closingEl = letterEl.querySelector('.closing');
-    if (closingEl) {
-      closingEl.textContent = result.text;
-      closingEl.setAttribute('data-closing-idx', result.idx);
-      closingEl.setAttribute('data-closing-pool', result.pool);
-    }
-    return result;
-  }
+  // v4.2.2: reroll() は廃止 (closing が Web に出なくなったため)
+  // 旧 v4.2.1 まで存在した window.TAMSICLetter.reroll は呼ばないこと
 
   window.TAMSICLetter = {
     render: render,
-    reroll: reroll,
     ARTIST_DISPLAY_NAME: ARTIST_DISPLAY_NAME
   };
 

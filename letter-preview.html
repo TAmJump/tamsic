@@ -63,13 +63,13 @@ h1 { font-size:18px; font-weight:600; margin:0 0 8px; }
     <input id="ctrl-nick" value="JIN" size="10">
   </label>
   <button class="primary" id="ctrl-render">再描画</button>
-  <button id="ctrl-reroll">closing 引き直し</button>
 </div>
 
 <div id="letter-host"></div>
 
 <p class="note">
-  ※ 実装ファイル: <code>letter-frames.js</code> (枠定義/抽選), <code>letter-content.js</code> (closingプール25通り), <code>letter-renderer.js</code> (DOM構築), <code>letter.css</code> (18枠スタイル)
+  ※ v4.2.2: Web 便箋は歌詞ビューア化 (creator's note / closing / signature / footer はメール限定)。<br>
+  実装ファイル: <code>letter-frames.js</code> (枠定義/抽選), <code>letter-renderer.js</code> (DOM構築), <code>letter.css</code> (18枠スタイル)
 </p>
 </div>
 
@@ -129,20 +129,7 @@ function renderNow(){
   window.TAMSICLetter.render(document.getElementById('letter-host'), opts);
 }
 
-function rerollClosing(){
-  const artist = document.getElementById('ctrl-artist').value;
-  const nick   = document.getElementById('ctrl-nick').value || 'listener';
-  const letterEl = document.querySelector('#letter-host .tamsic-letter');
-  if (!letterEl) return renderNow();
-  window.TAMSICLetter.reroll(letterEl, {
-    track: SAMPLE_TRACKS[artist],
-    user: { nickname: nick },
-    today: new Date()
-  });
-}
-
 document.getElementById('ctrl-render').onclick = renderNow;
-document.getElementById('ctrl-reroll').onclick = rerollClosing;
 ['ctrl-artist','ctrl-frame','ctrl-nick'].forEach(id => {
   document.getElementById(id).addEventListener('change', renderNow);
 });

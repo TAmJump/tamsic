@@ -5,20 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>kiki | TAMSIC</title>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Nunito:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="tamsic-content.js?v=4.2.1.5"></script>
+<script src="tamsic-content.js?v=4.2.2"></script>
 <script src="purchase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js" async></script>
-<script src="auth.js?v=4.2.1.5"></script>
-<script src="coins.js?v=4.2.1.5"></script>
+<script src="auth.js?v=4.2.2"></script>
+<script src="coins.js?v=4.2.2"></script>
 <script src="release-control.js"></script>
 <script src="lang.js"></script>
-<script src="tamsic.js?v=4.2.1.5"></script>
-<script src="lyrics-guard.js?v=4.2.1.5"></script>
+<script src="tamsic.js?v=4.2.2"></script>
+<script src="lyrics-guard.js?v=4.2.2"></script>
 <script src="gate-modal.js"></script>
-<script src="letter-frames.js?v=4.2.1.5"></script>
-<script src="letter-content.js?v=4.2.1.5"></script>
-<script src="letter-renderer.js?v=4.2.1.5"></script>
-<script src="letter-send.js?v=4.2.1.5"></script>
+<script src="letter-frames.js?v=4.2.2"></script>
+<script src="letter-content.js?v=4.2.2"></script>
+<script src="letter-renderer.js?v=4.2.2"></script>
+<script src="letter-send.js?v=4.2.2"></script>
 <style>
 :root{--bg:#FDF8F4;--text:#221418;--accent:#C85A72;--accent2:#E8A0B0;--light:#EEE0D8;--mid:#9A7068;--white:#FFFFFF;--soft:#F7EEE8;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -135,7 +135,7 @@ footer{background:var(--text);color:#fff;padding:48px 64px;display:flex;justify-
 
 
 </style>
-<link rel="stylesheet" href="letter.css?v=4.2.1.5">
+<link rel="stylesheet" href="letter.css?v=4.2.2">
 </head>
 <body>
 <nav>
@@ -432,7 +432,7 @@ function unlockFullTrack(trackId){
   if(lyricsInner && window.TAMSICLetter){
     // 多重描画ガード: 同一便箋が既にレンダリング済みならスキップ
     if(lyricsInner.querySelector('.tamsic-letter')){
-      // 既に便箋がある場合は何もしない (closing 引き直しは reroll-btn から)
+      // 既に便箋がある場合は何もしない
     } else {
     const info = (typeof getUserInfo === 'function') ? (getUserInfo() || {}) : {};
     const user = {
@@ -449,38 +449,25 @@ function unlockFullTrack(trackId){
       today: new Date(),
       features: features
     });
-    // レター操作 UI (closing 引き直し / レター受信ボタン)
+    // レター受信ボタン (v4.2.2: 「別の一文」ボタンは削除済み、closing は Web に出さない)
     // 既存の actions を全削除してから新規追加 (重複ボタン防止)
     const fullLyricsParent = lyricsInner.parentNode;
     fullLyricsParent.querySelectorAll('.tamsic-letter-actions').forEach(el => el.remove());
-    {
+    if(features['letter-receive']){
       const actions = document.createElement('div');
       actions.className = 'tamsic-letter-actions';
-      const rerollBtn = document.createElement('button');
-      rerollBtn.className = 'reroll-btn';
-      rerollBtn.type = 'button';
-      rerollBtn.textContent = '別の一文';
-      rerollBtn.title = 'closing を引き直す';
-      rerollBtn.onclick = function(){
-        const letterEl = lyricsInner.querySelector('.tamsic-letter');
-        if(letterEl) window.TAMSICLetter.reroll(letterEl, { track: track, user: user, today: new Date(), features: features });
+      const receiveBtn = document.createElement('button');
+      receiveBtn.className = 'receive-btn';
+      receiveBtn.type = 'button';
+      receiveBtn.innerHTML = 'この手紙をメールで受け取る';
+      receiveBtn.onclick = function(){
+        if(window.TAMSICSendLetter && typeof window.TAMSICSendLetter.requestLetter === 'function'){
+          window.TAMSICSendLetter.requestLetter(track, user);
+        } else {
+          alert('レター送信機能は準備中です。');
+        }
       };
-      actions.appendChild(rerollBtn);
-      // レター受信ボタンは Phase G の feature flag が有効なときのみ表示
-      if(features['letter-receive']){
-        const receiveBtn = document.createElement('button');
-        receiveBtn.className = 'receive-btn';
-        receiveBtn.type = 'button';
-        receiveBtn.innerHTML = 'この手紙をメールで受け取る';
-        receiveBtn.onclick = function(){
-          if(window.TAMSICSendLetter && typeof window.TAMSICSendLetter.requestLetter === 'function'){
-            window.TAMSICSendLetter.requestLetter(track, user);
-          } else {
-            alert('レター送信機能は準備中です。');
-          }
-        };
-        actions.appendChild(receiveBtn);
-      }
+      actions.appendChild(receiveBtn);
       lyricsInner.parentNode.insertBefore(actions, lyricsInner.nextSibling);
     }
     }  // /else (multi-render guard)
