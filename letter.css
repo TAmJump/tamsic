@@ -606,6 +606,17 @@
   opacity: 0.6;
 }
 
+/* v4.2.2.2: 送信完了マーク (受信ボタンが置換された後の表示) */
+.tamsic-letter-actions .sent-mark {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 18px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: #888;
+  font-style: italic;
+}
+
 /* v4.2.2: .reroll-btn は廃止。「別の一文」ボタンは Web 便箋から削除済み。 */
 
 /* ─────────────────────────────────────────

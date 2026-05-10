@@ -5,20 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>gEN | TAMSIC</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="tamsic-content.js?v=4.2.2.1"></script>
+<script src="tamsic-content.js?v=4.2.2.2"></script>
 <script src="purchase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js" async></script>
-<script src="auth.js?v=4.2.2.1"></script>
-<script src="coins.js?v=4.2.2.1"></script>
+<script src="auth.js?v=4.2.2.2"></script>
+<script src="coins.js?v=4.2.2.2"></script>
 <script src="release-control.js"></script>
 <script src="lang.js"></script>
-<script src="tamsic.js?v=4.2.2.1"></script>
-<script src="lyrics-guard.js?v=4.2.2.1"></script>
+<script src="tamsic.js?v=4.2.2.2"></script>
+<script src="lyrics-guard.js?v=4.2.2.2"></script>
 <script src="gate-modal.js"></script>
-<script src="letter-frames.js?v=4.2.2.1"></script>
-<script src="letter-content.js?v=4.2.2.1"></script>
-<script src="letter-renderer.js?v=4.2.2.1"></script>
-<script src="letter-send.js?v=4.2.2.1"></script>
+<script src="letter-frames.js?v=4.2.2.2"></script>
+<script src="letter-content.js?v=4.2.2.2"></script>
+<script src="letter-renderer.js?v=4.2.2.2"></script>
+<script src="letter-send.js?v=4.2.2.2"></script>
 <style>
 :root{--bg:#f2f1ef;--text:#1A1816;--accent:#4A4540;--light:#DDDAD4;--mid:#857E76;--white:#FFFFFF;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -142,7 +142,7 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
 
 
 </style>
-<link rel="stylesheet" href="letter.css?v=4.2.2.1">
+<link rel="stylesheet" href="letter.css?v=4.2.2.2">
 </head>
 <body>
 <nav>
@@ -437,10 +437,12 @@ function unlockFullTrack(trackId){
   if(lyrics) lyrics.style.display='block';
   // v4.2.1: 歌詞便箋 (Web フォント直描画 + 18枠ランダム抽選 + closingランダム)
   if(lyricsInner && window.TAMSICLetter){
-    // 多重描画ガード: 同一便箋が既にレンダリング済みならスキップ
-    if(lyricsInner.querySelector('.tamsic-letter')){
-      // 既に便箋がある場合は何もしない
-    } else {
+    // v4.2.2.2: 多重描画ガード撤廃。
+    // unlockFullTrack のたびに 30 coin 消費 = レター送信権 1 通の発行に対応するため、
+    // 既存便箋とアクションを削除して再描画する (新しい frame / closing が抽選される)。
+    const fullLyricsParent = lyricsInner.parentNode;
+    fullLyricsParent.querySelectorAll('.tamsic-letter-actions').forEach(el => el.remove());
+
     const info = (typeof getUserInfo === 'function') ? (getUserInfo() || {}) : {};
     const user = {
       id:        info.sub || info['cognito:username'] || '',
@@ -456,15 +458,13 @@ function unlockFullTrack(trackId){
       today: new Date(),
       features: features
     });
-    // レター受信ボタン (v4.2.2: 「別の一文」ボタンは削除済み、closing は Web に出さない)
-    // 既存の actions を全削除してから新規追加 (重複ボタン防止)
-    const fullLyricsParent = lyricsInner.parentNode;
-    fullLyricsParent.querySelectorAll('.tamsic-letter-actions').forEach(el => el.remove());
+    // レター受信ボタン (Phase G feature flag が有効なときのみ)
     if(features['letter-receive']){
       const actions = document.createElement('div');
       actions.className = 'tamsic-letter-actions';
       const receiveBtn = document.createElement('button');
       receiveBtn.className = 'receive-btn';
+      receiveBtn.dataset.trackId = track.id;
       receiveBtn.type = 'button';
       receiveBtn.innerHTML = 'この手紙をメールで受け取る';
       receiveBtn.onclick = function(){
@@ -477,7 +477,6 @@ function unlockFullTrack(trackId){
       actions.appendChild(receiveBtn);
       lyricsInner.parentNode.insertBefore(actions, lyricsInner.nextSibling);
     }
-    }  // /else (multi-render guard)
   } else if(lyricsInner && window.TAMSICLyrics){
     // フォールバック: 旧来の歌詞保護
     const userEmail = (typeof getUserInfo === 'function' && getUserInfo()) ? getUserInfo().email : 'guest';

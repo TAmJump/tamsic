@@ -100,6 +100,20 @@
       }
     }
 
+    // 5. v4.2.2.2: 当該 trackId の受信ボタンを「送信済み」ラベルに置換
+    //    (フル試聴 1 回 / レター 1 通 の整合性、再送には再度フル試聴解放が必要)
+    try {
+      const btns = document.querySelectorAll('.tamsic-letter-actions .receive-btn');
+      btns.forEach(btn => {
+        if (btn.dataset.trackId === track.id) {
+          const span = document.createElement('span');
+          span.className = 'sent-mark';
+          span.textContent = '送信済み — フル試聴を再解放すると別の便箋が届きます';
+          btn.replaceWith(span);
+        }
+      });
+    } catch (e) {}
+
     // UI 更新イベント
     window.dispatchEvent(new CustomEvent('tamsic:letter-sent', {
       detail: { trackId: track.id, frame: data.frame, sentDate: data.sentDate }
