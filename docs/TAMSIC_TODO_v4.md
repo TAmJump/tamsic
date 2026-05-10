@@ -1,62 +1,136 @@
 # TAMSIC TODO v4
 
-**最終更新**: 2026-05-10 12:00 JST
+**最終更新**: 2026-05-10 13:50 JST (セッション⑨で大幅更新)
 **前版**: TAMSIC_TODO_v3.md (Phase G 完了直後)
 
 ---
 
 ## 🔴 最優先・進行中
 
-### Resend ドメイン認証詰まり問題の解決
+### Phase H1: closing 大量生成 (現 ~25 通り → 500 通り)
 
-**現状**: ドメイン `tamjump.com` の Status が `Not Started` で動かない
-- Cloudflare DNS は完璧 (whatsmydns.net で世界中から確認済)
-- DKIM だけ Verified、SPF (TXT) と MX が Not Started
-- Verify DNS Records ボタンを何度押しても変化なし
-- メール送信時に Resend API が 400 エラーで拒否
+**背景**: ユーザー要望「便箋の一文は 500 通りくらい欲しい」「同じ曲を聴くたび違う便箋が届く価値」。
+現状は曲別 closing が nono-004 の 3 通りのみ、他 11 曲は placeholder。
+v4.2.2.1 で「同曲の複数回受信」を解禁したため、closing バリエーションがそのまま体験価値に直結する。
 
-**対処オプション** (HANDOFF_v4.md §13.3 に詳細手順):
-- **A**: Resend ドメインを削除→再登録 + API キー再発行 (確実、15分)
-- **B**: 数時間〜翌日まで待機 → Verify ボタン再押下
-- **C**: 暫定で Worker の送信先を `animalb001@gmail.com` に固定 (動作確認のみ)
-- **D**: Resend サポートに英語メール (HANDOFF_v4.md §9.2 にテンプレ)
+**500 通りの分配 (合意済み)**:
 
-**推奨**: A (確実)。
+| プール | 数 | 用途 |
+|---|---|---|
+| 共通 (COMMON) | 100 | 全曲・全アーティスト共通の汎用 |
+| アーティスト別 | 各 50 (no-no/kiki/gEN) = 150 | アーティストのトーン専用 |
+| 曲別 (TRACK_CLOSINGS) | 各 20 × 12 曲 = 240 | 曲の世界観に沿った最も濃い closing |
+| 誕生日 (BIRTHDAY) | 30 | 誕生日当日のみ (frame-O) |
+| 誕生月 (BIRTHMONTH) | 20 | 誕生月に約 50% で混入 |
+| 周年 (ANNIVERSARY) | 15 | 登録周年のみ (frame-P) |
+| **合計** | **555 ≒ 500** | |
+
+**通常時の体験空間**: 1 曲あたり 共通 100 + アーティスト 50 + 曲別 20 = **170 closing × 18 frame = 3,060 通り**。全 12 曲で **約 36,720 体験**。
+
+**生成方針**: AI 生成 + アーティスト本人 (TAmJump) 視点でリライト。
+- 各アーティストのトーン定義 (語尾、距離感、世界観) を先に確定
+- それを system prompt に渡して AI で 50 通りずつ生成 → 人力リライトで「らしさ」付与
+- 12 曲 × 20 通りは曲ごとの歌詞・creator's note を踏まえる必要あり、最も時間がかかる
+
+**作業手順**:
+1. 各アーティストのトーン定義をユーザーから受領 or 仮案 → 確定
+2. アーティスト別 50 通り × 3 = 150 を生成
+3. 共通 100 を生成 (アーティスト依存しない汎用)
+4. 曲別 20 × 12 曲 = 240 を曲ごとに生成 (歌詞 / creator's note 込みのプロンプト)
+5. 誕生日 / 誕生月 / 周年プールを生成
+6. `letter-content.js` の COMMON_CLOSINGS / ARTIST_CLOSINGS / 各曲の TRACK_CLOSINGS / BIRTHDAY / BIRTHMONTH / ANNIVERSARY プールに投入
+7. `tamsic-content.js` の各 track の `closings` フィールドに 20 通りずつ投入 (Worker 側がここから抽選)
+8. push → Cloudflare Pages 自動デプロイ
+
+**併せて執筆が必要**: 各曲の `creatorNote` (3-5 文の制作秘話)。これも 11 曲分 placeholder。
+
+**進捗**:
+- ✅ `nono-004`「ぎりぎりだよ。」 (closings 3 通り、creatorNote 完備、ただし closing は 20 通りに増やす必要あり)
+- ⬜ `nono-001`〜`006` の残り 4 曲 + RE+
+- ⬜ `kiki-001`〜`006`
+- ⬜ `gen-001`
 
 ---
 
-## ✅ 本セッションで完了した項目
+## ⏳ 将来タスク
+
+### Phase H2: closing の多言語化 (案 D 採用、保留)
+
+**ユーザー要望**: 会員の言語 (国) でメール内の closing が母語化されると嬉しい。
+
+**採用する設計 (案 D)**:
+- デフォルト言語は **日本語** (歌詞・banner・signature・postmark は常に日本語固定)
+- 英訳対象は **closing と Creator's note のみ** (= アーティストの肉声部分)
+- mypage に「Letter language: 🇯🇵日本語 / 🇺🇸English」セレクタを追加
+- 海外会員にも「日本のレーベルから日本語の歌詞が届く」アイデンティティ感を保つ
+
+**理由**: 完全英訳すると「機械翻訳された日本のサービス」感が出る。closing と creator's note だけ訳せば「アーティストが英語で結びを書いた」感が出て本人らしさを保てる。
+
+**実装規模**:
+- Cognito に `custom:letterLang` 追加 (Phase D と同じ手順、5 分)
+- mypage に選択 UI 追加 (1 時間)
+- `letter-content.js` を `{ ja: [...], en: [...] }` 構造に変更 (1 時間)
+- Worker `pickClosing` で `user.letterLang` に応じてプール選択 (30 分)
+- closing 英訳プール 500 通り作成 (DeepL or AI 生成 + レビュー、半日〜1 日)
+
+**前提**: Phase H1 (日本語 closing 500 通り) が完成してから着手。
+
+**追加言語の余地**: 中国語繁体 / 韓国語 / スペイン語など、需要が見えてからプール追加。
+
+---
+
+## ✅ セッション⑨ (2026-05-10) で完了
+
+- ✅ **Resend ドメイン認証詰まり問題、解決** (commit `e141fcd` 直前)
+  - オプション A 実施 (削除→再登録 + API キー再発行)
+  - 再登録後 1 分で Verified に (キュー詰まり仮説的中)
+  - 新 API キーを Worker secret に投入、メール送信成功確認 (Gmail 受信箱で実機確認)
+- ✅ **Web 便箋ミニマル化 (v4.2.2)** (commit `e141fcd`)
+  - creator's note / closing / signature / footer (Air Mail + 日付スタンプ) を Web から削除
+  - 「別の一文」(reroll) ボタン廃止、`TAMSICLetter.reroll()` も削除
+  - メール = プレミア体験 / Web = 歌詞ビューア の役割分担成立
+- ✅ **メール歌詞 2 列レイアウト** (commit `e141fcd`)
+  - Gmail/Outlook が `column-count` 非対応のため `<table>` で 2 セル化
+  - 段落単位で行数バランス最大化アルゴリズム (段落途中で切らない)
+  - nono-004 (16 段落 / 61 行) で実機検証: 左 32 行 / 右 29 行に分割成功
+- ✅ **同曲レターの複数回受信を解禁 (v4.2.2.1)** (commit `ac7d9b3`)
+  - `letter-send.js` の `hasReceivedLetter` チェック削除
+  - 確認モーダル文言を「便箋の枠と結びの一文は、毎回ランダムに選ばれます」に
+  - フル試聴 (30 coin) 課金縛りはあるので乱発リスク限定的
+- ✅ Worker `tamsic-send-letter` 再デプロイ (Version `f3e57143-4927-432b-a5db-acc51aa2a6ab`)
+- ✅ キャッシュバスター 4.2.1.5 → 4.2.2 → 4.2.2.1
+- ✅ docs/TAMSIC_TODO_v4.md を本ファイルとして更新
+
+---
+
+## ✅ セッション⑧ までで完了 (前版から継続)
 
 - ✅ HANDOFF_v3.md 作成 (Phase G 完了時点の総合引き継ぎ書)
 - ✅ TAMSIC_TODO_v3.md 作成
-- ✅ TAMSIC_システム構成図_v4.2.1.html 作成 (アーキテクチャ全景)
-- ✅ TAMSIC_レター送信デプロイ手順_v4.2.1.md 作成 (実機ベース)
+- ✅ TAMSIC_システム構成図_v4.2.1.html / v4.2.2.html 作成 (アーキテクチャ全景)
+- ✅ TAMSIC_レター送信デプロイ手順_v4.2.1.md / v4.2.2.md 作成 (実機ベース)
 - ✅ TAMSIC_設計書_v4.html フッタ v4.2.1 更新
 - ✅ openid scope 問題の特定と回避 (id_token 方式に切替、commit 8d1e8a1)
 - ✅ Worker `verifyUser` を id_token 優先 + userInfo フォールバック構成に改修
-- ✅ Cloudflare Worker 再デプロイ (Version ID: 59f1888d-1db0-48eb-9df4-9093b3018e3f)
-- ✅ Resend API キー再発行 (Domain: tamjump.com 明示)
-- ✅ Worker secret RESEND_API_KEY 更新
-- ✅ HANDOFF_v4.md 作成 (本セッション最終時点の引き継ぎ書)
-- ✅ TAMSIC_TODO_v4.md 作成 (本ファイル)
+- ✅ HANDOFF_v4.md 作成
 
 ---
 
 ## 🎵 楽曲コンテンツ系
 
-### 各曲の `creatorNote` と `closings` 執筆 (高優先)
+### 各曲の `creatorNote` 執筆 (Phase H1 と並行)
 
-`tamsic-content.js` 内、各 track に以下を投入する:
-- `creatorNote`: 3-5文の制作秘話 (アーティスト本人視点)
-- `closings`: 曲ごとの3通り、便箋末尾の一文 (`●●` を含めると nickname に置換)
+**closings 執筆は上記 Phase H1 に統合済み** (各曲 20 通り目標、合計 240 通り)。
+
+`tamsic-content.js` 内、各 track の `creatorNote` (3-5 文の制作秘話、アーティスト本人視点) を投入する。
 
 **進捗** (12曲中 1曲のみ確定):
-- ✅ `nono-004` 「ぎりぎりだよ。」
-- ⬜ `nono-001` 「ぎりぎりだよ。 (旧)」
-- ⬜ `nono-002` 「シグナル●」
-- ⬜ `nono-003` 「Breathless」
-- ⬜ `nono-005` 「to Walk」
-- ⬜ `nono-006` 「RE+」 (release 2026-05-15)
+- ✅ `nono-004` 「ぎりぎりだよ。」 creatorNote 完備
+- ⬜ `nono-001` 「Breathless」
+- ⬜ `nono-002` 「RE+」 (release 2026-05-15)
+- ⬜ `nono-003` 「to Walk」
+- ⬜ `nono-005` 「シグナル●」
+- ⬜ `nono-006` (未定)
 - ⬜ `kiki-001` 「Burn bright」
 - ⬜ `kiki-002` 「Critical point」
 - ⬜ `kiki-003` 「No Stop」
@@ -65,7 +139,7 @@
 - ⬜ `kiki-006` 「unセカイ」 (release 2026-05-15)
 - ⬜ `gen-001` 「unセカイ」
 
-**作業手順**: ユーザーから本人視点テキスト受領 → `tamsic-content.js` の該当 track に投入 → push (キャッシュバスター更新)。
+**作業手順**: ユーザーから本人視点テキスト受領 → `tamsic-content.js` の該当 track に投入 → push (キャッシュバスター更新)。Phase H1 の closings 生成と同じ曲で同時にやると効率的。
 
 ### gen-001 / kiki-006「unセカイ」MP3 配置方針 (継続案件)
 
@@ -94,6 +168,8 @@
 - `custom:letterHistory` を読取り、送信曲・日付・frame をリスト表示
 - frame アイコン (frame-K=桜、frame-O=誕生日) で視覚化
 - レア (Q/R) を獲得した記念演出
+- **v4.2.2.1 で同曲複数回受信を解禁**したため、`letterHistory` は同じ trackId が複数件入る可能性あり。表示は時系列で全件 / 曲ごとにグループ化など要検討
+- **letterHistory 上限 2048 文字 / FIFO 10 件** が現状制約。同曲を何度も受け取るとすぐ FIFO で押し出される → 本機能を本格運用するなら DynamoDB 移行 or 上限緩和を要検討
 - 「同じ曲を別アドレスで受け取りたい」要望が出たら multi-recipient 検討
 
 ### 季節枠の追加
