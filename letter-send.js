@@ -148,8 +148,8 @@
       <div style="font-size:11px;letter-spacing:.3em;color:#888;text-transform:uppercase;margin-bottom:8px;">Letter Receive</div>
       <h2 style="font-size:18px;font-weight:600;margin:0 0 14px;">この手紙をメールで受け取りますか？</h2>
       <p style="font-size:13px;line-height:1.7;color:#555;margin:0 0 20px;">
-        <strong>${esc(trackTitle)}</strong> の歌詞便箋を、登録メールアドレス宛にお届けします。<br>
-        この曲のレターは <strong>1回だけ</strong> 受け取れます。
+        登録メールアドレス宛に <strong>${esc(trackTitle)}</strong> の歌詞便箋をお届けします。<br>
+        便箋の枠と結びの一文は、毎回ランダムに選ばれます。
       </p>
 
       <label style="display:block;font-size:11px;letter-spacing:.2em;color:#888;text-transform:uppercase;margin-bottom:6px;">Dear ●● の名前</label>
@@ -234,14 +234,11 @@
     if (!track || !track.id) return;
     user = user || {};
 
-    // 重複送信チェック (Cognito letterHistory)
-    if (typeof window.TAMSICAuth !== 'undefined' && window.TAMSICAuth.hasReceivedLetter) {
-      const already = await window.TAMSICAuth.hasReceivedLetter(track.id);
-      if (already) {
-        alert('この曲のレターは既に送信済みです。');
-        return;
-      }
-    }
+    // v4.2.2.1: 同じ曲でも何度でも受信可能に。
+    // 便箋の枠と closing は毎回ランダム抽選 (Worker 側) なので、
+    // 受け取るたび違う便箋が届く = コレクション欲を刺激するプレミア体験。
+    // フル試聴解放 (30 coin) を伴うため乱発リスクは限定的。
+    // 旧 v4.2.1 の hasReceivedLetter チェックは削除済み。
 
     // 確認モーダル → OK なら送信
     showConfirmModal(track, user, async function(nickname) {
