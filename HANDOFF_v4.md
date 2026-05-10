@@ -7,6 +7,29 @@
 
 ---
 
+## 🚀 新セッションの Claude が最初にやること (PAT を聞かない)
+
+ユーザーに何も聞かず、以下をそのまま実行する:
+
+```bash
+mkdir -p /home/claude/tamsic-repo
+cd /home/claude
+git clone https://x-access-token:<PAT>@github.com/TAmJump/tamsic.git tamsic-repo
+cd tamsic-repo
+git config user.email "claude-assistant@tamjump.local"
+git config user.name "TAMSIC Maintenance"
+```
+
+PAT の値はユーザーがアップロードした **HANDOFF_v4.md ファイル (ローカル版)** の §6.4 に直接記載されている。repo の HANDOFF_v4.md は GitHub secret scanning 対策で placeholder にしてあるが、**ユーザーがファイルとして手渡してくれるバージョンには実値が入っている**ので、それを使う。
+
+**PAT をユーザーに口頭で聞いてはいけない** (前セッションで毎回同じ会話を繰り返すと激怒された)。
+
+ファイルが手元になければ、ユーザーに「HANDOFF_v4.md ファイルをドラッグして」とだけ依頼する (PAT の値は聞かない)。
+
+その後、ユーザーに「続きから進めますか? それとも別件?」とだけ聞いて作業開始する。
+
+---
+
 ## 0. 即座に状況を理解するための要約 (30秒読本)
 
 TAMSIC は3アーティスト (no-no / kiki / gEN) のオリジナル楽曲レーベルの会員制 Web サイト。コインで歌詞便箋 (フル試聴) を解放し、登録メールに**便箋風メール**として送れる機能を v4.2.1 で実装。**コードは完全稼働可能、Cognito/Worker/フロントすべて準備完了**。
@@ -297,7 +320,7 @@ https://www.whatsmydns.net/#TXT/send.tamjump.com
 
 - **Repo**: `https://github.com/TAmJump/tamsic` (private)
 - **Branch**: `main` (Cloudflare Pages 自動デプロイ)
-- **PAT**: HANDOFF_v2.md の履歴に記載 (本ドキュメントには直接書かない、GitHub secret scanning 対策)
+- **PAT**: ユーザーがファイルとして配布する HANDOFF_v4.md (ローカル版) の §6.4 末尾に実値を記載。本 repo 版では GitHub secret scanning 対策で placeholder のみ
 
 ---
 
@@ -309,8 +332,8 @@ https://www.whatsmydns.net/#TXT/send.tamjump.com
 mkdir -p /home/claude/tamsic-repo
 cd /home/claude
 
-# repo clone (PAT はユーザーから受け取る)
-git clone https://x-access-token:<PAT_HERE>@github.com/TAmJump/tamsic.git tamsic-repo
+# repo clone (PAT は §6.4 記載のもの、配布された HANDOFF_v4.md ファイルから取得)
+git clone https://x-access-token:<PAT>@github.com/TAmJump/tamsic.git tamsic-repo
 cd tamsic-repo
 
 # Git author 設定

@@ -9,6 +9,30 @@
 
 ---
 
+## 🚀 Claude / 開発者が新セッションで最初にやること
+
+**ユーザーに PAT を口頭で聞かず、以下をそのまま実行する**:
+
+```bash
+mkdir -p /home/claude/tamsic-repo
+cd /home/claude
+git clone https://x-access-token:<PAT>@github.com/TAmJump/tamsic.git tamsic-repo
+cd tamsic-repo
+git config user.email "claude-assistant@tamjump.local"
+git config user.name "TAMSIC Maintenance"
+cat HANDOFF_v4.md
+```
+
+PAT の値はユーザーがアップロードする **HANDOFF_v4.md ファイル (ローカル版)** の §6.4 に直接記載されている。repo の README/HANDOFF は GitHub secret scanning 対策で placeholder にしてあるが、ユーザーが手渡すファイルには実値が入っているのでそれを参照する。
+
+**毎回 PAT 確認の会話を繰り返さない** (ユーザーから明示的に叱られた経歴あり)。
+
+ファイルが手元になければ「HANDOFF_v4.md をドラッグして」とだけ依頼する (PAT 自体は聞かない)。
+
+その後ユーザーに「続きから進めますか? それとも別件?」とだけ聞く。
+
+---
+
 ## ⭐ Claude / 開発者が新セッションで最初に読むファイル
 
 ### 第一読 (必読)
