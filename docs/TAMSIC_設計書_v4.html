@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TAMSIC 設計書 v4 完全統合版</title>
+<title>TAMSIC 設計書 v4.2.2.14 完全統合版</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -120,9 +120,10 @@ ul.styled li strong{color:var(--black)}
   <div class="h-label">System Design Document — Standalone Edition</div>
   <h1>TAM<em>S</em>IC 設計書</h1>
   <p>音楽レーベル・会員制試聴サイト — 収益化導線・認証・歌詞保護・自動化を含む完全統合版</p>
-  <div class="meta">Version 4.0　／　2026.04.22　／　対象: 運用担当・開発担当・引継ぎ先　／　Confidential</div>
+  <div class="meta">Version 4.2.2.14　／　2026.05.12　／　対象: 運用担当・開発担当・引継ぎ先　／　Confidential</div>
   <div class="standalone-banner">
-    <strong>本設計書 1 つで 100% 引き継ぎ可能。</strong>過去の v1 / v2 / v3 を参照せずに TAMSIC を運用・開発・引継ぎできるよう設計されています。本ファイル＋ソースコード（GitHub repo）のみで完結します。
+    <strong>本設計書 1 つで 100% 引き継ぎ可能。</strong>過去の v1 / v2 / v3 を参照せずに TAMSIC を運用・開発・引継ぎできるよう設計されています。本ファイル＋ソースコード（GitHub repo）のみで完結します。<br>
+    <strong>セッション⑨ (2026-05-10〜12) 反映済</strong>: v4.2.2 から v4.2.2.14 までの 14 段階の変更 (Web 便箋ミニマル化、メール 2 列、同曲複数受信、フル試聴整合性、スマホ残高バグ修正、ハンバーガーメニュー、index.html hero スマホ調整、News 縦並び、会員先行廃止、gEN 新曲 2 曲追加、release 日 YouTube 統一、ADMIN 撤廃) を本文と改訂履歴の両方に記載。
   </div>
 </header>
 
@@ -151,7 +152,8 @@ ul.styled li strong{color:var(--black)}
   </ol>
   <div class="toc-group">Part C — 楽曲・コンテンツ運用</div>
   <ol start="12">
-    <li><span class="num">12</span><a href="#s12">楽曲公開スケジュール</a></li>
+    <li><span class="num">12</span><a href="#s12">楽曲公開スケジュール</a> <span style="font-size:.75rem;color:var(--gold)">(v4.2.2.14 最新)</span></li>
+    <li><span class="num">12 旧</span><a href="#s12old">楽曲公開スケジュール (v4.2 まで、廃止)</a> <span style="font-size:.75rem;color:var(--g4)">歴史記録</span></li>
     <li><span class="num">13</span><a href="#s13">新曲を追加する手順</a></li>
     <li><span class="num">14</span><a href="#s14">新アーティストを追加する手順</a></li>
     <li><span class="num">14a</span><a href="#s14a">push 前検証（preflight.js）</a></li>
@@ -168,9 +170,10 @@ ul.styled li strong{color:var(--black)}
   <div class="toc-group">Part E — セキュリティ・運用履歴</div>
   <ol start="21">
     <li><span class="num">21</span><a href="#s21">セキュリティ監査・運用ルール</a></li>
-    <li><span class="num">22</span><a href="#s22">将来の拡張計画</a></li>
+    <li><span class="num">22</span><a href="#s22">将来の拡張計画</a> <span style="font-size:.75rem;color:var(--gold)">(Phase H1/H2 追加)</span></li>
     <li><span class="num">23</span><a href="#s23">トラブル対応記録</a></li>
     <li><span class="num">24</span><a href="#s24">他サービスとの統一事項</a></li>
+    <li><span class="num">25</span><a href="#s25">スマホ UI / ハンバーガーメニュー</a> <span style="font-size:.75rem;color:var(--gold)">(v4.2.2.5〜11 新規)</span></li>
   </ol>
 </nav>
 
@@ -776,8 +779,8 @@ Square 決済完了
     <div class="funnel-step good"><div class="funnel-phase">01 見る</div><div class="funnel-label">曲一覧・カバーが目に入る</div><div class="funnel-action">モザイク・ロックアイコンで「今触れない何か」を認識させる。</div></div>
     <div class="funnel-step good"><div class="funnel-phase">02 気になる</div><div class="funnel-label">再生ボタンを押す</div><div class="funnel-action">未公開 or 先行曲 → 即座に gate-modal で誘導。</div></div>
     <div class="funnel-step good"><div class="funnel-phase">03 登録</div><div class="funnel-label">TAMSIC 内でログイン／登録</div><div class="funnel-action">AWS ドメインに飛ばず、同じページ内のフォームで完結。</div></div>
-    <div class="funnel-step good"><div class="funnel-phase">04 サンプル解放</div><div class="funnel-label">30 秒サンプルが聴ける</div><div class="funnel-action">sampleStart / sampleEnd で「Bメロ直前で切れる」ように調整。</div></div>
-    <div class="funnel-step good"><div class="funnel-phase">05 フル欲求</div><div class="funnel-label">「フル試聴」ボタン（コイン数表示）</div><div class="funnel-action">押す前からコイン数と残高が見える。不足ならその場で購入導線。</div></div>
+    <div class="funnel-step good"><div class="funnel-phase">04 サンプル解放</div><div class="funnel-label">30 秒サンプルが聴ける</div><div class="funnel-action">sampleStart / sampleEnd で「Bメロ直前で切れる」ように調整。<br><span style="color:var(--red);font-size:.78rem">⚠ v4.2.2.12 (2026-05-12) でサイト内蔵プレイヤー (「サイトで聴く」) は廃止。サンプル試聴は YouTube 埋込に統一。sampleStart / sampleEnd フィールドは不要に。代わりに各曲タブが [YouTube] [フル試聴 30coin] の 2 タブ構成となる。</span></div></div>
+    <div class="funnel-step good"><div class="funnel-phase">05 フル欲求</div><div class="funnel-label">「フル試聴」ボタン（コイン数表示）</div><div class="funnel-action">押す前からコイン数と残高が見える。不足ならその場で購入導線。<br><span style="color:var(--gold);font-size:.78rem">📌 v4.2.2.2 (2026-05-10): 30 coin 消費 = フル試聴 1 回 + レター送信権 1 通の整合性確保。送信後はボタンが「送信済み」表示に置換され、再度欲しい場合はフル試聴ボタンを再度押す (= さらに 30 coin) ことで新しい frame / closing の便箋が再抽選される。</span></div></div>
     <div class="funnel-step good"><div class="funnel-phase">06 コイン購入</div><div class="funnel-label">My Page の購入パネル</div><div class="funnel-action">Square 外部リンク → 戻って「反映する」→ フル解放。</div></div>
     <div class="funnel-step good"><div class="funnel-phase">07 継続</div><div class="funnel-label">次の先行曲を待つ</div><div class="funnel-action">My Page が「次に何が来るか」を見せる場所になる。</div></div>
   </div>
@@ -860,10 +863,13 @@ TAMSICGate.<span class="v">showCoinShortage</span>({
   </table>
 
   <h3>モーダル文言（v4 統一版）</h3>
+  <div class="hint" style="background:var(--red-lt);border-left:3px solid var(--red);padding:12px 16px;margin-bottom:12px;font-size:.85rem">
+    <strong>⚠ v4.2.2.12 (2026-05-12) で会員先行視聴は廃止。</strong>YouTube サンプル公開日 = サイト表示日に統一されたため、下表の ① と ② のモーダル発火条件は無効化されている。現状の挙動は: 公開日前は誰 (会員/非会員問わず) が見ても <code>COMING SOON / YYYY.MM.DD 公開予定</code> ラベルとモザイクが出てフル試聴ボタンも無効、公開日以降は誰でも <code>NOW AVAILABLE / YYYY.MM.DD 公開</code> + 30 coin でフル試聴可能。下表は v4.2 までの仕様として歴史記録のため残置。
+  </div>
   <table>
     <tr><th>発火条件</th><th>表示文言（JP）</th></tr>
-    <tr><td>① 非会員が未公開曲の再生を押す</td><td>この曲はまだ公開前です。会員は一般公開の 14 日前から先行視聴できます。</td></tr>
-    <tr><td>② 非会員が先行期間の曲の再生を押す</td><td>この曲は会員先行公開中です。ログインして視聴する。</td></tr>
+    <tr><td>① 非会員が未公開曲の再生を押す <span style="color:var(--red);font-size:.75rem">(v4.2.2.12 廃止)</span></td><td>この曲はまだ公開前です。会員は一般公開の 14 日前から先行視聴できます。</td></tr>
+    <tr><td>② 非会員が先行期間の曲の再生を押す <span style="color:var(--red);font-size:.75rem">(v4.2.2.12 廃止)</span></td><td>この曲は会員先行公開中です。ログインして視聴する。</td></tr>
     <tr><td>③ 非会員がフル試聴を押す</td><td>ここから先は会員限定です。</td></tr>
     <tr><td>④ 会員がフル試聴を押す（コイン充足）</td><td>{N} コインで 1 回フル試聴します。</td></tr>
     <tr><td>⑤ 会員がフル試聴を押す（コイン不足）</td><td>残高が不足しています。この曲のフル試聴には {N} coin 必要です。</td></tr>
@@ -936,6 +942,14 @@ TAMSICGate.<span class="v">showCoinShortage</span>({
   <h3>🟢 v4.2 拡張: 歌詞便箋（Web フォント直描画 + ランダム枠抽選）</h3>
   <div class="hint">
     <strong>目的:</strong> v4.1 の画像化方式（マキ丸ハンド + Word + PDF → PNG）を廃止し、SIL OFL ライセンスの <strong>Web フォントを直接描画</strong>する方式に全面移行。新曲追加時の画像生成コストをゼロにし、レスポンシブ・アクセシビリティ・Dear ●● 動的差し替えを可能にする。さらに <strong>18種の便箋枠ランダム抽選</strong>（基本10 + 季節4 + 記念日2 + レア2）と <strong>closing 一文ランダム化</strong>でレターごとの一期一会感を演出する。
+  </div>
+
+  <div class="hint" style="background:#FFF8E8;border-left:3px solid var(--gold);padding:14px 18px;margin:16px 0">
+    <strong>📌 v4.2.2 (2026-05-10) — Web 便箋ミニマル化:</strong> Web 上に表示する便箋から <strong>creator's note / closing / signature / footer (Air Mail + 日付スタンプ)</strong> を全て削除し、<strong>メール限定要素</strong>とする役割分担に変更。Web は「歌詞ビューア」として歌詞のみ表示、メールが「完成された手紙作品」としてプレミア感を演出する設計。同時に「別の一文」(reroll) ボタンも廃止、TAMSICLetter.reroll() メソッドも削除。下位の「便箋構成要素」セクションは v4.2 仕様 (Web に全要素表示) として歴史記録のため残置、現行 (v4.2.2 以降) は Web には歌詞のみ表示される。<br><br>
+    <strong>📌 v4.2.2 (2026-05-10) — メール歌詞 2 列レイアウト:</strong> Gmail / Outlook は CSS の column-count に非対応のため、Worker (workers/send-letter.js) で歌詞テキストを <code>&lt;table&gt;</code> の左右 2 セルに分割するアルゴリズム lyricsToTwoColumnTable() を実装。段落単位で行数バランス最大化 (段落途中で切らない貪欲法)。実機検証: nono-004「ぎりぎりだよ。」(16段落 / 61行) で左32行・右29行に綺麗に分割成功。<br><br>
+    <strong>📌 v4.2.2.1 (2026-05-10) — 同曲レター複数回受信解禁:</strong> letter-send.js の hasReceivedLetter チェックを削除。フル試聴 (30 coin) 課金縛りがあるので乱発リスクは限定的。便箋枠 (18 種) と closing (現 ~25 通り、Phase H1 で 500 通りに拡張予定) が毎回ランダム抽選されるため、同じ曲でも異なる便箋が届く「コレクション体験」が成立。確認モーダル文言を「便箋の枠と結びの一文は、毎回ランダムに選ばれます」に変更。<br><br>
+    <strong>📌 v4.2.2.2 (2026-05-10) — フル試聴 1 回 / レター 1 通の整合性:</strong> letter-send.js で送信成功時に当該 trackId の receive-btn を <code>&lt;span class="sent-mark"&gt;送信済み — フル試聴を再解放すると別の便箋が届きます&lt;/span&gt;</code> に置換 (replaceWith)。多重描画ガードを撤廃し、unlockFullTrack のたびに既存便箋とアクションを削除して再描画する設計に変更。これにより「30 coin = フル試聴 1 回 + レター送信権 1 通」のコイン経済設計が成立。もう 1 通欲しい場合はフル試聴ボタンを再度押す (= さらに 30 coin) ことで新しい frame / closing の便箋が再抽選される。<br><br>
+    <strong>📌 v4.2.2.3 (2026-05-10) — closing の品質ポリシー:</strong> nono-004「ぎりぎりだよ。」の説教調 closing「●●さん、約束はまだ守れる。」を削除。曲の creator's note (弱さを認めて寄り添う) と矛盾する命令調 / 約束を強いる構造が判明したため。残存 closing: 「●●さん、ぎりぎりでも、ここにいてくれてありがとう。」「●●さん、まだここにいるよ。」。アーティストのトーン定義 (no-no = 寄り添う側、上から指導しない、命令・誓約系 NG、ありがとう / ここにいる / いてくれて など受容系を推奨) は Phase H1 で正式に策定予定。
   </div>
 
   <div class="hint hint-red">
@@ -1231,7 +1245,104 @@ custom:letterHistory   <span class="c">// JSON: [{trackId, frameId, closingIdx, 
 <section id="s12">
   <div class="st"><span class="sn">12</span>楽曲公開スケジュール</div>
 
-  <h3>公開状態の種類</h3>
+  <div class="hint" style="background:#FFF8E8;border-left:3px solid var(--gold);padding:14px 18px;margin:16px 0">
+    <strong>📌 v4.2.2.12 (2026-05-12) — 会員先行視聴廃止、YouTube 公開日 = サイト表示日に統一:</strong> release-control.js の config.tracks から sample 日を全削除し release のみに集約。state も sample/preview/member/full の 4 値から <strong>locked / full の 2 値</strong>に簡素化。EARLY ACCESS NOW セクションと COMING UP NEXT のロジック (上記) は state === 'member' を返さなくなるため事実上機能停止 (UI からも表示されなくなる)。同時に全 HTML から「サイトで聴く」(mode-btn site / panel-site) を削除し、サンプル試聴は YouTube 埋込に一本化。<br><br>
+    <strong>📌 v4.2.2.13 (2026-05-12) — release 日を YouTube サンプル公開日に統一:</strong> TAmJump 提供の YouTube Studio スクショから正確な公開予約日を読み取り、release-control.js を補正。11 曲ずれていた日付を一括修正 (詳細は下表)。<br><br>
+    <strong>📌 v4.2.2.14 (2026-05-12) — ADMIN 特権撤廃 + 公開済ラベル日付化:</strong> _isAdmin() / ADMIN_EMAILS を完全削除。TAmJump も一般ユーザーと同じ挙動 (公開日前は COMING SOON + モザイク、フル試聴ボタン無効)。getMeta() の公開済ラベルを <code>label:'公開中' note:'公開中'</code> から <code>label:'NOW AVAILABLE' note:'YYYY.MM.DD 公開'</code> に変更、公開日が UI で見えるように。動作確認は別アカウント (例: 専用テストアカウント、liberty.2wink7@gmail.com のような一般会員アカウント) でログインする運用に変更。
+  </div>
+
+  <h3>公開状態の種類 (v4.2.2.14 現行)</h3>
+  <table>
+    <tr><th>状態</th><th>条件</th><th>UI 表示</th><th>挙動</th></tr>
+    <tr><td><code>locked</code></td><td>release 日より前</td><td>COMING SOON / YYYY.MM.DD 公開予定 + モザイク + ロックアイコン</td><td>YouTube タブは「動画は非公開です」(YouTube 側も未公開)、フル試聴ボタン無効、canSample:false, canFull:false</td></tr>
+    <tr><td><code>full</code></td><td>release 日以降</td><td>NOW AVAILABLE / YYYY.MM.DD 公開 + モザイクなし</td><td>YouTube タブで埋込再生、フル試聴 30 coin で 1 回試聴 + レター送信 1 通、canSample:true, canFull:true</td></tr>
+  </table>
+
+  <h3>現在のスケジュール（v4.2.2.14 反映、release-control.js より）</h3>
+  <table>
+    <tr><th>楽曲</th><th>アーティスト</th><th>release 日 (YouTube サンプル公開日)</th><th>MP3 配置</th></tr>
+    <tr><td>ぎりぎりだよ。</td><td>no-no</td><td>2026/04/24</td><td>repo 配置済</td></tr>
+    <tr><td>RE+</td><td>no-no</td><td>2026/05/01</td><td>(以降は Vault で待機中、公開日に合わせて配置予定)</td></tr>
+    <tr><td>to Walk</td><td>no-no</td><td>2026/06/01</td><td>Vault</td></tr>
+    <tr><td>シグナル●</td><td>no-no</td><td>2026/07/01</td><td>Vault</td></tr>
+    <tr><td>Breathless</td><td>no-no</td><td>2026/08/01</td><td>Vault</td></tr>
+    <tr><td>unセカイ (kiki / gen 共通タイトル)</td><td>kiki-006 / gen-001</td><td>2026/05/01</td><td>repo 配置済</td></tr>
+    <tr><td>Burn bright</td><td>kiki-001</td><td>2026/05/10</td><td>Vault</td></tr>
+    <tr><td>Critical point</td><td>kiki-002</td><td>2026/06/20</td><td>Vault</td></tr>
+    <tr><td>No Stop</td><td>kiki-003</td><td>2026/07/11</td><td>Vault</td></tr>
+    <tr><td>エンジン</td><td>kiki-004</td><td>2026/08/15</td><td>Vault</td></tr>
+    <tr><td>KIKI rising</td><td>kiki-005</td><td>2026/09/12</td><td>Vault</td></tr>
+    <tr style="background:#FFF8E8"><td>Dear Future You <span style="font-size:.75rem;color:var(--gold)">(v4.2.2.12 追加)</span></td><td>gen-002</td><td>2026/05/23</td><td>repo 配置済 (gen_dearfutureyou.mp3, 5.4MB)</td></tr>
+    <tr style="background:#FFF8E8"><td>Echo from the Future <span style="font-size:.75rem;color:var(--gold)">(v4.2.2.12 追加)</span></td><td>gen-003</td><td>2026/05/30</td><td>repo 配置済 (gen_echofromthefuture.mp3, 6.3MB)</td></tr>
+  </table>
+  <p style="font-size:.86rem;color:var(--g6);margin-top:8px">合計 <strong>14 曲</strong> (no-no: 5、kiki: 6、gEN: 3)。release 日 = YouTube サンプル公開日。同日に サイト内でフル試聴 (30 coin) も解放される。</p>
+
+  <div class="hint hint-gold">
+    <strong>自動切り替え:</strong> 日付が来ると自動でロック解除される (release-control.js)。<br>
+    <strong>⚠ v4.2.2.12 注:</strong> 旧 v4.1 で導入された GitHub Actions による「会員先行日が来た曲の MP3 を Vault から自動で本番 repo に配置する」自動化 (§18 参照) は、会員先行廃止後はトリガー日が release 日のみとなる。スクリプトは現在も生きているが運用ポリシーとして再評価対象 (Phase H 以降で整理予定)。
+  </div>
+
+  <h3>release-control.js の構造 (v4.2.2.14)</h3>
+  <pre class="code"><span class="c">// release 日 (YouTube サンプル公開日と同期) を曲タイトルで指定。</span>
+<span class="c">// この日付以降 = 公開、未満 = COMING SOON。</span>
+<span class="c">// 仕様: YouTube サンプル公開と同時に、サイト内でもフル試聴 (30 coin) を解放。</span>
+<span class="k">const</span> config = { tracks: {
+  <span class="s">"ぎりぎりだよ。"</span>:        { release:<span class="s">"2026-04-24"</span> },
+  <span class="s">"RE+"</span>:                 { release:<span class="s">"2026-05-01"</span> },
+  <span class="s">"to Walk"</span>:             { release:<span class="s">"2026-06-01"</span> },
+  <span class="s">"シグナル●"</span>:            { release:<span class="s">"2026-07-01"</span> },
+  <span class="s">"Breathless"</span>:          { release:<span class="s">"2026-08-01"</span> },
+  <span class="s">"unセカイ"</span>:             { release:<span class="s">"2026-05-01"</span> },
+  <span class="s">"Burn bright"</span>:         { release:<span class="s">"2026-05-10"</span> },
+  <span class="s">"Critical point"</span>:      { release:<span class="s">"2026-06-20"</span> },
+  <span class="s">"No Stop"</span>:             { release:<span class="s">"2026-07-11"</span> },
+  <span class="s">"エンジン"</span>:             { release:<span class="s">"2026-08-15"</span> },
+  <span class="s">"KIKI rising"</span>:         { release:<span class="s">"2026-09-12"</span> },
+  <span class="s">"Dear Future You"</span>:     { release:<span class="s">"2026-05-23"</span> },
+  <span class="s">"Echo from the Future"</span>:{ release:<span class="s">"2026-05-30"</span> }
+}};
+
+<span class="k">function</span> <span class="v">getState</span>(title) {
+  <span class="k">const</span> t = config.tracks[title]; <span class="k">if</span> (!t) <span class="k">return</span> <span class="s">"full"</span>;
+  <span class="k">const</span> now = <span class="k">new</span> <span class="v">Date</span>(), release = <span class="v">parseDate</span>(t.release);
+  <span class="k">if</span> (now &lt; release) <span class="k">return</span> <span class="s">"locked"</span>;
+  <span class="k">return</span> <span class="s">"full"</span>;
+}
+
+<span class="k">function</span> <span class="v">getMeta</span>(title) {
+  <span class="k">const</span> t = config.tracks[title];
+  <span class="k">const</span> st = <span class="v">getState</span>(title);
+  <span class="k">if</span> (st === <span class="s">"locked"</span>) <span class="k">return</span> { state:st,
+    label: <span class="s">"COMING SOON"</span>,
+    note:  <span class="s">`</span>${<span class="v">formatJP</span>(t.release)}<span class="s"> 公開予定`</span>,
+    showMask: <span class="k">true</span>, canSample: <span class="k">false</span>, canFull: <span class="k">false</span>, icon: <span class="k">true</span>
+  };
+  <span class="k">return</span> { state:st,
+    label: <span class="s">"NOW AVAILABLE"</span>,
+    note:  <span class="s">`</span>${<span class="v">formatJP</span>(t.release)}<span class="s"> 公開`</span>,
+    showMask: <span class="k">false</span>, canSample: <span class="k">true</span>, canFull: <span class="k">true</span>, icon: <span class="k">false</span>
+  };
+}</pre>
+
+  <h3>Admin unlock（v4.2.2.14 で廃止）</h3>
+  <div class="hint hint-red">
+    <strong>⚠ v4.2.2.14 (2026-05-12) で Admin unlock 機能は完全に廃止された。</strong>release-control.js から <code>_isAdmin()</code> 関数と <code>ADMIN_EMAILS</code> 配列が削除され、TAmJump (tiger@tamjump.com / animalb001@gmail.com) も一般ユーザーと同じ挙動になる。下記の「2026.04.23 追加」記述は v4.1〜v4.2.2.13 までの仕様として歴史記録のため残置。<br><br>
+    <strong>廃止理由:</strong> TAmJump 自身が常時 full 扱いで全曲モザイクなし表示になっていたため、公開日前後の UI を実機で確認できず、また「他ユーザーがどう見えるか」を体感できなかった問題が判明 (2026-05-12 ユーザー報告)。<br><br>
+    <strong>新運用:</strong> 動作確認は別アカウント (例: 専用テストアカウント、liberty.2wink7@gmail.com のような一般会員アカウント) でログインする。コイン残高が必要な場合は AWS Cognito Console から <code>custom:coins</code> を直接書換える運用 (docs/TAMSIC_運用マニュアル.md §1.3 参照)。
+  </div>
+  <div class="hint hint-blue" style="margin-top:12px;opacity:0.65">
+    <strong>2026.04.23 追加 (v4.1〜v4.2.2.13 仕様、v4.2.2.14 で廃止):</strong><span class="mono">release-control.js</span> の冒頭に <span class="mono">ADMIN_EMAILS</span> 配列を定義していた。ここに登録したメールアドレスで TAMSIC にログインしたユーザーは、公開日に関係なく全曲が <span class="mono">"full"</span> 状態として見えた。運営が実機で UI 確認したい場合の救済措置として設計された。
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<section id="s12old">
+  <div class="st"><span class="sn">12 旧</span>楽曲公開スケジュール (v4.2 まで、会員先行 14 日前体系)</div>
+  <div class="hint hint-red">
+    <strong>⚠ v4.2.2.12 (2026-05-12) で本セクションの体系は廃止された。</strong>以下は v4.1〜v4.2.2.11 までの仕様として歴史記録のため残置。現行は §12 を参照。
+  </div>
+
+  <h3>旧・公開状態の種類 (v4.2 まで)</h3>
   <table>
     <tr><th>状態</th><th>条件</th><th>表示</th></tr>
     <tr><td>COMING SOON</td><td>sample 公開日より前</td><td>カバーモザイク・試聴不可</td></tr>
@@ -1239,7 +1350,7 @@ custom:letterHistory   <span class="c">// JSON: [{trackId, frameId, closingIdx, 
     <tr><td>NOW AVAILABLE</td><td>一般公開日以降</td><td>全ユーザーがサンプル試聴可／フルは会員＋コイン</td></tr>
   </table>
 
-  <h3>現在のスケジュール（no-no）</h3>
+  <h3>旧・現在のスケジュール（no-no、v4.2 まで）</h3>
   <table>
     <tr><th>楽曲</th><th>会員先行（sample）</th><th>一般公開</th><th>MP3配置</th></tr>
     <tr><td>ぎりぎりだよ。</td><td>2026/04/01</td><td>2026/04/15</td><td>repo 配置済</td></tr>
@@ -1249,7 +1360,7 @@ custom:letterHistory   <span class="c">// JSON: [{trackId, frameId, closingIdx, 
     <tr><td>Breathless</td><td>2026/08/01</td><td>2026/08/15</td><td>Vault で待機中</td></tr>
   </table>
 
-  <h3>現在のスケジュール（kiki）</h3>
+  <h3>旧・現在のスケジュール（kiki、v4.2 まで）</h3>
   <table>
     <tr><th>楽曲</th><th>会員先行（sample）</th><th>一般公開</th><th>MP3配置</th></tr>
     <tr><td>unセカイ</td><td>2026/05/01</td><td>2026/05/01</td><td>repo 配置済 <span style="color:var(--red)">⚠️ 事前漏洩リスク</span></td></tr>
@@ -1260,33 +1371,26 @@ custom:letterHistory   <span class="c">// JSON: [{trackId, frameId, closingIdx, 
     <tr><td>KIKI rising</td><td>2027/01/01</td><td>2027/01/15</td><td>Vault で待機中</td></tr>
   </table>
 
-  <h3>現在のスケジュール（gEN）</h3>
+  <h3>旧・現在のスケジュール（gEN、v4.2 まで）</h3>
   <table>
     <tr><th>楽曲</th><th>会員先行（sample）</th><th>一般公開</th><th>MP3配置</th></tr>
     <tr><td>unセカイ</td><td>2026/05/01</td><td>2026/05/01</td><td>repo 配置済 <span style="color:var(--red)">⚠️ 事前漏洩リスク</span></td></tr>
   </table>
   <div class="hint hint-blue">
     <strong>2026.04.23 追加（gEN）:</strong> 3人目のアーティスト gEN を追加。1st ナンバー「unセカイ」は kiki 版と同名・同日公開（sample/full 同時解放）。sample と full の公開日を同日にする新しいスケジュールパターンを採用（従来の「1日 sample / 15日 full」と異なる）。
+
   </div>
 
-  <div class="hint hint-gold">
-    <strong>自動切り替え＆自動配置:</strong> 日付が来ると自動でロック解除される（release-control.js）。さらに GitHub Actions が毎日 JST 00:10 に実行され、会員先行日が来た曲の MP3 を Vault から自動で本番 repo に配置する（§18 参照）。人間の介入は不要。
-  </div>
-
-  <h3>release-control.js の構造</h3>
+  <h3>旧・release-control.js の構造 (v4.2 まで)</h3>
   <pre class="code"><span class="k">const</span> config = { tracks: {
   <span class="s">"ぎりぎりだよ。"</span>: { sample:<span class="s">"2026-04-01"</span>, release:<span class="s">"2026-04-15"</span> },
   <span class="s">"RE+"</span>:         { sample:<span class="s">"2026-05-01"</span>, release:<span class="s">"2026-05-15"</span> },
   <span class="c">// ...</span>
 }};</pre>
+  <p style="font-size:.86rem;color:var(--g6);margin-top:8px">キーは曲の日本語タイトル。値は sample（会員先行公開日）と release（一般公開日）の 2 日付。v4.2.2.12 で sample フィールドは削除され、release のみになった。</p>
 
-  <p style="font-size:.86rem;color:var(--g6);margin-top:8px">キーは曲の日本語タイトル。値は sample（会員先行公開日）と release（一般公開日）の 2 日付。</p>
-
-  <h3>Admin unlock（運営用全曲解放）</h3>
-  <div class="hint hint-blue">
-    <strong>2026.04.23 追加。</strong><span class="mono">release-control.js</span> の冒頭に <span class="mono">ADMIN_EMAILS</span> 配列を定義。ここに登録したメールアドレスで TAMSIC にログインしたユーザーは、公開日に関係なく全曲が <span class="mono">"full"</span> 状態として見える。運営が実機で UI 確認したい場合の救済措置。
-  </div>
-  <pre class="code"><span class="c">// release-control.js 冒頭</span>
+  <h3>旧・Admin unlock 実装（v4.2.2.13 まで、v4.2.2.14 で完全削除）</h3>
+  <pre class="code"><span class="c">// release-control.js 冒頭 (v4.2.2.13 まで存在、v4.2.2.14 で削除)</span>
 <span class="k">const</span> ADMIN_EMAILS = [<span class="s">"animalb001@gmail.com"</span>];
 
 <span class="k">function</span> _isAdmin() {
@@ -1307,8 +1411,9 @@ custom:letterHistory   <span class="c">// JSON: [{trackId, frameId, closingIdx, 
   <span class="k">if</span> (_isAdmin()) <span class="k">return</span> <span class="s">"full"</span>; <span class="c">// ← ここで全曲解放</span>
   <span class="c">// ...通常の日付判定</span>
 }</pre>
-  <div class="hint hint-gold">
-    <strong>⚠️ 制約:</strong> Admin unlock は UI ロックを解除するだけで、未公開曲の MP3 が本番 repo に無ければ再生時に 404 になる（§21 の Vault 運用に従うほど、admin でも再生不可）。UI レイアウトや課金導線の動作確認には使えるが、実音源の試聴確認には別途 MP3 の手動配置が必要。複数メールを登録する場合は配列に追加（<span class="mono">["a@x","b@y"]</span>）。
+  <div class="hint hint-gold" style="opacity:0.65">
+    <strong>⚠️ 旧制約 (v4.2.2.13 まで):</strong> Admin unlock は UI ロックを解除するだけで、未公開曲の MP3 が本番 repo に無ければ再生時に 404 になった（§21 の Vault 運用に従うほど、admin でも再生不可）。UI レイアウトや課金導線の動作確認には使えるが、実音源の試聴確認には別途 MP3 の手動配置が必要だった。複数メールを登録する場合は配列に追加（<span class="mono">["a@x","b@y"]</span>）。<br><br>
+    <strong>v4.2.2.14 で本機能は完全廃止</strong>。理由は §12 上部の v4.2.2.14 注記を参照。
   </div>
 </section>
 
@@ -1779,15 +1884,66 @@ chmod +x .git/hooks/pre-commit</pre>
 <section id="s22">
   <div class="st"><span class="sn">22</span>将来の拡張計画</div>
 
-  <h3>🔴 優先対応（体験向上）</h3>
+  <div class="hint" style="background:#FFF8E8;border-left:3px solid var(--gold);padding:14px 18px;margin:16px 0">
+    <strong>📌 セッション⑨ (2026-05-10〜12) 終了時点でのフェーズ整理:</strong> v4.2.2 までで Phase A〜G が完了。v4.2.2.1〜14 で追加機能群が完成 (詳細は本ページ下部の改訂履歴フッターを参照)。次フェーズは <strong>Phase H1 (closing 500通り + 14曲分の creatorNote 執筆)</strong> と <strong>Phase H2 (closing 多言語化)</strong>。詳細は <code>docs/TAMSIC_TODO_v4.md</code> 参照。
+  </div>
+
+  <h3>✅ セッション⑨で解決済 / 完了済 (旧フェーズ)</h3>
+  <ul class="styled" style="opacity:0.75">
+    <li><strong>Square Webhook 連携</strong> → まだ未実装、引き続き今後の課題 (下の優先対応に再掲)</li>
+    <li><strong>アクセストークン自動更新</strong> → ✅ v4.2.1 で解決済 (auth.js の refresh_token 自動更新、60 分問題なし)</li>
+    <li><strong>レター（手紙）メール送信機能の本実装</strong> → ✅ v4.2.2 で本番稼働中 (Resend + Cloudflare Worker tamsic-send-letter、Web ミニマル / メール 2 列 / 同曲複数回受信)</li>
+    <li><strong>スマホで残高 0 表示バグ</strong> → ✅ v4.2.2.4 で解決 (auth.js の _ensureFreshTokenOnLoad でトークン新鮮時も Cognito 同期)</li>
+    <li><strong>スマホ用ハンバーガーメニュー + 全 13 HTML スマホ最適化</strong> → ✅ v4.2.2.5 で完成 (mobile-nav.js / mobile.css)</li>
+    <li><strong>会員先行視聴 + 内蔵プレイヤー廃止、YouTube 公開日 = サイト表示日 統一</strong> → ✅ v4.2.2.12 で完成</li>
+    <li><strong>ADMIN 特権撤廃 + 公開済ラベル日付化</strong> → ✅ v4.2.2.14 で完成</li>
+  </ul>
+
+  <h3>🔴 Phase H1 (最優先、次セッション着手): closing 500 通り生成 + creatorNote 執筆</h3>
+  <div class="flow">
+    <div class="fs todo">
+      <div><div class="ft">closing 大量生成 (現 ~25 通り → 500 通り)</div>
+      <div class="fd">分配案 (合意済): 共通 100 + アーティスト別 150 (各 50) + 曲別 240 (12 曲 × 20) + 誕生日 30 + 誕生月 20 + 周年 15 = 555。通常時 1 曲あたり引かれるプール = 共通 100 + アーティスト 50 + 曲別 20 = 170 通り、便箋総組合せ 18 枠 × 170 = 3,060 通り (1 曲あたり)、全 12 曲積み上げ 36,720 体験。<br>
+      <strong>生成方針</strong>: アーティストのトーン定義 (no-no = 寄り添う側、kiki = 元気で明るい、gEN = 内省的) を確定 → AI 生成 + アーティスト本人視点でリライト。前提として、アーティスト 3 名のトーン定義シート (語尾、距離感、世界観、禁則、推奨語彙) を最初に作成する必要あり。</div></div>
+    </div>
+    <div class="fs todo">
+      <div><div class="ft">14 曲分の creatorNote 執筆 (Phase H1 と並行)</div>
+      <div class="fd">tamsic-content.js 内、各 track の <code>creatorNote</code> (3-5 文の制作秘話、アーティスト本人視点) を投入する。<strong>進捗</strong>: 14 曲中 1 曲のみ確定 (nono-004「ぎりぎりだよ。」)。残り 13 曲が placeholder (gen-002 Dear Future You と gen-003 Echo from the Future を含む)。Phase H1 の closings 生成と同じ曲で同時にやると効率的。</div></div>
+    </div>
+  </div>
+
+  <h3>🟡 Phase H2 (保留、Phase H1 完成後): closing 多言語化 (案 D 採用)</h3>
+  <div class="hint hint-blue">
+    <strong>採用する設計 (案 D)</strong>:
+    <ul class="styled" style="margin-top:6px">
+      <li>デフォルト言語は <strong>日本語</strong> (歌詞・banner・signature・postmark は常に日本語固定)</li>
+      <li>英訳対象は <strong>closing と Creator's note のみ</strong> (= アーティストの肉声部分)</li>
+      <li>mypage に「Letter language: 🇯🇵日本語 / 🇺🇸English」セレクタを追加</li>
+      <li>海外会員にも「日本のレーベルから日本語の歌詞が届く」アイデンティティ感を保つ</li>
+    </ul>
+    <strong>理由</strong>: 完全英訳すると「機械翻訳された日本のサービス」感が出る。closing と creator's note だけ訳せば「アーティストが英語で結びを書いた」感が出て本人らしさを保てる。<br>
+    <strong>実装規模</strong>: Cognito に <code>custom:letterLang</code> 追加 (5 分) + mypage に選択 UI 追加 (1 時間) + letter-content.js を <code>{ ja: [...], en: [...] }</code> 構造に変更 (1 時間) + Worker pickClosing で user.letterLang に応じてプール選択 (30 分) + closing 英訳プール 500 通り作成 (DeepL or AI 生成 + レビュー、半日〜1 日)。<br>
+    <strong>前提</strong>: Phase H1 (日本語 closing 500 通り) が完成してから着手。<br>
+    <strong>追加言語の余地</strong>: 中国語繁体 / 韓国語 / スペイン語など、需要が見えてからプール追加。
+  </div>
+
+  <h3>🔴 優先対応（体験向上、引き続き未実装）</h3>
   <div class="flow">
     <div class="fs todo">
       <div><div class="ft">Square Webhook 連携（自動コイン付与）</div>
       <div class="fd">現状は手動の「購入を反映する」ボタン。Webhook で決済完了時に自動付与する仕組みには AWS Lambda + API Gateway（または Cloudflare Workers）が必要。</div></div>
     </div>
     <div class="fs todo">
-      <div><div class="ft">アクセストークン自動更新</div>
-      <div class="fd">現状はアクセストークン 60 分で期限切れ。refresh_token を使った自動更新を実装すればログインし直し不要。</div></div>
+      <div><div class="ft">スマホ UI 微調整</div>
+      <div class="fd">v4.2.2.5〜11 で大枠完成、実機フィードバックを受けて hero と SCROLL ラベル位置を継続調整中。次セッションで TAmJump の実機チェック結果を反映予定。</div></div>
+    </div>
+    <div class="fs todo">
+      <div><div class="ft">レターコレクション機能 (mypage 拡張)</div>
+      <div class="fd">mypage に「受け取ったレター履歴」セクション追加、<code>custom:letterHistory</code> を読取り、送信曲・日付・frame をリスト表示。frame アイコン (frame-K=桜、frame-O=誕生日) で視覚化、レア (Q/R) を獲得した記念演出。<strong>v4.2.2.1 で同曲複数回受信を解禁</strong>したため、letterHistory は同じ trackId が複数件入る可能性あり。表示は時系列で全件 / 曲ごとにグループ化など要検討。<strong>letterHistory 上限 2048 文字 / FIFO 10 件</strong>が現状制約。同曲を何度も受け取るとすぐ FIFO で押し出される → 本格運用するなら DynamoDB 移行 or 上限緩和を要検討。</div></div>
+    </div>
+    <div class="fs todo">
+      <div><div class="ft">letterHistory 上限拡大 (DynamoDB 化)</div>
+      <div class="fd">Cognito 属性 2048 字 / FIFO 10 件は同曲複数受信前提では狭い。DynamoDB 化で履歴を無制限保存、コレクション機能と連動。</div></div>
     </div>
   </div>
 
@@ -1799,20 +1955,22 @@ chmod +x .git/hooks/pre-commit</pre>
     <li><strong>限定コンテンツ</strong> — 会員限定写真・動画・メッセージ</li>
     <li><strong>再生履歴のデバイス間同期</strong> — 現状は localStorage のみ。Cognito or DynamoDB に移行</li>
     <li><strong>DynamoDB 移行</strong> — コイン・購入履歴・再生履歴を本格的なデータベースで管理</li>
-    <li><strong>レター（手紙）メール送信機能の本実装</strong> — v4.2 で仕様確定（§10 参照）。配信インフラは Resend を推奨、AWS SES が次点。Cloudflare Worker 実装、Cognito 属性連携、HTML メールテンプレ、letterHistory 永続化を含む。次セッションで配信インフラ最終決定 → 実装着手。</li>
     <li><strong>Adobe Fonts (TA恋心) への切替検証</strong> — 現状は SIL OFL の Zen Kurenaido / Hachi Maru Pop / Yuji Syuku を採用（路線Y）。TA恋心（月¥680〜）への切替は CSS フォールバック設計済みで切替コストゼロ。Adobe CC 7日間無料体験で実機検証 → フォント感に明確な向上があれば移行判断。</li>
-    <li><strong>レターコレクション機能（My Page 拡張）</strong> — 過去送信レター一覧を My Page で閲覧可能に。どの枠で受け取ったか可視化（コレクション要素）、レア枠（Q/R）の獲得率表示、季節枠（K-N）の収集状況など。ガチャ的な楽しみを継続化。</li>
     <li><strong>季節枠の追加候補</strong> — 中秋の月（9月限定）、ハロウィン（10/15-10/31、紅葉と共存）、クリスマス（12月限定で雪結晶と置換 or 重複可）。レア枠の希少度調整（ブロンズ 15% / プラチナ 0.1%）も検討余地あり。</li>
+    <li><strong>ネイティブアプリ化</strong> — React Native / Flutter / SwiftUI、長期目標。</li>
+    <li><strong>login.html を Hosted UI 経由 (/oauth2/authorize) に書換</strong> — 未着手、id_token 方式で回避済 (v4.2.2)。</li>
   </ul>
 
-  <h3>現状の制約事項</h3>
+  <h3>現状の制約事項 (v4.2.2.14 反映)</h3>
   <table>
     <tr><th>項目</th><th>現状</th><th>理想</th></tr>
     <tr><td>コイン購入確定</td><td>手動ボタンで反映</td><td>Square Webhook で自動付与</td></tr>
     <tr><td>再生履歴</td><td>localStorage のみ（デバイス間非同期）</td><td>Cognito または DynamoDB</td></tr>
-    <tr><td>Cognito 属性サイズ</td><td>購入履歴が多くなると上限（2048 バイト）に近づく可能性</td><td>DynamoDB に移行</td></tr>
-    <tr><td>トークン期限切れ</td><td>60 分で再ログイン必要</td><td>refresh_token で自動更新</td></tr>
-    <tr><td>音源保護</td><td>Vault + Actions で未公開曲のみ 404 化</td><td>R2 + Workers で全曲を signed URL 化</td></tr>
+    <tr><td>Cognito letterHistory</td><td>2048 字 / FIFO 10 件 (同曲複数受信前提では狭い)</td><td>DynamoDB に移行</td></tr>
+    <tr><td>トークン期限切れ</td><td>✅ v4.2.1 で auth.js が自動更新</td><td>(解決済)</td></tr>
+    <tr><td>スマホ残高同期</td><td>✅ v4.2.2.4 で _ensureFreshTokenOnLoad に Cognito 同期追加</td><td>(解決済)</td></tr>
+    <tr><td>音源保護</td><td>Vault + Actions で未公開曲のみ 404 化 (gen-002/003 含む新曲は本番 repo 直配置のため URL 直叩きで取得可能)</td><td>R2 + Workers で全曲を signed URL 化</td></tr>
+    <tr><td>動作確認</td><td>v4.2.2.14 で Admin unlock 廃止、別アカウントでログインして実機確認する運用に変更 (docs/TAMSIC_運用マニュアル.md §4.2)</td><td>(運用変更で対応済)</td></tr>
   </table>
 </section>
 
@@ -1946,12 +2104,99 @@ console.log(window.TAMSIC_CONTENT)
     ・リポジトリ URL（https://github.com/TAmJump/tamsic）<br>
     ・GitHub PAT（repo + workflow スコープ、Bitwarden から取り出し）<br>
     ・環境情報（Windows 11、E:\TAMSIC_site_completed、GitHub Pages + Cloudflare DNS）<br>
-    ・運用明言（「PAT は手元管理済みの運用。過去セッションで何度も使用実績あり。直接 push して OK」）
+    ・運用明言（「PAT は手元管理済みの運用。過去セッションで何度も使用実績あり。直接 push して OK」）<br>
+    <strong>・v4.2.2.5 以降のドキュメント (セッション⑨ 追加):</strong><br>
+    &nbsp;&nbsp;&nbsp;- <code>HANDOFF_v4.md</code> (§0 30秒読本に v4.2.2.14 まで時系列で記載)<br>
+    &nbsp;&nbsp;&nbsp;- <code>docs/TAMSIC_TODO_v4.md</code> (Phase H1/H2 詳細)<br>
+    &nbsp;&nbsp;&nbsp;- <code>docs/TAMSIC_運用マニュアル.md</code> (会員コイン直接付与手順、Cognito 6 属性一覧)
   </div>
 </section>
 
+<!-- ═══════════════════════════════════════ -->
+<section id="s25">
+  <div class="st"><span class="sn">25</span>スマホ UI / ハンバーガーメニュー (v4.2.2.5〜11 で実装)</div>
+
+  <div class="hint" style="background:#FFF8E8;border-left:3px solid var(--gold);padding:14px 18px;margin-bottom:18px">
+    <strong>📌 セッション⑨ で全面整備。</strong>v4.2.2.5 で共通ハンバーガーメニューとスマホ最適化基盤を全 13 HTML に展開、v4.2.2.6〜10 で index.html ヒーローのスマホ配置を試行錯誤 5 回、v4.2.2.11 で News セクションの縦並びレイアウトに対応。<br>
+    背景: 元の index.html は CSS <code>.nav-links{display:none}</code> でスマホ時にナビ全消し + 代替導線なしのため、スマホでログインボタンが見えない致命的バグがあった。
+  </div>
+
+  <h3>新規ファイル: mobile-nav.js</h3>
+  <ul class="styled">
+    <li><strong>役割</strong>: スマホ (max-width:768px) で右上に ☰ アイコンを表示、タップで右からスライドインのドロワーを開く</li>
+    <li><strong>ドロワー項目</strong>: Artists (no-no / kiki / gEN) / Label (ニュース / レーベル紹介) / Account (マイページ + ログイン or ログアウト + 新規登録) / Language (EN/JP)</li>
+    <li><strong>動的判定</strong>: <code>isLoggedIn()</code> で Login ⇄ Logout を切替、毎回ドロワーを開くたびに再描画</li>
+    <li><strong>iOS 対応</strong>: <code>env(safe-area-inset-right)</code> でノッチ周辺の安全領域に配慮</li>
+    <li><strong>言語切替</strong>: <code>data-lang-toggle</code> ボタンの click を流して既存の言語切替ロジック流用</li>
+    <li><strong>ESC キー対応</strong>: PC デバッグ用、ESC でドロワーを閉じる</li>
+    <li><strong>背景バックドロップ</strong>: 半透明黒で背景タップで閉じる</li>
+    <li><strong>展開先</strong>: 全 13 HTML の <code>&lt;/body&gt;</code> 直前に <code>&lt;script src="mobile-nav.js?v=4.2.2.X"&gt;&lt;/script&gt;</code></li>
+  </ul>
+
+  <h3>新規ファイル: mobile.css</h3>
+  <ul class="styled">
+    <li><strong>役割</strong>: 全ページ共通のスマホ最適化、<code>@media (max-width: 768px)</code> でラップ</li>
+    <li><strong>横スクロール抑止</strong>: <code>html, body { overflow-x: hidden; max-width: 100vw }</code></li>
+    <li><strong>キャンペーン CTA</strong> (index.html の「今だけ・新規登録で 100 coin プレゼント」): padding 圧縮、文字サイズを 1.05rem に縮小、ボタン全幅化</li>
+    <li><strong>hero セクション</strong>: flex-direction:column、印鑑ロゴを中央配置 (left:50%, width:min(80vw,380px), opacity:0.07)、キャッチコピー左寄せ z-index:3、hero-scroll を position:static にして PC の縦書き SCROLL + 縦書きカプセル 3 つ並びの構造を完全継承 (上書きしない)</li>
+    <li><strong>artists セクション</strong>: grid-template-columns:1fr (1 列)、artists-count「03」を clamp(80px,28vw,180px) で画面内に収納</li>
+    <li><strong>News セクション (v4.2.2.11)</strong>: .news-item を flex-direction:column で縦並びに、word-break:auto-phrase で日本語の自然な改行、.news-tag は position:absolute で右上に固定</li>
+    <li><strong>レター便箋</strong>: padding 圧縮、column-count:1 で 1 列強制 (スマホで 2 列は読みにくいため、メールでは 2 列維持)、.tamsic-letter-actions ボタン全幅化</li>
+    <li><strong>フォーム</strong>: input font-size:16px (iOS Safari のズーム抑止に必須)、max-width:100%, box-sizing:border-box</li>
+    <li><strong>展開先</strong>: 全 13 HTML の <code>&lt;head&gt;</code> 内に <code>&lt;link rel="stylesheet" href="mobile.css?v=4.2.2.X"&gt;</code></li>
+  </ul>
+
+  <h3>index.html ヒーローのスマホ配置 (v4.2.2.6〜10 試行錯誤の経緯)</h3>
+  <ol>
+    <li><strong>v4.2.2.6</strong> (commit e913096): hero-scroll の writing-mode を horizontal-tb に変更、3 トラックを縦書き解除して縦に積もうとした → ダサい結果に</li>
+    <li><strong>v4.2.2.7</strong> (commit 19d790c): writing-mode:vertical-rl 維持で flex-direction:row にする試行 → Safari/Chrome で縦積みに崩壊</li>
+    <li><strong>v4.2.2.8</strong> (commit 6721839): CSS Grid (repeat(3, 1fr)) で 3 列を明示 → カプセル内部装飾 (▶上・縦書きトラック名・seek・時刻) が崩壊</li>
+    <li><strong>v4.2.2.9</strong> (commit 6bc104b): mobile.css から hero-audio 系の上書きを全削除、PC スタイル完全継承 → カプセル装飾は復活、ただし重なりが残る</li>
+    <li><strong>v4.2.2.10</strong> (commit ecc1a90): margin と top で各要素を縦に十分離す → 重なり解消、最終形へ</li>
+  </ol>
+  <div class="hint hint-gold">
+    <strong>学び:</strong> PC の凝った装飾 (writing-mode + position:absolute + 縦書きカプセル + 半透明印鑑) をスマホで再現する場合、<strong>装飾自体は一切上書きせず、配置のみを縦長レイアウト用に調整する</strong>のが正解。<code>!important</code> で内部装飾に手を入れると PC のデザインを誤読してすぐ崩壊する。
+  </div>
+
+  <h3>セッション⑨ で新規追加されたファイル一覧</h3>
+  <table>
+    <tr><th>パス</th><th>サイズ</th><th>役割</th><th>追加 commit</th></tr>
+    <tr><td><code>mobile-nav.js</code></td><td>~10KB</td><td>共通ハンバーガーメニュー</td><td>2597d68 (v4.2.2.5)</td></tr>
+    <tr><td><code>mobile.css</code></td><td>~7KB</td><td>共通スマホ最適化</td><td>2597d68 (v4.2.2.5)</td></tr>
+    <tr><td><code>docs/TAMSIC_運用マニュアル.md</code></td><td>~12KB</td><td>運用ノウハウ (コイン付与、属性参照、トラブル対応)</td><td>3b33127</td></tr>
+    <tr><td><code>assets/images/gen/gen_dearfutureyou.png</code></td><td>2.2MB</td><td>gen-002 Dear Future You カバー画像</td><td>7e9f5b4 (v4.2.2.12)</td></tr>
+    <tr><td><code>assets/images/gen/gen_echofromthefuture.png</code></td><td>2.7MB</td><td>gen-003 Echo from the Future カバー画像</td><td>7e9f5b4 (v4.2.2.12)</td></tr>
+    <tr><td><code>assets/audio/gen/gen_dearfutureyou.mp3</code></td><td>5.4MB</td><td>gen-002 フルバージョン MP3</td><td>7e9f5b4 (v4.2.2.12)</td></tr>
+    <tr><td><code>assets/audio/gen/gen_echofromthefuture.mp3</code></td><td>6.3MB</td><td>gen-003 フルバージョン MP3</td><td>7e9f5b4 (v4.2.2.12)</td></tr>
+  </table>
+  <p style="font-size:.86rem;color:var(--g6);margin-top:8px">なお gEN 新曲の MP4 サンプル動画 (125MB / 211MB) は YouTube に上げる素材として除外、repo には含めていない (Cloudflare Pages 容量節約)。</p>
+
+  <h3>セッション⑨ 全 16 commit 一覧</h3>
+  <table>
+    <tr><th>commit</th><th>内容</th><th>version</th></tr>
+    <tr><td><code>e141fcd</code></td><td>Web 便箋ミニマル化 + メール 2 列化</td><td>v4.2.2</td></tr>
+    <tr><td><code>ac7d9b3</code></td><td>同曲レター複数回受信解禁</td><td>v4.2.2.1</td></tr>
+    <tr><td><code>c75459d</code></td><td>docs Phase H1/H2 追加</td><td>-</td></tr>
+    <tr><td><code>9b5f725</code></td><td>フル試聴 1 回 / レター 1 通 整合性</td><td>v4.2.2.2</td></tr>
+    <tr><td><code>48bd058</code></td><td>nono-004 説教調 closing 削除</td><td>v4.2.2.3</td></tr>
+    <tr><td><code>3b33127</code></td><td>運用マニュアル新規作成</td><td>-</td></tr>
+    <tr><td><code>aab1850</code></td><td>スマホ残高 0 バグ修正</td><td>v4.2.2.4</td></tr>
+    <tr><td><code>2597d68</code></td><td>ハンバーガーメニュー + スマホ基盤</td><td>v4.2.2.5</td></tr>
+    <tr><td><code>e913096</code></td><td>hero 配置 (試行 1)</td><td>v4.2.2.6</td></tr>
+    <tr><td><code>19d790c</code></td><td>hero 配置 (試行 2)</td><td>v4.2.2.7</td></tr>
+    <tr><td><code>6721839</code></td><td>hero Grid 試行</td><td>v4.2.2.8</td></tr>
+    <tr><td><code>6bc104b</code></td><td>hero PC 完全継承</td><td>v4.2.2.9</td></tr>
+    <tr><td><code>ecc1a90</code></td><td>hero 重なり解消</td><td>v4.2.2.10</td></tr>
+    <tr><td><code>df97ff5</code></td><td>News スマホ縦並び</td><td>v4.2.2.11</td></tr>
+    <tr><td><code>7e9f5b4</code></td><td>会員先行廃止 + gEN 新曲 2 曲追加</td><td>v4.2.2.12</td></tr>
+    <tr><td><code>3f5b607</code></td><td>docs 総括</td><td>-</td></tr>
+    <tr><td><code>84d8589</code></td><td>release 日を YouTube に統一</td><td>v4.2.2.13</td></tr>
+    <tr><td><code>6a9276e</code></td><td>ADMIN 撤廃 + 公開日ラベル</td><td>v4.2.2.14</td></tr>
+  </table>
+</section>
+
 <footer style="padding:48px 0 60px;text-align:center;color:var(--g4);font-size:.8rem;border-top:1px solid var(--g2)">
-  TAMSIC 設計書 v4.2.2 Standalone Edition　／　2026.05.10　／　Confidential<br>
+  TAMSIC 設計書 v4.2.2.14 Standalone Edition　／　2026.05.12　／　Confidential<br>
   <span style="display:inline-block;margin-top:6px">v1 / v2 / v3 の全情報を統合。本ファイル 1 つで 100% 引き継ぎ可能。</span><br>
   <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.1 更新: gEN 追加 / 3ページ構造統一 / 価格半額 / Admin unlock / unセカイ 2曲 / add-track 同名曲対応 / add-artist 既知バグ記録</span>
   <br>
@@ -1959,7 +2204,29 @@ console.log(window.TAMSIC_CONTENT)
   <br>
   <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.1 更新 (2026.05.09): 歌詞便箋システム本番稼働開始 (Phase G 完了)。Cognito custom 属性 4個追加 (nickname/birthday/registeredAt/letterHistory)。Cloudflare Worker tamsic-send-letter 公開 (URL: https://tamsic-send-letter.animalb001.workers.dev)。Resend ドメイン tamjump.com Verified (DKIM/SPF/MX、送信元 letter@tamjump.com)。受信ボタン本格稼働。透かしレイヤーの column-flow 混入バグ修正、コイン残高3桁カンマ表示、ナビ no-no/kiki/gEN 表記固定、フル試聴アンロック後の便箋多重描画ガード追加。</span>
   <br>
-  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.2 更新 (2026.05.10): openid scope 問題判明 — login.html の SDK 直叩きフロー (CognitoUser.authenticateUser) では access_token に scope が含まれず、Worker 側の /oauth2/userInfo が 401 invalid_token を返す。回避策として letter-send.js は Bearer に id_token を優先送信 (なければ access_token フォールバック)、workers/send-letter.js の verifyUser を id_token JWT decode 優先 + userInfo フォールバック構成に改修 (commit 8d1e8a1、cache-bust ?v=4.2.1.5)。Worker 再デプロイ済 (Version ID: 59f1888d-1db0-48eb-9df4-9093b3018e3f)。Resend ドメイン認証は Cloudflare DNS 完璧 (whatsmydns.net で世界中から確認) ながら Resend 側で Status: Not Started のまま動かない詰まり問題発生中、対処は HANDOFF_v4.md §13.3 の削除→再登録手順 or サポート問い合わせ。本番動作確認は Resend 側問題解決待ち。</span>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.2 更新 (2026.05.10、commit e141fcd): openid scope 問題回避 (letter-send.js は Bearer に id_token 優先送信、Worker verifyUser を id_token JWT decode 優先構成に改修、commit 8d1e8a1)。Resend ドメイン詰まり問題をオプション A (削除→再登録 + 新 API キー作成) で解決、1分で Verified 完了。Web 便箋ミニマル化: creator's note / closing / signature / footer (Air Mail + 日付スタンプ) を Web から削除しメール限定要素化、「別の一文」(reroll) ボタン廃止、TAMSICLetter.reroll() も削除。メール = プレミア体験 / Web = 歌詞ビューア の役割分担成立。メール歌詞 2 列レイアウト: Gmail/Outlook が column-count 非対応のため &lt;table&gt; で 2 セル化、段落単位で行数バランス最大化アルゴリズム実装 (段落途中で切らない貪欲法)、nono-004 (16段落/61行) で左32行・右29行に分割成功。Worker tamsic-send-letter 再デプロイ (Version f3e57143-4927-432b-a5db-acc51aa2a6ab)。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.2.1 更新 (2026.05.10、commit ac7d9b3): 同曲レターの複数回受信を解禁。letter-send.js の hasReceivedLetter チェック削除、確認モーダル文言を「便箋の枠と結びの一文は、毎回ランダムに選ばれます」に変更。フル試聴 (30 coin) 課金縛りがあるので乱発リスクは限定的。コレクション体験 (同じ曲でも違う便箋が届く) 成立。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.2.2 更新 (2026.05.10、commit 9b5f725): フル試聴 1 回 / レター 1 通の整合性確保。送信成功時に &lt;span class="sent-mark"&gt;送信済み — フル試聴を再解放すると別の便箋が届きます&lt;/span&gt; に置換。多重描画ガード撤廃 (unlockFullTrack のたびに既存便箋とアクションを削除して再描画)、receiveBtn に dataset.trackId を付与。30 coin 消費 = フル試聴 1 回 + レター送信権 1 通 のコイン経済設計を明文化。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.2.3 更新 (2026.05.10、commit 48bd058): nono-004「ぎりぎりだよ。」の説教調 closing「●●さん、約束はまだ守れる。」を削除。曲の creator's note (弱さを認めて寄り添う) と矛盾する命令調のため。残存: 「●●さん、ぎりぎりでも、ここにいてくれてありがとう。」「●●さん、まだここにいるよ。」。Phase H1 (closing 500通り生成) の前哨。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.2.4 更新 (2026.05.11、commit aab1850): スマホで残高 0 表示になるバグ修正。auth.js の _ensureFreshTokenOnLoad() がトークン新鮮時に即 return していたため _syncWalletFromCognito() が呼ばれず、localStorage の初期値 0 のまま表示される問題 (iPhone Safari / Chrome / Android Chrome で再現)。修正: トークン新鮮ケースでも setTimeout(() =&gt; _syncWalletFromCognito(), 300) を呼ぶ。副次的効果として、別端末で TAmJump が Cognito Console から coin を付与した場合の即時反映も実現。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.2.5 更新 (2026.05.11、commit 2597d68): 共通ハンバーガーメニュー + スマホ最適化基盤 新規実装。mobile-nav.js (右上 ☰ + 右スライドドロワー、isLoggedIn() で動的に Login ⇄ Logout 切替、data-lang-toggle 流用、iOS safe-area-inset-right 対応、ESC キー対応) と mobile.css (横スクロール抑止 html,body{overflow-x:hidden}、キャンペーン CTA・hero・artists・footer の padding 圧縮、.tamsic-letter スマホ用 padding/font-size 縮小 + column-count:1 強制、input font-size:16px で iOS Safari のズーム抑止) を新規作成。全 13 HTML (index/nono/kiki/gen/mypage/news/about/login/signup/callback/forgot-password/reset-password/admin) に sed で一括注入。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.2.6〜10 更新 (2026.05.11、commit e913096 / 19d790c / 6721839 / 6bc104b / ecc1a90): index.html ヒーローのスマホ配置調整 (試行錯誤 5 commit)。当初 writing-mode:vertical-rl のままカプセル 3 つを横並びにする試行 → flex 縦書きが Safari/Chrome で縦積みに崩壊 → Grid 化で 3 列確実に並べる試行 → カプセル内部装飾 (▶上・縦書きトラック名・seek・時刻) が崩れる失敗 → 最終的に「PC のカプセル装飾は一切上書きしない、配置のみ調整」で着地。最終構成: hero flex-direction:column、印鑑ロゴ left:50% + width:min(80vw,380px) + opacity:0.07、キャッチコピー左寄せ z-index:3 margin-bottom:24px、hero-scroll position:static margin-top:48px (PC の writing-mode:vertical-rl は維持で SCROLL ラベル縦書き保持)、hero-audio margin-top:24px (PC の flex 横並び 3 列を完全継承)。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.2.11 更新 (2026.05.12、commit df97ff5): News セクションの行レイアウトをスマホで縦並びに修正。PC では .news-item は flex で [日付 110px | gap48 | 本文 flex | gap48 | タグ] の横並び、スマホ画面 (400px) では本文枠 224px に圧縮されて日本語見出し (例: kiki「Burn bright」5月20日 一般公開決定) が 1〜2 文字ごとに短冊化していた問題を修正。修正: .news-item flex-direction:column、.news-date min-width 解除、.news-headline word-break:auto-phrase (日本語の自然な改行)、.news-tag position:absolute で右上に固定、.news-body width:100%。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.2.12 更新 (2026.05.12、commit 7e9f5b4): 会員先行視聴を全曲で廃止、YouTube 公開日 = サイト表示日に統一。release-control.js の config.tracks から sample 日を全削除し release のみに集約、state を sample/preview/member/full → locked/full の 2 値に簡素化。全 HTML から「サイトで聴く」(mode-btn site) ボタンと panel-site (内蔵プレイヤー) ブロックを削除、yt-panel の display:none を解除して YouTube タブをデフォルト表示に変更、mode-btn は [YouTube] [フル試聴 30coin] の 2 タブ構成に。同時に gEN 新曲 2 曲を追加: gen-002 Dear Future You (release 2026-05-23、YouTube uHF0tQ_RxpE) と gen-003 Echo from the Future (release 2026-05-30、YouTube ERcO_dbRCBw)、両曲とも歌詞は同一でユーザー意図確認済、price 30、isNew:true、creatorNote と closings は空欄 (Phase H1 で執筆)。アセット assets/images/gen/ と assets/audio/gen/ に PNG + MP3 配置 (各 2〜6MB、MP4 サンプル動画は YouTube 素材として除外)。tamsic-content.js news 配列に news-gen-002-release と news-gen-003-release を追加。release-control.js config に新曲 2 件追加。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.2.13 更新 (2026.05.12、commit 84d8589): 全曲の release 日を YouTube サンプル公開日に統一。TAmJump 提供の YouTube Studio スクショから正確な公開予約日を読み取り、release-control.js を補正。修正内容: ぎりぎりだよ。 2026-04-15→2026-04-24 (-9日)、RE+ 2026-05-15→2026-05-01 (+14日)、to Walk 2026-06-15→2026-06-01 (+14日)、シグナル● 2026-07-15→2026-07-01 (+14日)、Breathless 2026-08-15→2026-08-01 (+14日)、unセカイ (kiki-006/gen-001 共通) 2026-05-15→2026-05-01 (+14日)、Burn bright 2026-05-20→2026-05-10 (+10日)、Critical point 2026-06-28→2026-06-20 (+8日)、No Stop 変更なし、エンジン 2026-08-23→2026-08-15 (+8日)、KIKI rising 2026-09-20→2026-09-12 (+8日)。仕様明文化: コメントに「YouTube サンプル公開と同時に、サイト内でもフル試聴 (30 coin) を解放」と明記。tamsic-content.js の news 配列にある旧体系 -sample / -release / -prerelease エントリは TAmJump がコピー内容を確定してから一括更新する想定で残置。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.2.14 更新 (2026.05.12、commit 6a9276e): ADMIN 特権を完全撤廃、公開済ラベルに公開日を表示。release-control.js から _isAdmin() / ADMIN_EMAILS を削除し、TAmJump (tiger@tamjump.com / animalb001@gmail.com) も一般ユーザーと同じ挙動に統一。getMeta() の公開済ラベルを label:'公開中' note:'公開中' から label:'NOW AVAILABLE' note:'YYYY.MM.DD 公開' に変更、公開前と同じく日付が UI に表示される構造に。これにより TAmJump が常時 full 扱いで全曲モザイクなし表示になっていた問題、および公開済の曲が「公開中」とのみ表示され公開日が分からなかった問題を同時に解決。動作確認は別アカウント (例: 専用テストアカウント、liberty さんのような一般会員) でログインする運用に変更。docs/TAMSIC_運用マニュアル.md §4.2 から ADMIN_EMAILS の記述削除。</span>
+  <br>
+  <span style="display:inline-block;margin-top:8px;color:var(--g5)">セッション⑨ 累計成果 (2026.05.10〜12): 16 commit、v4.2.2 〜 v4.2.2.14 まで 14 段階のキャッシュバスター更新。Resend 詰まり解消、Web 便箋ミニマル化、メール 2 列レイアウト、同曲複数受信解禁、フル試聴 1 回 / レター 1 通整合性、スマホ残高バグ修正、共通ハンバーガーメニュー + 全 13 HTML 対応、index.html ヒーロー配置試行 5 回、News 縦並び、会員先行廃止、gEN 新曲 2 曲追加 (gen-002/003)、release 日 YouTube 公開日統一、ADMIN 撤廃 + 公開日ラベル化。運用作業として liberty.2wink7@gmail.com に AWS Cognito Console 経由で 10,000 coin 付与、docs/TAMSIC_運用マニュアル.md を新規作成 (会員コイン直接付与手順、Cognito 6 属性一覧、push 前チェックリストを集約)。次セッションの最優先タスクは Phase H1 = closing 500 通り生成 + 14 曲分の creatorNote 執筆。詳細は HANDOFF_v4.md §0 / docs/TAMSIC_TODO_v4.md / docs/TAMSIC_運用マニュアル.md を参照。</span>
 </footer>
 
 </body>
