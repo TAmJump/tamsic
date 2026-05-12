@@ -63,17 +63,101 @@
     word-break: break-word;
   }
 
+  /* 4b. index.html hero 専用調整 (削除なし、配置のみ縦長レイアウト化) */
+  /* 印鑑型ロゴ: 中央背景に収める、PC の右側配置 (left:68%) を中央に戻す */
+  .hero-bg-logo {
+    left: 50% !important;
+    width: min(92vw, 520px) !important;
+    opacity: 0.07 !important;
+  }
+  /* hero 全体を縦並びに、コンテンツを中央寄せ */
+  .hero {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 80px 24px 48px !important;
+    min-height: auto !important;
+    gap: 28px !important;
+  }
+  /* キャッチコピー: 中央寄せ、印鑑の上に重なる */
+  .hero-content {
+    max-width: 100% !important;
+    padding-top: 32px !important;
+    padding-left: 0 !important;
+    text-align: center;
+    z-index: 2 !important;
+  }
+  .hero-content .hero-tagline,
+  .hero-content .hero-label,
+  .hero-content .hero-title {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+  }
+  /* hero-scroll: PC で縦書き右端固定だったのを、スマホでは横書きにして hero の下部に通常配置 */
+  .hero-scroll {
+    position: static !important;
+    writing-mode: horizontal-tb !important;
+    right: auto !important;
+    bottom: auto !important;
+    flex-direction: column !important;
+    gap: 18px !important;
+    z-index: 2 !important;
+    opacity: 1 !important;
+    animation: none !important;
+    margin-top: 12px !important;
+  }
+  .hero-scroll::after {
+    display: none !important;  /* 縦線は PC の縦書き専用なので、スマホでは非表示にして縦並びに切替 (削除はしない、style 上書き) */
+  }
+  /* 3 トラック (TAMSIC TRACK T+111/101/110) の audio 行: 縦に積み、横幅 100% */
+  .hero-audio {
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+  .hero-audio-row {
+    width: 100% !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px 14px !important;
+  }
+  .hero-audio-meta {
+    font-size: 10px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hero-audio-current {
+    font-size: 10px !important;
+  }
+
   /* 5. artists セクション (3カード) を 1 列に */
   .artists,
   .artists-grid {
     padding-left: 18px !important;
     padding-right: 18px !important;
   }
+  .artists {
+    padding: 64px 20px !important;
+    position: relative;
+  }
+  /* "03" の巨大数字を画面内に収める */
+  .artists-count {
+    font-size: clamp(80px, 28vw, 180px) !important;
+    right: 12px !important;
+    opacity: 0.12 !important;
+  }
+  .artists-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
 
   /* 6. 大きすぎる Artists/Latest 等の英語見出し */
   .section-title,
-  h2.section-title {
-    font-size: clamp(22px, 6vw, 30px) !important;
+  h2.section-title,
+  .sec-title {
+    font-size: clamp(28px, 8vw, 40px) !important;
   }
 
   /* 7. ボタン共通 (Logo 風 CTA、新規登録など) */
