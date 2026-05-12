@@ -71,43 +71,59 @@
    *   この構造はスマホでも一切上書きしない (上書きするとカプセルが壊れる)。
    *
    * スマホ調整するのは hero 全体のレイアウト枠 + 印鑑ロゴ位置 + SCROLL ラベル位置 のみ。
+   * v4.2.2.10: 要素の重なりを解消するため margin と order で縦に整列。
    */
 
-  /* hero 全体を縦並びに、コンテンツを画面幅に合わせる */
+  /* hero 全体を縦並びに、各要素を順に積む (重なり解消) */
   .hero {
     flex-direction: column !important;
     align-items: stretch !important;
-    padding: 80px 18px 32px !important;
+    padding: 80px 18px 40px !important;
     min-height: auto !important;
-    gap: 16px !important;
+    gap: 32px !important;  /* セクション間に十分な余白 */
   }
-  /* 印鑑ロゴ: 中央配置、サイズはモバイル画面幅に合わせる */
+  /* 印鑑ロゴ: 中央背景に置く。キャッチコピーとカプセルに重ならないよう絶対位置で中央固定 */
   .hero-bg-logo {
     left: 50% !important;
-    top: 38% !important;
-    width: min(88vw, 460px) !important;
-    opacity: 0.09 !important;
+    top: 50% !important;
+    width: min(80vw, 380px) !important;
+    opacity: 0.07 !important;  /* テキストとカプセルが上に来るので薄めに */
   }
-  /* キャッチコピー: 上部に左寄せ (PC は左下にあったが、スマホでは順序的に上に置く) */
+  /* キャッチコピー: 上部に左寄せで配置、印鑑より手前 */
   .hero-content {
     max-width: 100% !important;
-    padding-top: 8px !important;
+    padding-top: 0 !important;
     padding-left: 8px !important;
     text-align: left !important;
-    z-index: 2 !important;
+    z-index: 3 !important;
+    margin-bottom: 24px !important;
   }
-  /* hero-scroll: PC では position:absolute right:64px の縦書き SCROLL + カプセル 3 つ。
-     スマホでは static にして hero 下部の通常フローへ。中身 (.hero-audio とカプセル) は触らない */
+  /* hero-scroll: SCROLL ラベル + カプセル 3 つの親要素。
+     position:static で通常フロー、margin で十分な空間を確保 */
   .hero-scroll {
     position: static !important;
     right: auto !important;
     bottom: auto !important;
-    margin: 8px auto 0 !important;
+    margin: 48px auto 0 !important;  /* 上の印鑑/キャッチから 48px 離す */
     align-self: center !important;
-    z-index: 2 !important;
+    z-index: 3 !important;
     opacity: 1 !important;
     animation: none !important;
     /* writing-mode は PC のまま (vertical-rl) で SCROLL ラベルは縦書きを維持 */
+    /* PC の縦書き + ::after の縦線は、スマホでも見えるが SCROLL ラベル単独で表示される */
+  }
+  /* hero-scroll の中の SCROLL テキスト自体を、カプセルの上にきれいに出す */
+  .hero-scroll::before {
+    /* 何もしない: PC の SCROLL テキストは hero-scroll 自身の text node */
+  }
+  /* hero-scroll::after は縦線。スマホでは hero-audio の下に出るので margin で調整 */
+  .hero-scroll::after {
+    height: 32px !important;
+    margin-top: 16px !important;
+  }
+  /* hero-audio: PC の flex 設定そのまま継承。位置だけ縦線とぶつからないよう調整 */
+  .hero-audio {
+    margin: 24px 0 0 !important;  /* SCROLL ラベルから 24px 下に */
   }
   /* hero-audio 以下のカプセル群は PC スタイルを完全に継承 (上書きしない) */
 
