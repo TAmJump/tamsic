@@ -63,97 +63,53 @@
     word-break: break-word;
   }
 
-  /* 4b. index.html hero 専用調整 (PC レイアウト維持、サイズ縮小のみ) */
-  /* PC の構成: 中央背景に印鑑、左にキャッチ、右下に縦書き 3 トラック - これをスマホでも維持 */
+  /* 4b. index.html hero 専用調整 (PC のカプセル装飾は変更しない、配置のみ調整)
+   *
+   * 前提:
+   *   PC では .hero-audio は flex row でカプセル 3 つ横並び、
+   *   各 .hero-audio-row は flex column で「▶上 / 縦書きトラック名 / seek / 時刻」の縦組。
+   *   この構造はスマホでも一切上書きしない (上書きするとカプセルが壊れる)。
+   *
+   * スマホ調整するのは hero 全体のレイアウト枠 + 印鑑ロゴ位置 + SCROLL ラベル位置 のみ。
+   */
 
-  /* hero 本体は縦並びだが、各要素は PC と同じ装飾を維持 */
+  /* hero 全体を縦並びに、コンテンツを画面幅に合わせる */
   .hero {
     flex-direction: column !important;
     align-items: stretch !important;
-    padding: 88px 18px 32px !important;
+    padding: 80px 18px 32px !important;
     min-height: auto !important;
-    gap: 18px !important;
+    gap: 16px !important;
   }
-  /* 印鑑ロゴ: 中央配置、サイズはモバイル画面に合わせる */
+  /* 印鑑ロゴ: 中央配置、サイズはモバイル画面幅に合わせる */
   .hero-bg-logo {
     left: 50% !important;
-    top: 40% !important;
+    top: 38% !important;
     width: min(88vw, 460px) !important;
     opacity: 0.09 !important;
   }
-  /* キャッチコピー: 上部に配置、左寄せ (PC では左下、スマホでは上部だが構造維持) */
+  /* キャッチコピー: 上部に左寄せ (PC は左下にあったが、スマホでは順序的に上に置く) */
   .hero-content {
     max-width: 100% !important;
-    padding-top: 12px !important;
+    padding-top: 8px !important;
     padding-left: 8px !important;
     text-align: left !important;
     z-index: 2 !important;
-    order: 1;
   }
-  .hero-content .hero-tagline {
-    max-width: 100%;
-  }
-  /* hero-scroll: スマホでも横書き解除せずに、SCROLL ラベル + 縦線を維持。下部中央に static で */
+  /* hero-scroll: PC では position:absolute right:64px の縦書き SCROLL + カプセル 3 つ。
+     スマホでは static にして hero 下部の通常フローへ。中身 (.hero-audio とカプセル) は触らない */
   .hero-scroll {
     position: static !important;
-    writing-mode: vertical-rl !important;
+    right: auto !important;
+    bottom: auto !important;
     margin: 8px auto 0 !important;
     align-self: center !important;
     z-index: 2 !important;
     opacity: 1 !important;
     animation: none !important;
-    order: 3;
+    /* writing-mode は PC のまま (vertical-rl) で SCROLL ラベルは縦書きを維持 */
   }
-  .hero-scroll::after {
-    height: 32px !important;
-  }
-
-  /* hero-audio: PC の構造 (縦書きカプセル 3 つ横並び) を Grid で確実に再現 */
-  /* writing-mode は親 .hero-scroll で縦書きになる継承を解除し、grid で 3 列を明示 */
-  .hero-audio {
-    writing-mode: horizontal-tb !important;  /* grid を効かせるため一旦解除 */
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 8px !important;
-    width: 100% !important;
-    max-width: 320px;
-    margin: 16px auto 0 !important;
-    order: 2;
-  }
-  /* 各カプセル: 縦長楕円、内部だけ縦書きに */
-  .hero-audio-row {
-    writing-mode: vertical-rl !important;
-    padding: 16px 6px !important;
-    min-height: 210px;
-    gap: 6px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-  }
-  .hero-audio-play {
-    writing-mode: horizontal-tb !important;  /* ▶ 記号は通常向き */
-    width: 32px !important;
-    height: 32px !important;
-    font-size: 12px !important;
-    flex-shrink: 0;
-  }
-  .hero-audio-meta {
-    font-size: 9px !important;
-    letter-spacing: 0.18em !important;
-    flex: 1;
-  }
-  .hero-audio-current {
-    writing-mode: horizontal-tb !important;
-    font-size: 9px !important;
-    flex-shrink: 0;
-  }
-  .hero-audio-progress {
-    writing-mode: horizontal-tb !important;
-    transform: rotate(90deg);
-    width: 60px !important;
-    flex-shrink: 0;
-  }
+  /* hero-audio 以下のカプセル群は PC スタイルを完全に継承 (上書きしない) */
 
   /* 5. artists セクション (3カード) を 1 列に */
   .artists,
