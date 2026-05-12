@@ -148,6 +148,45 @@
     gap: 20px !important;
   }
 
+  /* 5b. News セクションの行レイアウトを縦並びに (PC は横並び、スマホは狭くて読めない) */
+  .news {
+    padding: 56px 20px !important;
+  }
+  .news-item {
+    flex-direction: column !important;
+    gap: 8px !important;
+    align-items: flex-start !important;
+    position: relative;
+    padding: 20px 0 !important;
+  }
+  .news-date {
+    min-width: 0 !important;
+    font-size: 11px !important;
+  }
+  .news-body {
+    flex: 1 1 auto !important;
+    width: 100%;
+  }
+  .news-headline {
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    word-break: auto-phrase;
+  }
+  .news-sub {
+    font-size: 11px !important;
+  }
+  /* RELEASE タグは右上に絶対配置 (PC の baseline 位置を維持) */
+  .news-tag {
+    position: absolute !important;
+    top: 20px;
+    right: 0;
+    font-size: 9px !important;
+    padding: 4px 10px !important;
+  }
+  .news .sec-title {
+    margin-bottom: 32px !important;
+  }
+
   /* 6. 大きすぎる Artists/Latest 等の英語見出し */
   .section-title,
   h2.section-title,
