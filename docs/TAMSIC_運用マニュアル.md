@@ -159,9 +159,11 @@ wrangler deploy
 ### 4.2 公開日制御の運用 (v4.2.2.12 以降)
 
 - `release-control.js` の `config.tracks` で曲ごとに `release` 日を指定
-- ADMIN_EMAILS に登録されたユーザーは常に full 扱い (動作確認用)
-  - 現状の Admin: `animalb001@gmail.com` / `tiger@tamjump.com`
-- 公開日前の曲は coin で買えない (CSS `is-restricted` + JS で `unlockFullTrack` を拒否)
+- 公開日前: `COMING SOON / YYYY.MM.DD 公開予定` 表示、モザイク有り、フル試聴ボタン無効
+- 公開日以降: `NOW AVAILABLE / YYYY.MM.DD 公開` 表示、モザイク無し、フル試聴可
+- v4.2.2.14 で ADMIN 特権を撤廃: TAmJump (運営者) も一般ユーザーと同じ挙動。
+  動作確認したい場合は別アカウント (例: 専用テストアカウント) を作成し、
+  そこにコイン付与して実機ログインする運用に変更。
 
 ---
 

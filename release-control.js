@@ -1,24 +1,11 @@
 function _RL(ja,en){return(window.TAMSICLang&&window.TAMSICLang.get()==='en')?en:ja;}
 window.TAMSICRelease=(function(){
 // ─────────────────────────────────────────
-// v4.2.2.12: 会員先行視聴を廃止、YouTube 公開日 = サイト表示日に統一。
-//   - release 日より前 → COMING SOON (全員ロック、coin 消費不可)
-//   - release 日以降 → 全員フル試聴可 (30 coin)
-// 旧 sample / member / preview state は撤去。
-//
-// Admin override: 指定メールでログインしたユーザーは常時 full 扱い (動作確認用)。
+// v4.2.2.14: 全ユーザー共通の挙動に統一 (ADMIN 特権撤廃)。
+//   - release 日より前 → COMING SOON (全員ロック、モザイク表示、coin 消費不可)
+//   - release 日以降 → NOW AVAILABLE + 公開日表示 (全員フル試聴可)
+// 動作確認したい場合は別アカウントで実機ログインして確認する運用に変更。
 // ─────────────────────────────────────────
-const ADMIN_EMAILS=["animalb001@gmail.com","tiger@tamjump.com"];
-
-function _isAdmin(){
-  try{
-    if(typeof getUserInfo==="function"){
-      const u=getUserInfo();
-      if(u&&u.email&&ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(u.email.toLowerCase())) return true;
-    }
-  }catch(e){}
-  return false;
-}
 
 // release 日 (YouTube サンプル公開日と同期) を曲タイトルで指定。
 // この日付以降 = 公開、未満 = COMING SOON。
@@ -45,7 +32,6 @@ function formatJP(str){const [y,m,d]=String(str).split("-");return `${y}.${m}.${
 
 function getState(title){
   const t=config.tracks[title]; if(!t)return"full";
-  if(_isAdmin()) return"full";
   const now=new Date(), release=parseDate(t.release);
   if(now<release) return"locked";
   return"full";
@@ -55,7 +41,7 @@ function getMeta(title){
   const t=config.tracks[title]; if(!t)return{label:"NOW AVAILABLE",note:"",showMask:false,canSample:true,canFull:true,icon:false};
   const st=getState(title);
   if(st==="locked") return {state:st,label:_RL("COMING SOON","COMING SOON"),note:`${formatJP(t.release)} ${_RL("公開予定","release")}`,showMask:true,canSample:false,canFull:false,icon:true};
-  return {state:st,label:_RL("公開中","NOW AVAILABLE"),note:_RL("公開中","Now available"),showMask:false,canSample:true,canFull:true,icon:false};
+  return {state:st,label:_RL("NOW AVAILABLE","NOW AVAILABLE"),note:`${formatJP(t.release)} ${_RL("公開","release")}`,showMask:false,canSample:true,canFull:true,icon:false};
 }
 
 return{config,getState,getMeta};
