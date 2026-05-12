@@ -5,20 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>no-no | TAMSIC</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Syncopate:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
-<script src="tamsic-content.js?v=4.2.2.11"></script>
+<script src="tamsic-content.js?v=4.2.2.12"></script>
 <script src="purchase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js" async></script>
-<script src="auth.js?v=4.2.2.11"></script>
-<script src="coins.js?v=4.2.2.11"></script>
+<script src="auth.js?v=4.2.2.12"></script>
+<script src="coins.js?v=4.2.2.12"></script>
 <script src="release-control.js"></script>
 <script src="lang.js"></script>
-<script src="tamsic.js?v=4.2.2.11"></script>
-<script src="lyrics-guard.js?v=4.2.2.11"></script>
+<script src="tamsic.js?v=4.2.2.12"></script>
+<script src="lyrics-guard.js?v=4.2.2.12"></script>
 <script src="gate-modal.js"></script>
-<script src="letter-frames.js?v=4.2.2.11"></script>
-<script src="letter-content.js?v=4.2.2.11"></script>
-<script src="letter-renderer.js?v=4.2.2.11"></script>
-<script src="letter-send.js?v=4.2.2.11"></script>
+<script src="letter-frames.js?v=4.2.2.12"></script>
+<script src="letter-content.js?v=4.2.2.12"></script>
+<script src="letter-renderer.js?v=4.2.2.12"></script>
+<script src="letter-send.js?v=4.2.2.12"></script>
 <style>
 :root{--bg:#EEF3F9;--text:#0B1D35;--accent:#0099CC;--light:#D4E2F0;--mid:#5B7FA0;--white:#FFFFFF;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -142,8 +142,8 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
 
 
 </style>
-<link rel="stylesheet" href="letter.css?v=4.2.2.11">
-<link rel="stylesheet" href="mobile.css?v=4.2.2.11">
+<link rel="stylesheet" href="letter.css?v=4.2.2.12">
+<link rel="stylesheet" href="mobile.css?v=4.2.2.12">
 </head>
 <body>
 <nav>
@@ -551,24 +551,10 @@ function renderTracks(){
         <div class="tb-sub">no-no</div>
         <div class="track-release-note">${chip}<div style="margin-top:8px;">${meta.note}</div></div>
         <div class="player-modes">
-          <button class="mode-btn active" onclick="setMode('${t.id}','site',this)">${_L('▶ サイトで聴く','▶ Listen')}</button>
-          <button class="mode-btn" onclick="setMode('${t.id}','yt',this)">YouTube</button>
+          <button class="mode-btn active" onclick="setMode('${t.id}','yt',this)">YouTube</button>
           <button class="mode-btn premium ${meta.canFull ? '' : 'is-restricted'}" onclick="setMode('${t.id}','full',this)">${meta.canFull ? `${_L('フル試聴','Full')} ${t.price===0?"FREE":(t.price||30)+"coin"}` : meta.label}</button>
         </div>
-        <div id="panel-site-${t.id}">
-          <div class="site-player">
-            <div class="sp-bar-wrap" data-bar-id="${t.id}" onclick="scrub(event,this,'${t.id}')">
-              <div class="sp-bar-bg"></div><div class="sp-bar-fill" style="width:0%"></div><div class="sp-dot" style="left:0%"></div>
-            </div>
-            <div class="sp-controls">
-              <button class="sp-btn" onclick="prevT(${i})" title="5秒戻す">&#9664;&#9664;</button>
-              <button class="sp-play" data-play-id="${t.id}" onclick="playT('${t.id}')">&#9654;</button>
-              <button class="sp-btn" onclick="nextT(${i})" title="5秒進む">&#9654;&#9654;</button>
-              <span class="sp-time" data-time-id="${t.id}">0:00 / ${dur}</span>
-            </div>
-          </div>
-        </div>
-        <div class="yt-panel" id="panel-yt-${t.id}" style="display:none">
+        <div class="yt-panel" id="panel-yt-${t.id}">
           ${t.youtubeUrl?ytEmbed(t.youtubeUrl):ytPh()}
         </div>
         <div class="full-panel" id="panel-full-${t.id}" style="display:none">
@@ -675,6 +661,6 @@ init();
 renderGallery();
 
 </script>
-<script src="mobile-nav.js?v=4.2.2.11"></script>
+<script src="mobile-nav.js?v=4.2.2.12"></script>
 </body>
 </html>

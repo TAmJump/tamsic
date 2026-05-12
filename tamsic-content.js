@@ -221,6 +221,40 @@ window.TAMSIC_CONTENT = {
       "titleEn": "unSekai",
       "creatorNote": "",
       "closings": []
+    },
+    {
+        "id": "gen-002",
+        "artist": "gen",
+        "order": 2,
+        "title": "Dear Future You",
+        "price": 30,
+        "isNew": true,
+        "youtubeUrl": "https://youtu.be/uHF0tQ_RxpE",
+        "coverPath": "assets/images/gen/gen_dearfutureyou.png",
+        "audioPath": "assets/audio/gen/gen_dearfutureyou.mp3",
+        "lyrics": "What if tonight\nWas all we had\nWhat if this life\nWas burning fast\nWhat if I wake\n\nIn another skin\n\nAnother name\nAnother place\n\nAnd still...\n\nStill find you\n\nIn another life\nIn another world\n\nAcross the stars\nAcross the fire\n\nNo matter who\nNo matter where\n\nI’ll know your eyes\nI’ll know your soul\n\nI’ll know...\n\nIt’s you\n\nIf I lose my legs\nIf I lose my voice\nIf I lose the light\n\nInside my eyes\n\nIf all I have\nIs one last breath\n\nI’ll spend it\n\nTrying to find you\n\nIn another life\nIn another time\n\nThrough every war\nThrough every storm\n\nNo matter how\n\nThis world may end\n\nI’ll find my way\n\nTo you again\n\nAs a bird\nAs a fish\nAs a child\nAs a shadow\n\nWhatever I become\nWhatever remains\n\nTake me back\nTo you\n\nIn another life\n\nI don’t need forever\nI don’t need the stars\nI don’t need the sky\n\nJust one more chance\n\nOne second there\n\nStanding with you\n\nAgain\nAgain\nAgain\n\nIf we meet again...\n\n最初に聞くよ\n\nあなたの名前は\n\n何ですか？",
+        "lyricsPreview": "What if tonight\nWas all we had\nWhat if this life\nWas burning fast\nWhat if I wake\n\nIn another skin\n\nAnother name\nAnother place\n\nAnd still...\n\nStill find you\n\nIn another life\nIn another world\n\nAcross the stars\nAcross the fire\n\nNo matter who\nNo matter where\n\nI’ll know your eyes\nI’ll know your soul\n\nI’ll know...\n\nIt’s you\n\nIf I lose my legs\nIf I lose my voice\nIf I lose the light\n\nInside my eyes\n\nIf all I have\nIs one last breath\n\nI’ll spend it\n\nTrying to find you\n\nIn another life\nIn another time\n\nThrough every war\nThrough every storm\n\nNo matter how\n\nThis world may end\n\nI’ll find my way\n\nTo you again\n\nAs a bird\nAs a fish\nAs a child\nAs a shadow\n\nWhatever I become\nWhatever remains\n\nTake me back\nTo you\n\nIn another life\n\nI don’t need forever\nI don’t need the stars\nI don’t need the sky\n\nJust one more chance\n\nOne second there\n\nStanding with you\n\nAgain\nAgain\nAgain\n\nIf we meet again...\n\n最初に聞くよ\n\nあなたの名前は\n\n何ですか？",
+        "durationSec": 0,
+        "titleEn": "Dear Future You",
+        "creatorNote": "",
+        "closings": []
+    },
+    {
+        "id": "gen-003",
+        "artist": "gen",
+        "order": 3,
+        "title": "Echo from the Future",
+        "price": 30,
+        "isNew": true,
+        "youtubeUrl": "https://youtu.be/ERcO_dbRCBw",
+        "coverPath": "assets/images/gen/gen_echofromthefuture.png",
+        "audioPath": "assets/audio/gen/gen_echofromthefuture.mp3",
+        "lyrics": "What if tonight\nWas all we had\nWhat if this life\nWas burning fast\nWhat if I wake\n\nIn another skin\n\nAnother name\nAnother place\n\nAnd still...\n\nStill find you\n\nIn another life\nIn another world\n\nAcross the stars\nAcross the fire\n\nNo matter who\nNo matter where\n\nI’ll know your eyes\nI’ll know your soul\n\nI’ll know...\n\nIt’s you\n\nIf I lose my legs\nIf I lose my voice\nIf I lose the light\n\nInside my eyes\n\nIf all I have\nIs one last breath\n\nI’ll spend it\n\nTrying to find you\n\nIn another life\nIn another time\n\nThrough every war\nThrough every storm\n\nNo matter how\n\nThis world may end\n\nI’ll find my way\n\nTo you again\n\nAs a bird\nAs a fish\nAs a child\nAs a shadow\n\nWhatever I become\nWhatever remains\n\nTake me back\nTo you\n\nIn another life\n\nI don’t need forever\nI don’t need the stars\nI don’t need the sky\n\nJust one more chance\n\nOne second there\n\nStanding with you\n\nAgain\nAgain\nAgain\n\nIf we meet again...\n\n最初に聞くよ\n\nあなたの名前は\n\n何ですか？",
+        "lyricsPreview": "What if tonight\nWas all we had\nWhat if this life\nWas burning fast\nWhat if I wake\n\nIn another skin\n\nAnother name\nAnother place\n\nAnd still...\n\nStill find you\n\nIn another life\nIn another world\n\nAcross the stars\nAcross the fire\n\nNo matter who\nNo matter where\n\nI’ll know your eyes\nI’ll know your soul\n\nI’ll know...\n\nIt’s you\n\nIf I lose my legs\nIf I lose my voice\nIf I lose the light\n\nInside my eyes\n\nIf all I have\nIs one last breath\n\nI’ll spend it\n\nTrying to find you\n\nIn another life\nIn another time\n\nThrough every war\nThrough every storm\n\nNo matter how\n\nThis world may end\n\nI’ll find my way\n\nTo you again\n\nAs a bird\nAs a fish\nAs a child\nAs a shadow\n\nWhatever I become\nWhatever remains\n\nTake me back\nTo you\n\nIn another life\n\nI don’t need forever\nI don’t need the stars\nI don’t need the sky\n\nJust one more chance\n\nOne second there\n\nStanding with you\n\nAgain\nAgain\nAgain\n\nIf we meet again...\n\n最初に聞くよ\n\nあなたの名前は\n\n何ですか？",
+        "durationSec": 0,
+        "titleEn": "Echo from the Future",
+        "creatorNote": "",
+        "closings": []
     }
   ],
   "news": [
@@ -439,6 +473,24 @@ window.TAMSIC_CONTENT = {
       "tag": "Release",
       "showAfter": "2026-05-15",
       "addedAt": "2026-05-15T00:00:00+09:00"
+    },
+    {
+      "id": "news-gen-002-release",
+      "date": "2026.05.23",
+      "title": "gEN「Dear Future You」一般公開",
+      "titleEn": "gEN \"Dear Future You\" — Now Available",
+      "tag": "Release",
+      "showAfter": "2026-05-23",
+      "addedAt": "2026-05-23T00:00:00+09:00"
+    },
+    {
+      "id": "news-gen-003-release",
+      "date": "2026.05.30",
+      "title": "gEN「Echo from the Future」一般公開",
+      "titleEn": "gEN \"Echo from the Future\" — Now Available",
+      "tag": "Release",
+      "showAfter": "2026-05-30",
+      "addedAt": "2026-05-30T00:00:00+09:00"
     },
     {
       "id": "news-signup-bonus-2026",
