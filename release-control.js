@@ -20,20 +20,21 @@ function _isAdmin(){
   return false;
 }
 
-// release 日 (YouTube 公開日と同期) を曲タイトルで指定。
+// release 日 (YouTube サンプル公開日と同期) を曲タイトルで指定。
 // この日付以降 = 公開、未満 = COMING SOON。
+// 仕様: YouTube サンプル公開と同時に、サイト内でもフル試聴 (30 coin) を解放。
 const config={tracks:{
-"ぎりぎりだよ。":{release:"2026-04-15"},
-"RE+":{release:"2026-05-15"},
-"to Walk":{release:"2026-06-15"},
-"シグナル●":{release:"2026-07-15"},
-"Breathless":{release:"2026-08-15"},
-"unセカイ":{release:"2026-05-15"},
-"Burn bright":{release:"2026-05-20"},
-"Critical point":{release:"2026-06-28"},
+"ぎりぎりだよ。":{release:"2026-04-24"},
+"RE+":{release:"2026-05-01"},
+"to Walk":{release:"2026-06-01"},
+"シグナル●":{release:"2026-07-01"},
+"Breathless":{release:"2026-08-01"},
+"unセカイ":{release:"2026-05-01"},
+"Burn bright":{release:"2026-05-10"},
+"Critical point":{release:"2026-06-20"},
 "No Stop":{release:"2026-07-11"},
-"エンジン":{release:"2026-08-23"},
-"KIKI rising":{release:"2026-09-20"},
+"エンジン":{release:"2026-08-15"},
+"KIKI rising":{release:"2026-09-12"},
 "Dear Future You":{release:"2026-05-23"},
 "Echo from the Future":{release:"2026-05-30"}
 }};
