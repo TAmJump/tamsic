@@ -112,8 +112,14 @@ async function _ensureFreshTokenOnLoad() {
   const expiry = Number(localStorage.getItem(STORAGE_KEYS.expiry) || 0);
   const refreshToken = localStorage.getItem(STORAGE_KEYS.refreshToken);
   if (!refreshToken) return;                         // 未ログイン (or 完全失効後)
-  if (token && Date.now() < expiry - 60*1000) {      // まだ十分新鮮 → スケジューリングだけ
+  if (token && Date.now() < expiry - 60*1000) {      // まだ十分新鮮 → スケジューリング + 残高同期
     _scheduleNextRefresh();
+    // v4.2.2.4: トークン新鮮時でも Cognito から残高を取り直す。
+    // 別端末で TAmJump 等が直接付与した coin / purchases を反映するため。
+    // これがないとログイン後の wallet が localStorage 初期値 0 のまま表示される (iPhone Safari/Chrome で再現)。
+    if (typeof _syncWalletFromCognito === 'function') {
+      setTimeout(() => _syncWalletFromCognito(), 300);
+    }
     return;
   }
   // 期限切れ / 間近 → 即更新
