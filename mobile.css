@@ -63,73 +63,86 @@
     word-break: break-word;
   }
 
-  /* 4b. index.html hero 専用調整 (削除なし、配置のみ縦長レイアウト化) */
-  /* 印鑑型ロゴ: 中央背景に収める、PC の右側配置 (left:68%) を中央に戻す */
-  .hero-bg-logo {
-    left: 50% !important;
-    width: min(92vw, 520px) !important;
-    opacity: 0.07 !important;
-  }
-  /* hero 全体を縦並びに、コンテンツを中央寄せ */
+  /* 4b. index.html hero 専用調整 (PC レイアウト維持、サイズ縮小のみ) */
+  /* PC の構成: 中央背景に印鑑、左にキャッチ、右下に縦書き 3 トラック - これをスマホでも維持 */
+
+  /* hero 本体は縦並びだが、各要素は PC と同じ装飾を維持 */
   .hero {
     flex-direction: column !important;
     align-items: stretch !important;
-    padding: 80px 24px 48px !important;
+    padding: 88px 18px 32px !important;
     min-height: auto !important;
-    gap: 28px !important;
+    gap: 24px !important;
   }
-  /* キャッチコピー: 中央寄せ、印鑑の上に重なる */
+  /* 印鑑ロゴ: 中央配置 (PC は left:68% で右寄りだが、スマホ縦長では中央) サイズは画面幅に合わせる */
+  .hero-bg-logo {
+    left: 50% !important;
+    top: 36% !important;
+    width: min(88vw, 460px) !important;
+    opacity: 0.09 !important;
+  }
+  /* キャッチコピー: 上部、中央寄せ */
   .hero-content {
     max-width: 100% !important;
-    padding-top: 32px !important;
+    padding-top: 12px !important;
     padding-left: 0 !important;
     text-align: center;
     z-index: 2 !important;
   }
-  .hero-content .hero-tagline,
-  .hero-content .hero-label,
-  .hero-content .hero-title {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 100%;
+  .hero-content .hero-tagline {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 280px;
   }
-  /* hero-scroll: PC で縦書き右端固定だったのを、スマホでは横書きにして hero の下部に通常配置 */
+  /* hero-scroll: SCROLL ラベル + 3 トラックをまとめた要素。PC では縦書き右下固定。
+     スマホでは static にして hero 下部に配置。中の 3 トラックは PC と同じ「横並びの縦書きカプセル」を維持 */
   .hero-scroll {
     position: static !important;
-    writing-mode: horizontal-tb !important;
-    right: auto !important;
-    bottom: auto !important;
-    flex-direction: column !important;
-    gap: 18px !important;
+    writing-mode: vertical-rl !important;  /* SCROLL ラベルの縦書きは PC のまま維持 */
+    margin: 12px auto 0 !important;
+    align-self: center !important;
     z-index: 2 !important;
     opacity: 1 !important;
     animation: none !important;
-    margin-top: 12px !important;
+    display: flex !important;
+    flex-direction: row !important;  /* 縦書き時は flex-direction:row が「上から下」になる */
+    align-items: flex-start !important;
+    gap: 14px !important;
   }
   .hero-scroll::after {
-    display: none !important;  /* 縦線は PC の縦書き専用なので、スマホでは非表示にして縦並びに切替 (削除はしない、style 上書き) */
+    /* PC では縦書き SCROLL の下に縦線がつく装飾。スマホでも維持 */
+    height: 36px !important;
+    margin-top: 4px !important;
   }
-  /* 3 トラック (TAMSIC TRACK T+111/101/110) の audio 行: 縦に積み、横幅 100% */
+  /* hero-audio (3 トラックのコンテナ): PC のような横並び 3 列を維持 */
   .hero-audio {
-    flex-direction: column !important;
-    gap: 12px !important;
-    width: 100% !important;
-  }
-  .hero-audio-row {
-    width: 100% !important;
+    writing-mode: vertical-rl !important;
+    display: flex !important;
     flex-direction: row !important;
-    align-items: center !important;
-    gap: 12px !important;
-    padding: 12px 14px !important;
+    gap: 10px !important;
+  }
+  /* 各トラック行: 縦書きカプセル形のまま、サイズだけスマホ向けに圧縮 */
+  .hero-audio-row {
+    writing-mode: vertical-rl !important;
+    padding: 18px 8px !important;
+    min-width: 0 !important;
+    min-height: 200px;
+    gap: 8px !important;
   }
   .hero-audio-meta {
-    font-size: 10px !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 9px !important;
+    letter-spacing: 0.18em !important;
   }
   .hero-audio-current {
-    font-size: 10px !important;
+    font-size: 9px !important;
+  }
+  .hero-audio-play {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 11px !important;
+  }
+  .hero-audio-seek {
+    /* 縦書き context では range 高さがトラック高に影響 */
   }
 
   /* 5. artists セクション (3カード) を 1 列に */
