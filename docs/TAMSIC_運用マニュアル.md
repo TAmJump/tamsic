@@ -4,7 +4,7 @@
 **対象**: 運営者 (TAmJump) および新規セッションの Claude。
 **前提**: 設計書 (`TAMSIC_設計書_v4.html`) は技術仕様書、本書は**運用ノウハウ**を扱う。両者は分離して管理する。
 
-最終更新: 2026-05-10 (セッション⑨)
+最終更新: 2026-05-12 (セッション⑨ 終了時点、v4.2.2.12 反映)
 
 ---
 
@@ -137,12 +137,31 @@ wrangler deploy
 
 `docs/TAMSIC_コンテンツ追加マニュアル.md` を参照 (旧版あり、必要に応じて更新)。
 
-### 4.1 楽曲追加の流れ (要点)
+### 4.1 楽曲追加の流れ (v4.2.2.12 以降の運用)
 
-1. `tamsic-content.js` に track エントリー追加 (id, artist, order, title, durationSec, lyrics, creatorNote, closings, coverPath, audioPath, releaseDate, price)
-2. 全 HTML のキャッシュバスター bump (`?v=4.2.X.Y`)
-3. 動作確認: 公開前は会員先行 (release-control.js が 14日前から表示)
-4. push → Cloudflare Pages 自動デプロイ
+**前提変更**: v4.2.2.12 で会員先行視聴は廃止。YouTube 公開日 = サイト表示日。「サイトで聴く」内蔵プレイヤーも廃止。
+
+1. **アセット配置** (Claude が repo に push):
+   - 画像 PNG → `assets/images/<artist>/<artist>_<title>.png`
+   - 音声 MP3 → `assets/audio/<artist>/<artist>_<title>.mp3`
+   - ※ MP4 サンプル動画は YouTube 素材として除外 (Cloudflare Pages 容量節約)
+2. **`tamsic-content.js` に track エントリー追加**:
+   - 必須フィールド: `id`, `artist`, `order`, `title`, `price`, `isNew`, `youtubeUrl`, `coverPath`, `audioPath`, `lyrics`, `lyricsPreview`, `durationSec`, `titleEn`, `creatorNote`, `closings`
+   - 不要になったフィールド: `sampleStart`, `sampleEnd` (内蔵プレイヤー廃止のため)
+3. **`release-control.js` の `config.tracks` に追加**:
+   - `"曲タイトル":{release:"YYYY-MM-DD"}` の 1 行
+   - この日付以降が公開状態 (`full`)、未満は `locked` (COMING SOON)
+4. **`tamsic-content.js` の `news` 配列にリリースニュース追加**:
+   - `id: news-<trackid>-release` の形式、`tag: Release`
+5. **全 HTML のキャッシュバスター bump** (`?v=4.2.X.Y`)
+6. push → Cloudflare Pages 自動デプロイ
+
+### 4.2 公開日制御の運用 (v4.2.2.12 以降)
+
+- `release-control.js` の `config.tracks` で曲ごとに `release` 日を指定
+- ADMIN_EMAILS に登録されたユーザーは常に full 扱い (動作確認用)
+  - 現状の Admin: `animalb001@gmail.com` / `tiger@tamjump.com`
+- 公開日前の曲は coin で買えない (CSS `is-restricted` + JS で `unlockFullTrack` を拒否)
 
 ---
 
@@ -151,9 +170,9 @@ wrangler deploy
 `HANDOFF_v4.md §8` の絶対指示:
 
 - フロント変更を push する前に必ず `?v=4.2.X.Y` を bump
-- 対象: `nono.html` / `kiki.html` / `gen.html` / `mypage.html`
+- 対象: `index.html` / `nono.html` / `kiki.html` / `gen.html` / `mypage.html` / `news.html` / `about.html` / `login.html` / `signup.html` / `callback.html` / `forgot-password.html` / `reset-password.html` / `admin.html` (全 13 HTML)
 - 命名規則: `4.2.<MAJOR>.<MINOR>` 形式
-- セッション⑨ 終了時点: `4.2.2.3`
+- セッション⑨ 終了時点: **`4.2.2.12`**
 
 ---
 
@@ -163,15 +182,21 @@ wrangler deploy
 # 1. JS 構文チェック
 node --check workers/send-letter.js
 node --check letter-renderer.js  # 変更時のみ
+node --check release-control.js  # 変更時のみ
+node --check mobile-nav.js       # 変更時のみ
 
 # 2. CSS 中括弧バランス
 python3 -c "with open('letter.css') as f: c=f.read(); print(c.count('{'),c.count('}'))"
+python3 -c "with open('mobile.css') as f: c=f.read(); print(c.count('{'),c.count('}'))"
 
 # 3. シークレット平文混入チェック
 grep -rn "ghp_\|re_e\|re_E" . --include="*.js" --include="*.css" --include="*.html" 2>/dev/null
 
 # 4. キャッシュバスター bump 確認
 grep "v=4.2" nono.html | head -5
+
+# 5. (v4.2.2.12 以降) サイトで聴く / panel-site 残骸チェック
+grep "サイトで聴く\|panel-site\|setMode.*'site'" *.html
 ```
 
 すべて通ったら commit & push。
@@ -195,3 +220,4 @@ grep "v=4.2" nono.html | head -5
 | 日付 | 内容 |
 |---|---|
 | 2026-05-10 | 初版作成 (セッション⑨)。コイン直接付与手順、Cognito 6 属性一覧、Resend / Worker トラブル対応を集約。 |
+| 2026-05-12 | v4.2.2.12 反映。§4 楽曲追加手順を会員先行廃止後の仕様に書き換え、`release-control.js` 公開日制御運用を §4.2 として追加。§5 のキャッシュバスター現行値を 4.2.2.12 に更新、対象 HTML を 13 ファイル明記。§6 チェックリストに mobile-nav.js / mobile.css / 内蔵プレイヤー残骸チェックを追加。 |

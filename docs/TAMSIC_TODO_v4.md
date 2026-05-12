@@ -1,6 +1,6 @@
 # TAMSIC TODO v4
 
-**最終更新**: 2026-05-10 13:50 JST (セッション⑨で大幅更新)
+**最終更新**: 2026-05-12 23:00 JST (セッション⑨ 終了時点、v4.2.2.12)
 **前版**: TAMSIC_TODO_v3.md (Phase G 完了直後)
 
 ---
@@ -79,8 +79,9 @@ v4.2.2.1 で「同曲の複数回受信」を解禁したため、closing バリ
 
 ---
 
-## ✅ セッション⑨ (2026-05-10) で完了
+## ✅ セッション⑨ (2026-05-10〜12) で完了
 
+### 前半 (5/10)
 - ✅ **Resend ドメイン認証詰まり問題、解決** (commit `e141fcd` 直前)
   - オプション A 実施 (削除→再登録 + API キー再発行)
   - 再登録後 1 分で Verified に (キュー詰まり仮説的中)
@@ -98,8 +99,50 @@ v4.2.2.1 で「同曲の複数回受信」を解禁したため、closing バリ
   - 確認モーダル文言を「便箋の枠と結びの一文は、毎回ランダムに選ばれます」に
   - フル試聴 (30 coin) 課金縛りはあるので乱発リスク限定的
 - ✅ Worker `tamsic-send-letter` 再デプロイ (Version `f3e57143-4927-432b-a5db-acc51aa2a6ab`)
-- ✅ キャッシュバスター 4.2.1.5 → 4.2.2 → 4.2.2.1
-- ✅ docs/TAMSIC_TODO_v4.md を本ファイルとして更新
+
+### 後半 (5/10〜12)
+- ✅ **フル試聴 1 回 / レター 1 通 の整合性確保 (v4.2.2.2)** (commit `9b5f725`)
+  - 送信成功時に `<span class="sent-mark">送信済み — フル試聴を再解放すると…</span>` に置換
+  - 多重描画ガード撤廃、フル試聴のたびに便箋とボタンを再生成 = コイン消費に対応
+- ✅ **nono-004 説教調 closing 削除 (v4.2.2.3)** (commit `48bd058`)
+  - 「●●さん、約束はまだ守れる。」を削除 (曲の世界観と矛盾、Phase H1 の前哨)
+- ✅ **運用マニュアル新規作成** (commit `3b33127`)
+  - `docs/TAMSIC_運用マニュアル.md`、liberty さんへの 10,000 coin 直接付与の手順含む
+  - Cognito 6 属性一覧 (coins / nickname / birthday / registeredAt / purchases / letterHistory) を正式記載
+- ✅ **スマホ残高 0 表示バグ修正 (v4.2.2.4)** (commit `aab1850`)
+  - `_ensureFreshTokenOnLoad` でトークン新鮮時も Cognito 同期を実行
+  - iPhone Safari / Chrome で 0 coin 表示問題解消
+- ✅ **共通ハンバーガーメニュー + スマホ最適化基盤 (v4.2.2.5)** (commit `2597d68`)
+  - `mobile-nav.js` 新規 (右上 ☰ + 右スライドドロワー)
+  - `mobile.css` 新規 (横スクロール抑止、キャンペーン CTA / 便箋 / フォーム調整)
+  - 全 13 HTML に sed で一括注入
+- ✅ **index.html ヒーローのスマホ配置調整 (v4.2.2.6〜10)** (commit `e913096`, `19d790c`, `6721839`, `6bc104b`, `ecc1a90`)
+  - 試行錯誤フェーズ (5 commit)、最終的に「PC のカプセル装飾を完全継承、配置のみ調整」で着地
+  - 印鑑ロゴ / キャッチコピー / SCROLL ラベル / カプセル 3 つ の重なり解消
+- ✅ **News セクションのスマホ縦並びレイアウト (v4.2.2.11)** (commit `df97ff5`)
+  - `.news-item` を flex 横並びから縦並びに、日本語見出しの短冊化解消
+  - `.news-tag` (RELEASE バッジ) は右上に絶対配置
+- ✅ **会員先行視聴 廃止 + gEN 新曲 2 曲追加 (v4.2.2.12)** (commit `7e9f5b4`)
+  - `release-control.js` を `locked / full` 2 値に簡素化
+  - 全 HTML から「サイトで聴く」ボタン削除、サンプル試聴は YouTube 埋込に統一
+  - `gen-002 Dear Future You` (release 2026-05-23) 追加
+  - `gen-003 Echo from the Future` (release 2026-05-30) 追加
+  - 画像 + MP3 を `assets/images/gen/` `assets/audio/gen/` に配置 (MP4 は YouTube 素材として除外)
+  - 公開日制御に新曲 2 件追加、news エントリ 2 件追加
+
+### 運用作業
+- ✅ liberty.2wink7@gmail.com に 10,000 coin 付与 (AWS Console から `custom:coins` を直接書換、5/10)
+- ✅ AWS Console URL `https://ap-northeast-1.console.aws.amazon.com/cognito/v2/idp/user-pools/ap-northeast-1_vozRgCY5k/users` を運用マニュアルに正式記載
+
+### キャッシュバスター推移
+4.2.1.5 → 4.2.2 → 4.2.2.1 → 4.2.2.2 → 4.2.2.3 → 4.2.2.4 → 4.2.2.5 → 4.2.2.6 → 4.2.2.7 → 4.2.2.8 → 4.2.2.9 → 4.2.2.10 → 4.2.2.11 → **4.2.2.12** (最終)
+
+### 新規追加ファイル
+- `mobile-nav.js` (共通ハンバーガーメニュー)
+- `mobile.css` (共通スマホ最適化)
+- `docs/TAMSIC_運用マニュアル.md`
+- `assets/images/gen/gen_dearfutureyou.png` / `gen_echofromthefuture.png`
+- `assets/audio/gen/gen_dearfutureyou.mp3` / `gen_echofromthefuture.mp3`
 
 ---
 
@@ -124,20 +167,22 @@ v4.2.2.1 で「同曲の複数回受信」を解禁したため、closing バリ
 
 `tamsic-content.js` 内、各 track の `creatorNote` (3-5 文の制作秘話、アーティスト本人視点) を投入する。
 
-**進捗** (12曲中 1曲のみ確定):
+**進捗** (14 曲中 1 曲のみ確定):
 - ✅ `nono-004` 「ぎりぎりだよ。」 creatorNote 完備
 - ⬜ `nono-001` 「Breathless」
 - ⬜ `nono-002` 「RE+」 (release 2026-05-15)
 - ⬜ `nono-003` 「to Walk」
 - ⬜ `nono-005` 「シグナル●」
 - ⬜ `nono-006` (未定)
-- ⬜ `kiki-001` 「Burn bright」
-- ⬜ `kiki-002` 「Critical point」
-- ⬜ `kiki-003` 「No Stop」
-- ⬜ `kiki-004` 「エンジン」
-- ⬜ `kiki-005` 「KIKI rising」
+- ⬜ `kiki-001` 「Burn bright」 (release 2026-05-20)
+- ⬜ `kiki-002` 「Critical point」 (release 2026-06-28)
+- ⬜ `kiki-003` 「No Stop」 (release 2026-07-11)
+- ⬜ `kiki-004` 「エンジン」 (release 2026-08-23)
+- ⬜ `kiki-005` 「KIKI rising」 (release 2026-09-20)
 - ⬜ `kiki-006` 「unセカイ」 (release 2026-05-15)
-- ⬜ `gen-001` 「unセカイ」
+- ⬜ `gen-001` 「unセカイ」 (release 2026-05-15)
+- ⬜ `gen-002` 「Dear Future You」 (release 2026-05-23) ← セッション⑨ 追加
+- ⬜ `gen-003` 「Echo from the Future」 (release 2026-05-30) ← セッション⑨ 追加
 
 **作業手順**: ユーザーから本人視点テキスト受領 → `tamsic-content.js` の該当 track に投入 → push (キャッシュバスター更新)。Phase H1 の closings 生成と同じ曲で同時にやると効率的。
 
