@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,7 +68,7 @@
     .step{display:none}
     .step.active{display:block}
   </style>
-<link rel="stylesheet" href="mobile.css?v=4.2.2.14">
+<link rel="stylesheet" href="mobile.css?v=4.2.3">
 </head>
 <body>
 
@@ -192,7 +192,7 @@ if (typeof isLoggedIn === 'function' && isLoggedIn()) {
   location.href = '/mypage.html';
 }
 
-function lang() { return (window.TAMSICLang && window.TAMSICLang.get && window.TAMSICLang.get()) || 'ja'; }
+function lang() { return (window.TAMSICLang && window.TAMSICLang.get && window.TAMSICLang.get()) || 'en'; }
 
 const ERR_MAP = {
   UsernameExistsException:   { ja:'このメールアドレスはすでに登録されています。',             en:'This email is already registered.' },
@@ -451,6 +451,6 @@ async function resendCode() {
 })();
 </script>
 
-<script src="mobile-nav.js?v=4.2.2.14"></script>
+<script src="mobile-nav.js?v=4.2.3"></script>
 </body>
 </html>

@@ -323,7 +323,7 @@
    */
   function showMemberGate(opts) {
     opts = opts || {};
-    const lang = (window.TAMSICLang && window.TAMSICLang.get && window.TAMSICLang.get()) || 'ja';
+    const lang = (window.TAMSICLang && window.TAMSICLang.get && window.TAMSICLang.get()) || 'en';
     const JA = {
       kicker: 'MEMBERS ONLY',
       title:  opts.title  || 'ここから先は会員限定です',
@@ -357,7 +357,7 @@
    */
   function showComingSoon(opts) {
     opts = opts || {};
-    const lang = (window.TAMSICLang && window.TAMSICLang.get && window.TAMSICLang.get()) || 'ja';
+    const lang = (window.TAMSICLang && window.TAMSICLang.get && window.TAMSICLang.get()) || 'en';
     const JA = {
       kicker: 'COMING SOON',
       title:  opts.title || 'この曲はまだ公開前です',
@@ -389,7 +389,7 @@
    */
   function showCoinShortage(opts) {
     opts = opts || {};
-    const lang = (window.TAMSICLang && window.TAMSICLang.get && window.TAMSICLang.get()) || 'ja';
+    const lang = (window.TAMSICLang && window.TAMSICLang.get && window.TAMSICLang.get()) || 'en';
     const JA = {
       kicker:  'COIN SHORTAGE',
       title:   '残高が不足しています',

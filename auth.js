@@ -285,7 +285,7 @@ async function cognitoLogin() {
   const challenge = await _generateCodeChallenge(verifier);
   localStorage.setItem(STORAGE_KEYS.verifier, verifier);
   localStorage.setItem(STORAGE_KEYS.state, state);
-  const _lang = localStorage.getItem('tamsic_lang') || 'ja';
+  const _lang = localStorage.getItem('tamsic_lang') || 'en';
   const params = new URLSearchParams({
     response_type:'code', client_id: AUTH_CONFIG.clientId,
     redirect_uri: AUTH_CONFIG.redirectUri, scope: AUTH_CONFIG.scopes,
@@ -298,7 +298,7 @@ async function cognitoSignup() {
   const challenge = await _generateCodeChallenge(verifier);
   localStorage.setItem(STORAGE_KEYS.verifier, verifier);
   localStorage.setItem(STORAGE_KEYS.state, state);
-  const _lang = localStorage.getItem('tamsic_lang') || 'ja';
+  const _lang = localStorage.getItem('tamsic_lang') || 'en';
   const params = new URLSearchParams({
     response_type:'code', client_id: AUTH_CONFIG.clientId,
     redirect_uri: AUTH_CONFIG.redirectUri, scope: AUTH_CONFIG.scopes,

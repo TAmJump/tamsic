@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -246,7 +246,7 @@
       border-top: 1px solid var(--light);
     }
   </style>
-<link rel="stylesheet" href="mobile.css?v=4.2.2.14">
+<link rel="stylesheet" href="mobile.css?v=4.2.3">
 </head>
 <body>
 
@@ -357,7 +357,7 @@ const ERR_MAP = {
   NetworkError:              { ja: 'ネットワークエラー。接続を確認してください。',            en: 'Network error. Please check your connection.' },
 };
 function lang() {
-  return (window.TAMSICLang && window.TAMSICLang.get && window.TAMSICLang.get()) || 'ja';
+  return (window.TAMSICLang && window.TAMSICLang.get && window.TAMSICLang.get()) || 'en';
 }
 function mapErr(err) {
   const code = (err && (err.code || err.name)) || 'Unknown';
@@ -491,6 +491,6 @@ async function useHostedUI(ev) {
 }
 </script>
 
-<script src="mobile-nav.js?v=4.2.2.14"></script>
+<script src="mobile-nav.js?v=4.2.3"></script>
 </body>
 </html>
