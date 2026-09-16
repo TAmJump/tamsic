@@ -1,13 +1,88 @@
 # TAMSIC TODO v4
 
-**最終更新**: 2026-05-12 23:00 JST (セッション⑨ 終了時点、v4.2.2.12)
+**最終更新**: 2026-09-16 (セッション⑩ 初日、リニューアル方針決定)
 **前版**: TAMSIC_TODO_v3.md (Phase G 完了直後)
 
 ---
 
-## 🔴 最優先・進行中
+## 🔴 最優先・セッション⑩ で決定した新方針
+
+### Phase R: TAMSIC リニューアル (5 本柱)
+
+**大きな方針転換**: サイト有料化廃止 + YouTube フル尺公開 + 英語プライマリ + アーティスト募集プラットフォーム化 + 将来のグッズ販売 + 医療支援。詳細方針は `docs/TAMSIC_リニューアル計画書_v1.md` を必ず先に読むこと。
+
+#### Phase R1: 準備・告知 (次セッション最優先)
+- ⬜ リニューアル告知文の英語版作成 (日本語版は `TAMSIC_リニューアル計画書_v1.md §5` に素案あり)
+- ⬜ サイト Top に「サイトリニューアル準備中」バナー掲載 (index.html、既存 Kickstarter バナーと並列 or 統合)
+- ⬜ 既存 4 名の coin 残高確認 (2 名は残高未確認: inochitsun... / 8lightfull...)
+- ⬜ 転用レート最終決定 (候補: 1 coin = ¥100 / ¥10 / ¥2、次セッションで確定)
+- ⬜ 告知メール送付 (Resend 経由、既存 4 名 + SNS フォロワー)
+- ⬜ リリース日の決定 (Kickstarter ONE HEART 10/8 終了後の可能性)
+
+#### Phase R2: 有料化廃止 + YouTube フル尺化
+- ⬜ 全 HTML から「フル試聴 30 coin」ボタン削除
+- ⬜ `release-control.js` の locked/full 判定廃止 (全曲即公開)
+- ⬜ `tamsic-content.js` の各曲 `youtubeUrl` をフル尺動画 URL に差し替え (TAmJump から新 URL 提供必要)
+- ⬜ 便箋メール送信ボタン一旦非表示 (Phase R5 で復活検討)
+- ⬜ `unlockFullTrack()` / `spendCoins()` の呼び出し箇所コメントアウト (コードは残す、既存 coin 残高保護のため)
+
+#### Phase R3: 英語プライマリ化 (方針 β 採用)
+- ⬜ `TAMSICLang` のデフォルト言語を EN に変更
+- ⬜ 全 13 HTML の `data-ja` / `data-en` 属性の主従関係反転
+- ⬜ ニュース記事 (`tamsic-content.js` news 配列) の `titleEn` を主にした表示ロジック
+- ⬜ ハンバーガーメニュー (`mobile-nav.js`) の言語切替 UI を目立たせる
+- ⬜ 楽曲タイトルの英題/日本題併記実装 (例: "On the Edge (ぎりぎりだよ。)")
+
+#### Phase R4: アーティストプラットフォーム化
+- ⬜ 現状の 3 アーティスト固定構造 (nono.html / kiki.html / gen.html) を可変数対応に
+- ⬜ アーティスト応募フォーム (Google Form or サイト内 form + Cloudflare Worker)
+- ⬜ 応募内容の TAmJump への通知 (Resend 経由)
+- ⬜ 新規アーティスト追加手順のマニュアル化 (`docs/TAMSIC_運用マニュアル.md` §4 に追記)
+
+#### Phase R5: ファンクラブ + グッズ + 医療支援
+- ⬜ ファンクラブ会員機能 (Cognito 属性 `custom:fanclub` 等で判定)
+- ⬜ 月額課金 or 都度払い (Stripe / Square Subscriptions 検討)
+- ⬜ グッズ販売連携 (Shopify / BASE / Square 検討)
+- ⬜ 既存 coin → グッズ購入クレジット転用の実装
+- ⬜ 医療支援先の選定 + 寄付フロー確立 (寄付率も要決定)
+- ⬜ サイト上での寄付額可視化
+- ⬜ 便箋メール技術をファンクラブ特典として復活検討 (Phase H1 の closing プールが活きる場)
+
+---
+
+### Phase I: 運営者向け 会員数ダッシュボード (Phase R1〜R2 と並行が現実的)
+
+**背景**: TAmJump が Instagram / YouTube で継続宣伝、YouTube 経由の問い合わせも発生。AWS Console にログインしないと登録数が見えない現状は外出中の運営者に不便。リニューアル後は「アーティスト応募数」「ファンクラブ会員数」「グッズ購入者数」「寄付累計額」も表示予定。
+
+**採用方針 (推奨案で合意): A + B の組合せ**
+- **A. admin.html にリアルタイム会員数表示**: 新規 Cloudflare Worker `tamsic-stats` (仮称) が Cognito API `ListUsers` を叩いて件数を集計 → JSON で返す。admin.html から fetch → 5 分自動更新 or 手動リロード。アクセス制限は Cognito ID token + `custom:role=admin` or email allowlist。
+- **B. 日次メール通知**: Cloudflare Worker Cron Triggers (毎朝 8:00 JST = UTC 23:00) で tamsic-stats を呼び、既存の Resend + `letter@tamjump.com` 流用して `info@tamjump.com` (or `tiger@tamjump.com`) に送信。
+
+**表示項目 (詳細版)**:
+- 総登録数 / メール検証済み数 / 今週の新規登録数 / 有効な購入者数 / アクティブユーザー数
+- **リニューアル後追加候補**: アーティスト応募数 / ファンクラブ会員数 / グッズ購入者数 / 寄付累計額
+
+**実装ステップ (推定 2 時間)**:
+1. Worker `tamsic-stats` 作成 (Cognito `ListUsers` API + Pagination で全件取得、集計、JSON レスポンス)
+2. IAM 権限設定 (`cognito-idp:ListUsers` 許可の IAM ユーザー作成、access key を Worker secret に)
+3. Cron Trigger 設定 (`wrangler.toml` の `[triggers] crons = ["0 23 * * *"]`)
+4. admin.html に UI 追加 (fetch → 表示、5 分 setInterval で更新)
+5. 日次メール送信ロジック (Resend API を Cron 内で叩く)
+6. 動作確認: PC で admin.html 表示、翌朝 info メール受信確認
+
+**注意点**:
+- Cognito `ListUsers` はページネーション上限 60 件 / call、`PaginationToken` で繰り返し取得
+- ユーザー数が数万人規模になったら DynamoDB カウンター管理に移行
+- IAM 認証情報を Cloudflare Worker secret に置く時は絶対に repo にコミットしない
+- Cron の JST/UTC ズレに注意 (Cloudflare は UTC 基準)
+
+---
+
+## 🟡 リニューアル方針との整合性を再確認する旧タスク
 
 ### Phase H1: closing 大量生成 (現 ~25 通り → 500 通り)
+
+**リニューアル影響**: Phase R2 で便箋メール一旦非表示、Phase R5 でファンクラブ特典として復活検討時に再着手予定。当面 pause。以下は旧計画として保持。
 
 **背景**: ユーザー要望「便箋の一文は 500 通りくらい欲しい」「同じ曲を聴くたび違う便箋が届く価値」。
 現状は曲別 closing が nono-004 の 3 通りのみ、他 11 曲は placeholder。

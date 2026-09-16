@@ -1884,8 +1884,24 @@ chmod +x .git/hooks/pre-commit</pre>
 <section id="s22">
   <div class="st"><span class="sn">22</span>将来の拡張計画</div>
 
+  <div class="hint hint-red" style="border-left:4px solid var(--red);padding:16px 20px;margin:16px 0;background:#FFF0F0">
+    <strong style="font-size:1.05rem">🔴 セッション⑩ (2026-09-16) で決定した大きな方針転換: TAMSIC リニューアル</strong><br><br>
+    TAmJump からの方針決定により、TAMSIC は<strong>音楽レーベルとしての収益化</strong>から<strong>音楽を通じた社会貢献プラットフォーム</strong>へ軸を移す。<br><br>
+    <strong>5 本柱</strong>:
+    <ol style="margin:6px 0">
+      <li><strong>YouTube でフル尺公開に切替</strong> (これまでのサンプル戦略を廃止)</li>
+      <li><strong>サイトの有料化 (コイン経済) を廃止</strong>、無料化して間口を広げる</li>
+      <li><strong>サイトはアーティスト募集プラットフォームへ再設計</strong> (可変数対応)</li>
+      <li><strong>将来のファンクラブ + グッズ販売</strong> (既存 coin はクレジット転用可、1c=¥[レート] 未確定)</li>
+      <li><strong>利益の一部をへき地・海外過疎地の医療支援へ</strong> (ブランドの核)</li>
+    </ol>
+    <strong>加えて</strong>: 英語をプライマリ言語に転換 (方針 β: 英語プライマリ + JP 切替トグル)。<br>
+    <strong>告知ストーリー</strong>: 「みなさんの応援により、TAMSIC が生まれ変わります」。<br><br>
+    詳細方針・実装フェーズ (Phase R1〜R5) は <code>docs/TAMSIC_リニューアル計画書_v1.md</code> を参照。以下の Phase H1/H2/I は本リニューアルとの整合性を再確認する必要あり (下記の注記参照)。
+  </div>
+
   <div class="hint" style="background:#FFF8E8;border-left:3px solid var(--gold);padding:14px 18px;margin:16px 0">
-    <strong>📌 セッション⑨ (2026-05-10〜12) 終了時点でのフェーズ整理:</strong> v4.2.2 までで Phase A〜G が完了。v4.2.2.1〜14 で追加機能群が完成 (詳細は本ページ下部の改訂履歴フッターを参照)。次フェーズは <strong>Phase H1 (closing 500通り + 14曲分の creatorNote 執筆)</strong> と <strong>Phase H2 (closing 多言語化)</strong>。詳細は <code>docs/TAMSIC_TODO_v4.md</code> 参照。
+    <strong>📌 セッション⑨ (2026-05-10〜12) 終了時点でのフェーズ整理 (リニューアル前):</strong> v4.2.2 までで Phase A〜G が完了。v4.2.2.1〜14 で追加機能群が完成 (詳細は本ページ下部の改訂履歴フッターを参照)。当時の次フェーズは <strong>Phase H1 (closing 500通り + 14曲分の creatorNote 執筆)</strong> と <strong>Phase H2 (closing 多言語化)</strong> だったが、セッション⑩ のリニューアル方針決定で位置づけが変わった (下記参照)。
   </div>
 
   <h3>✅ セッション⑨で解決済 / 完了済 (旧フェーズ)</h3>
@@ -1899,7 +1915,12 @@ chmod +x .git/hooks/pre-commit</pre>
     <li><strong>ADMIN 特権撤廃 + 公開済ラベル日付化</strong> → ✅ v4.2.2.14 で完成</li>
   </ul>
 
-  <h3>🔴 Phase H1 (最優先、次セッション着手): closing 500 通り生成 + creatorNote 執筆</h3>
+  <h3>🟡 リニューアル方針との整合性を再確認する旧タスク (Phase H1/H2)</h3>
+  <div class="hint hint-red" style="padding:12px 16px;font-size:.9rem">
+    <strong>⚠ Phase H1 / H2 のリニューアル影響:</strong> Phase R2 (Phase R = リニューアル) で便箋メール送信ボタンを一旦非表示にする予定のため、便箋 closing の 500 通り生成 (H1) と多言語化 (H2) は当面 pause。<strong>Phase R5</strong> でファンクラブ特典として便箋メール技術を復活検討する時に、Phase H1 の closing プールが活きる場となる。以下は旧計画として保持。
+  </div>
+
+  <h3>🔴 (旧) Phase H1 (リニューアル前の計画): closing 500 通り生成 + creatorNote 執筆</h3>
   <div class="flow">
     <div class="fs todo">
       <div><div class="ft">closing 大量生成 (現 ~25 通り → 500 通り)</div>
@@ -1912,7 +1933,7 @@ chmod +x .git/hooks/pre-commit</pre>
     </div>
   </div>
 
-  <h3>🟡 Phase H2 (保留、Phase H1 完成後): closing 多言語化 (案 D 採用)</h3>
+  <h3>🟡 (旧) Phase H2 (リニューアル前の計画、Phase R3 と統合予定): closing 多言語化 (案 D 採用)</h3>
   <div class="hint hint-blue">
     <strong>採用する設計 (案 D)</strong>:
     <ul class="styled" style="margin-top:6px">
