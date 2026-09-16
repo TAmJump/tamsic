@@ -23,11 +23,12 @@ h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin:56
 h2 .h2num{display:inline-block;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.3em;color:var(--accent);margin-right:12px;vertical-align:middle;font-weight:500;position:relative;top:-4px;}
 p{margin:0 0 18px;font-size:15px;line-height:1.85;}
 p.small{font-size:13px;color:var(--mid);}
-.callout{background:#FFFCF2;border-left:3px solid var(--accent);padding:24px 28px;margin:40px 0;border-radius:2px;}
-.callout p{margin:0;font-size:14px;line-height:1.75;}
-.vision-link{display:inline-block;margin-top:12px;font-size:13px;color:var(--accent2);text-decoration:none;border-bottom:1px solid var(--accent2);padding-bottom:2px;transition:opacity .2s;}
-.vision-link:hover{opacity:.7;}
-.thanks{margin-top:80px;padding:48px 32px;background:linear-gradient(180deg,#FFFCF2 0%,#FAFAF7 100%);border-radius:4px;text-align:center;}
+.callout{background:#0B1D35;color:#F1E9D2;padding:32px 32px;margin:48px 0;border-radius:2px;}
+.callout-eyebrow{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#C4960E;font-weight:600;margin-bottom:12px;}
+.callout p{margin:0 0 16px;font-size:14px;line-height:1.9;color:#F1E9D2;}
+.vision-link{display:inline-block;font-size:12px;color:#C4960E;text-decoration:none;border-bottom:1px solid #C4960E;padding-bottom:3px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;transition:opacity .2s;}
+.vision-link:hover{opacity:.75;}
+.thanks{margin-top:80px;padding:48px 32px;background:transparent;border-top:1px solid var(--light);text-align:center;}
 .thanks h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;font-style:italic;margin:0 0 12px;letter-spacing:.02em;}
 .thanks p{font-size:14px;color:var(--mid);margin:0;}
 footer{padding:48px 64px;background:#2C2A26;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;color:#8a8783;font-size:12px;margin-top:80px;}
@@ -45,8 +46,8 @@ footer a{color:#8a8783;text-decoration:none;margin-right:20px;}
   footer{padding:32px 20px;font-size:11px;text-align:center;justify-content:center;}
 }
 </style>
-<script src="lang.js?v=4.2.3.1"></script>
-<link rel="stylesheet" href="mobile.css?v=4.2.3.1">
+<script src="lang.js?v=4.2.3.3"></script>
+<link rel="stylesheet" href="mobile.css?v=4.2.3.3">
 </head>
 <body>
 
@@ -98,9 +99,10 @@ footer a{color:#8a8783;text-decoration:none;margin-right:20px;}
   </p>
 
   <div class="callout">
-    <p data-ja="この考え方は、TAMSIC を運営するタムジ株式会社が描く「未来予想図」の中に位置づけられています。音楽・地域・医療・社会を、ひとつの流れとしてつないでいく構想です。"
-       data-en="This vision is part of the broader roadmap drawn by TAmJump — the company behind TAMSIC — connecting music, local communities, healthcare and society as a single flowing current.">
-      This vision is part of the broader roadmap drawn by TAmJump — the company behind TAMSIC — connecting music, local communities, healthcare and society as a single flowing current.
+    <div class="callout-eyebrow" data-ja="TAMJ の未来予想図の中で" data-en="Within the TAMJ vision map">Within the TAMJ vision map</div>
+    <p data-ja="TAMSIC は、タムジ株式会社が描く「未来予想図」の裏側で動く活動です。音楽が地域とつながり、地域が医療とつながり、医療が社会とつながる。ひとつの循環の中の、静かで確かな一部として存在しています。"
+       data-en="TAMSIC is the quiet, underlying current within the vision map drawn by TAmJump. Music connects to local communities, communities to healthcare, healthcare to society. TAMSIC is a small but essential part of that single flowing circle.">
+      TAMSIC is the quiet, underlying current within the vision map drawn by TAmJump. Music connects to local communities, communities to healthcare, healthcare to society. TAMSIC is a small but essential part of that single flowing circle.
     </p>
     <a href="https://tamjump.com/vision-map.html" target="_blank" rel="noopener" class="vision-link" data-ja="TAMJ の未来予想図を見る →" data-en="See the TAMJ vision map →">See the TAMJ vision map →</a>
   </div>
@@ -124,6 +126,6 @@ footer a{color:#8a8783;text-decoration:none;margin-right:20px;}
   <span>© 2026 TAMSIC. All Rights Reserved.</span>
 </footer>
 
-<script src="mobile-nav.js?v=4.2.3.1"></script>
+<script src="mobile-nav.js?v=4.2.3.3"></script>
 </body>
 </html>
