@@ -51,6 +51,19 @@
 - 寄付率は今後決定 (10% / 30% / etc.)
 - サイト上での寄付額可視化 / 支援先の活動報告掲載を将来的に検討
 
+### 2-6. TAMJ vision-map を軸に据える
+TAMSIC は「音楽レーベル」単体ではなく、**タムジ株式会社 (TAMJ) が描く「未来予想図」の裏側で動く活動**として位置づける。音楽が地域とつながり、地域が医療とつながり、医療が社会とつながる。ひとつの循環の中の、静かで確かな一部。
+- **リンク先**: `https://tamjump.com/vision-map.html`
+- **反映箇所**: `renewal.html` の callout セクション、および将来的に about.html にも同様の表現を追加検討
+- **ブランドメッセージ**: 「まさに裏の世界の活動が TAMSIC」というトーンで、vision-map への導線を主要な世界観の説明として据える
+
+### 2-7. ONE HEART Kickstarter との切り分け (2026-09-16 確定)
+**方針**: **Kickstarter プロジェクト (WE ARE ALL ONE HEART) は TAMSIC サイト内で告知しない**。
+- TAmJump 個人 / TAmJump 社の別プロジェクトとして扱う
+- TAMSIC は音楽レーベル、Kickstarter は TAMJ の別事業、という明確な切り分け
+- 将来的に「Kickstarter バナーを TAMSIC に追加してほしい」等の依頼があっても、この方針は変更しないこと
+- 関連告知が必要な場合は TAMJ 側 (tamjump.com or vision-map.html) で扱う
+
 ---
 
 ## 3. 英語プライマリ化
