@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAMSIC | TAMSIC</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Syncopate:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="lang.js?v=4.2.3.4"></script>
+<style>
+:root{--bg:#EEF3F9;--text:#0B1D35;--accent:#C4960E;--accent2:#0099CC;--light:#D4E2F0;--mid:#5B7FA0;--white:#FFFFFF;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans','Noto Sans JP',sans-serif;font-weight:300;overflow-x:hidden;}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:20px 56px;background:#EEF3F9;border-bottom:1px solid var(--light);}
+.nav-back{font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.35em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color .25s;}
+.nav-back:hover{color:var(--accent);}
+.nav-title{font-family:'Syncopate',sans-serif;font-size:14px;font-weight:700;letter-spacing:.4em;}
+.nav-links{display:flex;gap:36px;list-style:none;align-items:center;}
+.nav-links a{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color .25s;}
+.nav-links a:hover,.nav-links a.active{color:var(--accent);}
+.nav-links a[data-artist-link]{text-transform:none;letter-spacing:.12em;}
+.decor-l{position:absolute;left:64px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--light) 20%,var(--light) 80%,transparent);}
+.decor-r{position:absolute;right:64px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--light) 20%,var(--light) 80%,transparent);}
+.hero{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:120px 32px 80px;text-align:center;}
+.hero-orn{position:absolute;top:14%;left:50%;transform:translateX(-50%);width:44px;height:44px;border:1px solid var(--accent);opacity:.4;}
+.hero-num{font-family:'Syncopate',sans-serif;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--mid);margin-bottom:20px;}
+.hero-name{font-family:'Playfair Display',serif;font-size:clamp(72px,10vw,120px);font-weight:900;line-height:1;letter-spacing:.05em;margin:0;color:var(--text);}
+.hero-rule{display:flex;align-items:center;gap:14px;margin:24px 0;}
+.rule-line{width:60px;height:1px;background:var(--accent);}
+.rule-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+.hero-bio{max-width:520px;font-size:15px;line-height:2;color:var(--mid);font-family:'Playfair Display',serif;font-style:italic;font-weight:400;}
+
+/* feature (profile card) */
+.feature{display:grid;grid-template-columns:3fr 2fr;min-height:70vh;}
+.feature-photo{background:var(--light);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;min-height:60vh;}
+.feature-photo-bg{position:absolute;inset:0;background:linear-gradient(160deg,#F1E9D2 0%,#E4D3A0 60%,#C4960E 100%);opacity:.15;}
+.feature-photo-frame{position:relative;z-index:1;width:70%;max-width:380px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:#0B1D35;padding:40px;box-shadow:0 30px 60px rgba(0,0,0,.18);}
+.feature-photo-frame img{width:100%;height:auto;object-fit:contain;display:block;filter:brightness(1.05);}
+.feature-text{background:var(--text);padding:72px 56px;display:flex;flex-direction:column;justify-content:center;color:#F1E9D2;}
+.feature-text h3{font-family:'Playfair Display',serif;font-style:italic;font-size:40px;font-weight:400;color:#F1E9D2;line-height:1.1;margin:0 0 28px;}
+.feature-text .aa-grid{display:grid;grid-template-columns:130px 1fr;gap:10px 28px;font-size:13px;line-height:1.75;margin:0 0 28px;}
+.feature-text .aa-grid dt{color:rgba(241,233,210,.55);letter-spacing:.1em;font-size:10px;text-transform:uppercase;padding-top:5px;font-weight:400;margin:0;}
+.feature-text .aa-grid dd{color:rgba(241,233,210,.94);margin:0;}
+.feature-text p.aa-desc{font-size:14px;line-height:2.1;color:rgba(241,233,210,.82);padding-top:24px;border-top:1px solid rgba(196,150,14,.35);margin:0 0 28px;font-family:'Playfair Display',serif;font-style:italic;}
+.fstat-row{display:flex;gap:40px;margin-top:8px;padding-top:24px;border-top:1px solid rgba(196,150,14,.35);}
+.fstat{flex:0 0 auto;}
+.fstat-num{font-family:'Playfair Display',serif;font-style:italic;font-size:36px;font-weight:400;color:#C4960E;line-height:1;}
+.fstat-label{font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.2em;color:rgba(241,233,210,.6);text-transform:uppercase;margin-top:6px;}
+
+/* discography */
+.discography{padding:100px 56px;background:var(--bg);}
+.sec-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--light);}
+.sec-left{display:flex;flex-direction:column;gap:8px;}
+.sec-tag{font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);}
+.sec-title{font-family:'Playfair Display',serif;font-size:44px;font-weight:400;font-style:italic;color:var(--text);}
+.sec-count{font-family:'Syncopate',sans-serif;font-size:12px;letter-spacing:.25em;color:var(--mid);}
+.sec-sub-header{margin-top:64px;margin-bottom:32px;padding-bottom:16px;border-bottom:1px dashed var(--light);}
+.sec-sub-header:first-of-type{margin-top:32px;}
+.sec-sub-tag{font-family:'Syncopate',sans-serif;font-size:10px;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+.sec-sub-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;font-style:italic;color:var(--text);}
+.sec-sub-desc{font-size:12px;color:var(--mid);margin-top:6px;line-height:1.7;}
+
+.track-block{display:grid;grid-template-columns:180px 1fr;gap:32px;padding:32px 0;border-bottom:1px solid var(--light);align-items:start;}
+.track-block:last-child{border-bottom:none;}
+.track-cover{width:180px;aspect-ratio:1/1;overflow:hidden;background:var(--light);position:relative;box-shadow:0 8px 24px rgba(11,29,53,.15);}
+.track-cover img{width:100%;height:100%;object-fit:cover;display:block;}
+.track-body{display:flex;flex-direction:column;gap:16px;}
+.track-num{font-family:'Syncopate',sans-serif;font-size:10px;letter-spacing:.3em;color:var(--mid);text-transform:uppercase;}
+.track-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;font-style:italic;color:var(--text);line-height:1.1;}
+.track-mp3{display:flex;align-items:center;gap:14px;background:var(--text);color:#F1E9D2;padding:14px 20px;border-radius:2px;}
+.track-mp3-play{width:36px;height:36px;border-radius:50%;background:var(--accent);border:none;color:#0B1D35;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .2s;flex-shrink:0;}
+.track-mp3-play:hover{opacity:.85;}
+.track-mp3-progress{flex:1;height:4px;background:rgba(241,233,210,.15);border-radius:2px;position:relative;cursor:pointer;}
+.track-mp3-fill{position:absolute;top:0;bottom:0;left:0;background:var(--accent);border-radius:2px;transition:width .1s linear;}
+.track-mp3-time{font-family:'Syncopate',sans-serif;font-size:10px;letter-spacing:.05em;color:rgba(241,233,210,.55);flex-shrink:0;min-width:32px;text-align:right;}
+.track-mp3 audio{display:none;}
+.track-yt{width:100%;aspect-ratio:16/9;background:#111;position:relative;}
+.track-yt iframe{width:100%;height:100%;border:0;display:block;}
+.track-yt-ph{width:100%;aspect-ratio:16/9;background:#0B1D35;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;color:rgba(241,233,210,.5);font-size:12px;line-height:1.7;font-family:'Syncopate',sans-serif;letter-spacing:.15em;}
+.track-yt-ph-label{color:var(--accent);font-size:10px;letter-spacing:.35em;}
+.track-yt-ph-note{color:rgba(241,233,210,.35);font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-family:'DM Sans',sans-serif;}
+
+footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
+.footer-name{font-family:'Syncopate',sans-serif;font-size:18px;font-weight:700;letter-spacing:.4em;}
+.footer-label{font-size:10px;color:rgba(241,233,210,.35);letter-spacing:.2em;text-transform:uppercase;}
+.footer-copy{font-size:11px;color:rgba(241,233,210,.35);}
+.footer-legal{display:flex;gap:20px;flex-wrap:wrap;align-items:center;}
+.footer-legal a{font-size:11px;letter-spacing:.15em;color:rgba(241,233,210,.4);text-decoration:none;text-transform:uppercase;transition:color .2s;}
+.footer-legal a:hover{color:var(--accent);}
+
+@media(max-width:1024px){
+  .feature{grid-template-columns:1fr;}
+  .feature-photo{min-height:50vh;padding:40px;}
+}
+@media(max-width:768px){
+  nav{padding:16px 20px;}
+  .nav-links{display:none;}
+  .decor-l,.decor-r{display:none;}
+  .hero{padding:100px 24px 60px;min-height:auto;}
+  .hero-name{font-size:clamp(56px,16vw,90px);}
+  .feature-text{padding:56px 24px;}
+  .feature-text h3{font-size:32px;}
+  .feature-text .aa-grid{grid-template-columns:1fr;gap:2px;}
+  .feature-text .aa-grid dt{margin-top:12px;}
+  .discography{padding:80px 24px;}
+  .track-block{grid-template-columns:1fr;gap:20px;}
+  .track-cover{width:100%;max-width:280px;margin:0 auto;}
+  .track-title{font-size:26px;}
+  .sec-title{font-size:32px;}
+  footer{padding:32px 24px;flex-direction:column;text-align:center;}
+}
+</style>
+<link rel="stylesheet" href="mobile.css?v=4.2.3.4">
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">← TAMSIC</a>
+  <span class="nav-title">TAMSIC</span>
+  <ul class="nav-links">
+    <li><a data-artist-link href="nono.html" data-ja="no-no" data-en="no-no">no-no</a></li>
+    <li><a data-artist-link href="kiki.html" data-ja="kiki" data-en="kiki">kiki</a></li>
+    <li><a data-artist-link href="gen.html" data-ja="gEN" data-en="gEN">gEN</a></li>
+    <li><a data-artist-link class="active" aria-current="page" href="tamsic.html" data-ja="TAMSIC" data-en="TAMSIC">TAMSIC</a></li>
+    <li><a href="news.html" data-ja="ニュース" data-en="News">ニュース</a></li>
+    <li><a href="about.html" data-ja="レーベル紹介" data-en="About">レーベル紹介</a></li>
+    <li><a href="mypage.html" data-ja="マイページ" data-en="My Page">マイページ</a></li>
+    <li><button data-lang-toggle style="background:none;border:1px solid var(--light);color:var(--mid);font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.1em;padding:5px 12px;cursor:pointer;border-radius:2px;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='';this.style.color=''">EN</button></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="decor-l"></div><div class="decor-r"></div>
+  <div class="hero-orn"></div>
+  <p class="hero-num" data-ja="TAMSICアーティスト 000" data-en="TAMSIC Artist 000">TAMSIC Artist 000</p>
+  <h1 class="hero-name">TAMSIC</h1>
+  <div class="hero-rule"><div class="rule-line"></div><div class="rule-dot"></div><div class="rule-line"></div></div>
+  <p class="hero-bio" data-ja="タムジ株式会社が、<br>音として自己を表現する。<br>ビジョンを、音にする。" data-en="The voice of TAMJ itself —<br>music as identity,<br>expressing our vision.">The voice of TAMJ itself —<br>music as identity,<br>expressing our vision.</p>
+</section>
+
+<div class="feature">
+  <div class="feature-photo">
+    <div class="feature-photo-bg"></div>
+    <div class="feature-photo-frame">
+      <img src="assets/images/tamsic/tamsic_profile.png" alt="TAMSIC">
+    </div>
+  </div>
+  <div class="feature-text">
+    <h3 data-ja="About<br>TAMSIC" data-en="About<br>TAMSIC">About<br>TAMSIC</h3>
+    <dl class="aa-grid">
+      <dt data-ja="正体" data-en="Identity">正体</dt>
+      <dd data-ja="タムジ株式会社そのもの" data-en="TAmJump itself">タムジ株式会社そのもの</dd>
+      <dt data-ja="役割" data-en="Role">役割</dt>
+      <dd data-ja="音として自己を表現するレーベル本体" data-en="The label expressing itself as sound">音として自己を表現するレーベル本体</dd>
+      <dt data-ja="姿" data-en="Form">姿</dt>
+      <dd data-ja="印鑑・ロゴ・音" data-en="Seal, logo, sound">印鑑・ロゴ・音</dd>
+      <dt data-ja="居場所" data-en="Where">居場所</dt>
+      <dd data-ja="TAMJ の未来予想図の裏側" data-en="The underlying current of the TAMJ vision map">TAMJ の未来予想図の裏側</dd>
+      <dt data-ja="願い" data-en="Wish">願い</dt>
+      <dd data-ja="音が地域と、地域が医療と、医療が社会とつながるように" data-en="Music links to communities, communities to healthcare, healthcare to society">音が地域と、地域が医療と、医療が社会とつながるように</dd>
+    </dl>
+    <p class="aa-desc" data-ja="TAMSIC は個人アーティストではなく、レーベル自身が音として立ち上がる存在です。no-no・kiki・gEN・TAMSIC の音楽の背後で静かに流れる、タムジ株式会社そのものの声。" data-en="TAMSIC is not an individual artist — it is the label itself standing up as sound. The quiet voice of TAmJump running behind the music of no-no, kiki, gEN, and TAMSIC.">TAMSIC は個人アーティストではなく、レーベル自身が音として立ち上がる存在です。no-no・kiki・gEN・TAMSIC の音楽の背後で静かに流れる、タムジ株式会社そのものの声。</p>
+    <div class="fstat-row">
+      <div class="fstat"><div class="fstat-num">05</div><div class="fstat-label" data-ja="楽曲数" data-en="Tracks">楽曲数</div></div>
+      <div class="fstat"><div class="fstat-num">∞</div><div class="fstat-label" data-ja="レーベル" data-en="Label">レーベル</div></div>
+    </div>
+  </div>
+</div>
+
+<section class="discography" id="music">
+  <div class="sec-header">
+    <div class="sec-left"><span class="sec-tag" data-ja="ディスコグラフィー" data-en="Discography">Discography</span><h2 class="sec-title">Music</h2></div>
+    <span class="sec-count">05</span>
+  </div>
+
+  <!-- ============ TAMSIC TRACK シリーズ (T+) ============ -->
+  <div class="sec-sub-header">
+    <div class="sec-sub-tag">TAMSIC TRACK Series</div>
+    <h3 class="sec-sub-title" data-ja="T+ シリーズ" data-en="T+ Series">T+ Series</h3>
+    <p class="sec-sub-desc" data-ja="連番で管理される、TAMSIC 名義の基幹トラック群。" data-en="Numbered tracks — the core catalog under TAMSIC's own name.">Numbered tracks — the core catalog under TAMSIC's own name.</p>
+  </div>
+
+  <!-- T+111 -->
+  <div class="track-block" id="t-111">
+    <div class="track-cover"><img src="assets/images/tamsic/tamsic_t111.png" alt="T+111"></div>
+    <div class="track-body">
+      <div class="track-num">TAMSIC TRACK · 111</div>
+      <div class="track-title">T+111</div>
+      <div class="track-mp3">
+        <button class="track-mp3-play" data-audio-btn="tamsicT111" type="button">▶</button>
+        <div class="track-mp3-progress" data-audio-progress="tamsicT111"><div class="track-mp3-fill"></div></div>
+        <span class="track-mp3-time" data-audio-time="tamsicT111">0:00</span>
+        <audio id="tamsicT111" preload="metadata" src="assets/audio/tamsic/tamsic_t111.mp3"></audio>
+      </div>
+      <div class="track-yt-ph">
+        <div class="track-yt-ph-label">YOUTUBE</div>
+        <div class="track-yt-ph-note" data-ja="動画は準備中です" data-en="Video coming soon">Video coming soon</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- T+101 -->
+  <div class="track-block" id="t-101">
+    <div class="track-cover"><img src="assets/images/tamsic/tamsic_t101.png" alt="T+101"></div>
+    <div class="track-body">
+      <div class="track-num">TAMSIC TRACK · 101</div>
+      <div class="track-title">T+101</div>
+      <div class="track-mp3">
+        <button class="track-mp3-play" data-audio-btn="tamsicT101" type="button">▶</button>
+        <div class="track-mp3-progress" data-audio-progress="tamsicT101"><div class="track-mp3-fill"></div></div>
+        <span class="track-mp3-time" data-audio-time="tamsicT101">0:00</span>
+        <audio id="tamsicT101" preload="metadata" src="assets/audio/tamsic/tamsic_t101.mp3"></audio>
+      </div>
+      <div class="track-yt-ph">
+        <div class="track-yt-ph-label">YOUTUBE</div>
+        <div class="track-yt-ph-note" data-ja="動画は準備中です" data-en="Video coming soon">Video coming soon</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- T+110 -->
+  <div class="track-block" id="t-110">
+    <div class="track-cover"><img src="assets/images/tamsic/tamsic_t110.png" alt="T+110"></div>
+    <div class="track-body">
+      <div class="track-num">TAMSIC TRACK · 110</div>
+      <div class="track-title">T+110</div>
+      <div class="track-mp3">
+        <button class="track-mp3-play" data-audio-btn="tamsicT110" type="button">▶</button>
+        <div class="track-mp3-progress" data-audio-progress="tamsicT110"><div class="track-mp3-fill"></div></div>
+        <span class="track-mp3-time" data-audio-time="tamsicT110">0:00</span>
+        <audio id="tamsicT110" preload="metadata" src="assets/audio/tamsic/tamsic_t110.mp3"></audio>
+      </div>
+      <div class="track-yt-ph">
+        <div class="track-yt-ph-label">YOUTUBE</div>
+        <div class="track-yt-ph-note" data-ja="動画は準備中です" data-en="Video coming soon">Video coming soon</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Named Tracks ============ -->
+  <div class="sec-sub-header">
+    <div class="sec-sub-tag">Named Tracks</div>
+    <h3 class="sec-sub-title" data-ja="独立作品" data-en="Standalone works">Standalone works</h3>
+    <p class="sec-sub-desc" data-ja="独自のタイトルを持つ TAMSIC 名義の楽曲。" data-en="Independent works released under TAMSIC's name with their own titles.">Independent works released under TAMSIC's name with their own titles.</p>
+  </div>
+
+  <!-- KING MAKER -->
+  <div class="track-block" id="king-maker">
+    <div class="track-cover"><img src="assets/images/tamsic/tamsic_kingmaker.png" alt="KING MAKER"></div>
+    <div class="track-body">
+      <div class="track-num">TAMSIC · NAMED TRACK</div>
+      <div class="track-title">KING MAKER</div>
+      <div class="track-yt-ph">
+        <div class="track-yt-ph-label" data-ja="準備中" data-en="COMING SOON">COMING SOON</div>
+        <div class="track-yt-ph-note" data-ja="音源・動画ともに準備中です" data-en="Audio & video coming soon">Audio &amp; video coming soon</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EARTH -->
+  <div class="track-block" id="earth">
+    <div class="track-cover"><img src="assets/images/tamsic/tamsic_earth.png" alt="EARTH"></div>
+    <div class="track-body">
+      <div class="track-num">TAMSIC · NAMED TRACK</div>
+      <div class="track-title">EARTH</div>
+      <div class="track-yt-ph">
+        <div class="track-yt-ph-label" data-ja="準備中" data-en="COMING SOON">COMING SOON</div>
+        <div class="track-yt-ph-note" data-ja="音源・動画ともに準備中です" data-en="Audio & video coming soon">Audio &amp; video coming soon</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<footer>
+  <div>
+    <div class="footer-name">TAMSIC</div>
+    <div class="footer-label" data-ja="レーベル本体" data-en="The Label Itself">The Label Itself</div>
+  </div>
+  <div class="footer-legal">
+    <a href="https://tamjump.com/" target="_blank" data-ja="プライバシーポリシー" data-en="Privacy Policy">Privacy Policy</a>
+    <a href="https://tamjump.com/" target="_blank" data-ja="利用規約" data-en="Terms of Service">Terms of Service</a>
+    <a href="https://tamjump.com/contact" target="_blank" data-ja="お問い合わせ" data-en="Contact">Contact</a>
+  </div>
+  <span class="footer-copy">© 2026 TAMSIC. All Rights Reserved.</span>
+</footer>
+
+<script>
+// MP3 プレイヤー制御 (シンプル版、ライブラリなし)
+(function(){
+  var audios = {};
+  document.querySelectorAll('audio[id^="tamsicT"]').forEach(function(a){
+    audios[a.id] = a;
+  });
+
+  // 再生ボタン
+  document.querySelectorAll('.track-mp3-play').forEach(function(btn){
+    var id = btn.getAttribute('data-audio-btn');
+    var a = audios[id];
+    if (!a) return;
+    btn.addEventListener('click', function(){
+      if (a.paused) {
+        // 他の曲を止める (排他制御)
+        Object.keys(audios).forEach(function(k){
+          if (k !== id) { audios[k].pause(); }
+        });
+        a.play();
+        btn.textContent = '❚❚';
+      } else {
+        a.pause();
+        btn.textContent = '▶';
+      }
+    });
+    a.addEventListener('ended', function(){ btn.textContent = '▶'; });
+    a.addEventListener('pause', function(){ btn.textContent = '▶'; });
+    a.addEventListener('play', function(){ btn.textContent = '❚❚'; });
+  });
+
+  // プログレスバー + 時刻表示
+  document.querySelectorAll('.track-mp3-progress').forEach(function(prog){
+    var id = prog.getAttribute('data-audio-progress');
+    var a = audios[id];
+    if (!a) return;
+    var fill = prog.querySelector('.track-mp3-fill');
+    var timeEl = document.querySelector('[data-audio-time="'+id+'"]');
+    a.addEventListener('timeupdate', function(){
+      if (a.duration) {
+        var pct = (a.currentTime / a.duration) * 100;
+        fill.style.width = pct + '%';
+      }
+      if (timeEl) {
+        var s = Math.floor(a.currentTime);
+        var m = Math.floor(s / 60);
+        s = s % 60;
+        timeEl.textContent = m + ':' + (s < 10 ? '0' + s : s);
+      }
+    });
+    // クリックでシーク
+    prog.addEventListener('click', function(e){
+      var rect = prog.getBoundingClientRect();
+      var pct = (e.clientX - rect.left) / rect.width;
+      if (a.duration) a.currentTime = a.duration * pct;
+    });
+  });
+})();
+</script>
+<script src="mobile-nav.js?v=4.2.3.4"></script>
+</body>
+</html>
