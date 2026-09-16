@@ -824,16 +824,15 @@ footer {
 <script src="tamsic-content.js"></script>
 <script src="tamsic.js"></script>
 <script src="auth.js"></script>
-<link rel="stylesheet" href="mobile.css?v=4.2.3">
-<script src="lang.js?v=4.2.3"></script>
+<link rel="stylesheet" href="mobile.css?v=4.2.3.1">
+<script src="lang.js?v=4.2.3.1"></script>
 </head>
 <body>
-<!-- ONE HEART Kickstarter 告知帯 -->
-<a href="https://www.kickstarter.com/projects/tamj/we-are-all-one-heart-23-pieces-one-world?ref=4k7z69" target="_blank" rel="noopener" style="display:block;background:#FDFBF5;border-bottom:1px solid #E4572E;color:#1a1a1a;text-decoration:none;font-family:system-ui,-apple-system,'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;font-size:13px;line-height:1.5;letter-spacing:.02em;padding:9px 16px;text-align:center;position:relative;z-index:9999">
-  <span style="color:#E4572E;font-weight:700" data-ja="Kickstarterで公開中" data-en="Live on Kickstarter">Live on Kickstarter</span>
-  <span style="opacity:.55;margin:0 8px">·</span>WE ARE ALL ONE HEART — 23 Pieces, One World
-  <span style="opacity:.55;margin:0 8px">·</span><span data-ja="10月8日まで" data-en="Until Oct 8">Until Oct 8</span>
-  <span style="color:#E4572E;font-weight:700;margin-left:8px" data-ja="参加する &rarr;" data-en="Join &rarr;">Join &rarr;</span>
+<!-- TAMSIC リニューアル告知帯 -->
+<a href="renewal.html" style="display:block;background:#FFFCF2;border-bottom:1px solid #C4960E;color:#1a1a1a;text-decoration:none;font-family:'Jost',system-ui,-apple-system,'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;font-size:13px;line-height:1.5;letter-spacing:.02em;padding:10px 16px;text-align:center;position:relative;z-index:9999">
+  <span style="color:#C4960E;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:11px" data-ja="お知らせ" data-en="Announcement">Announcement</span>
+  <span style="opacity:.4;margin:0 10px">·</span><span data-ja="みなさんの応援により、TAMSIC が生まれ変わります。" data-en="TAMSIC is being renewed. Thanks to everyone's support.">TAMSIC is being renewed. Thanks to everyone's support.</span>
+  <span style="color:#C4960E;font-weight:600;margin-left:10px;border-bottom:1px solid currentColor" data-ja="詳しく &rarr;" data-en="Read more &rarr;">Read more &rarr;</span>
 </a>
 
 
@@ -928,6 +927,25 @@ footer {
     }
   })();
 </script>
+
+<!-- ONE HEART Kickstarter 進行中セクション -->
+<section id="kickstarter-section" style="padding:56px 24px;background:#FDFBF5;border-top:1px solid #E4572E;border-bottom:1px solid #E4572E;">
+  <div style="max-width:880px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:260px;">
+      <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:.85rem;letter-spacing:.22em;color:#E4572E;text-transform:uppercase;margin-bottom:.5rem;" data-ja="Kickstarter で公開中" data-en="Live on Kickstarter">Live on Kickstarter</div>
+      <div style="font-size:1.5rem;font-weight:600;line-height:1.4;color:#0E0E0E;margin-bottom:.5rem;font-family:'Jost',sans-serif;">
+        WE ARE ALL ONE HEART — 23 Pieces, One World
+      </div>
+      <div style="font-size:.86rem;color:#7A7A72;line-height:1.7;font-family:'Jost',sans-serif;">
+        <span data-ja="世界中から集まる 23 のピースで、ひとつのモザイクアートを完成させるプロジェクトです。10月8日まで参加可能。"
+              data-en="A collaborative mosaic art project bringing together 23 pieces from around the world. Open to join until Oct 8.">A collaborative mosaic art project bringing together 23 pieces from around the world. Open to join until Oct 8.</span>
+      </div>
+    </div>
+    <a href="https://www.kickstarter.com/projects/tamj/we-are-all-one-heart-23-pieces-one-world?ref=4k7z69" target="_blank" rel="noopener" style="display:inline-block;padding:14px 32px;background:#E4572E;color:#fff;text-decoration:none;font-size:.9rem;letter-spacing:.18em;text-transform:uppercase;font-family:'Jost',sans-serif;font-weight:500;transition:opacity .2s;border-radius:2px;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+      <span data-ja="参加する" data-en="Join Now">Join Now</span>
+    </a>
+  </div>
+</section>
 
 <section class="artists" id="artists">
   <div class="artists-header">
@@ -1190,6 +1208,6 @@ initHome();
 
 
 
-<script src="mobile-nav.js?v=4.2.3"></script>
+<script src="mobile-nav.js?v=4.2.3.1"></script>
 </body>
 </html>

@@ -259,6 +259,16 @@ window.TAMSIC_CONTENT = {
   ],
   "news": [
     {
+      "id": "news-renewal-2026",
+      "date": "2026.09.16",
+      "title": "みなさんの応援により、TAMSIC が生まれ変わります",
+      "titleEn": "TAMSIC is being renewed — thanks to your support",
+      "tag": "Announcement",
+      "href": "renewal.html",
+      "showAfter": "2026-09-16",
+      "addedAt": "2026-09-16T00:00:00+09:00"
+    },
+    {
       "id": "news-site-open",
       "date": "2026.04.01",
       "title": "TAMSIC 公式サイト・会員登録 受付開始",
