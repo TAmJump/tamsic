@@ -1,6 +1,6 @@
 # TAMSIC TODO v4
 
-**最終更新**: 2026-09-16 (セッション⑩ 初日、リニューアル方針決定)
+**最終更新**: 2026-09-16 (セッション⑩ 終了時点、v4.2.3.4)
 **前版**: TAMSIC_TODO_v3.md (Phase G 完了直後)
 
 ---
@@ -11,30 +11,46 @@
 
 **大きな方針転換**: サイト有料化廃止 + YouTube フル尺公開 + 英語プライマリ + アーティスト募集プラットフォーム化 + 将来のグッズ販売 + 医療支援。詳細方針は `docs/TAMSIC_リニューアル計画書_v1.md` を必ず先に読むこと。
 
-#### Phase R1: 準備・告知 (次セッション最優先)
-- ⬜ リニューアル告知文の英語版作成 (日本語版は `TAMSIC_リニューアル計画書_v1.md §5` に素案あり)
-- ⬜ サイト Top に「サイトリニューアル準備中」バナー掲載 (index.html、既存 Kickstarter バナーと並列 or 統合)
-- ⬜ 既存 4 名の coin 残高確認 (2 名は残高未確認: inochitsun... / 8lightfull...)
+**セッション⑩ 内で Phase R1 の告知系 + Phase R3 の骨組み + TAMSIC 名義アーティストページを実装完了 (v4.2.3.4)**。以下の各サブフェーズにチェックボックスで完了/未完了を明示。
+
+#### Phase R1: 準備・告知 (セッション⑩ で告知系実装済、残タスクは順次)
+- ✅ リニューアル告知バナー実装 (index.html 最上部、ヒーロー占領型、深いネイビー #0B1D35 + Gold)
+- ✅ renewal.html 詳細ストーリーページ (4 章構成 + Thanks、EN プライマリ + JP)
+- ✅ news 記事 news-renewal-2026 追加、news.html レンダリング改修 (href リンク化)
+- ✅ Kickstarter バナー削除 (方針: TAMSIC で告知しない、docs/TAMSIC_リニューアル計画書_v1.md §2-7)
+- ✅ TAMJ vision-map 導線 (renewal.html §03 の callout をネイビー統一で強調)
+- ⬜ リニューアル告知文の英語版・日本語版の最終文言確定 (現状は Claude 素案、TAmJump 仕上げ待ち)
 - ⬜ 転用レート最終決定 (候補: 1 coin = ¥100 / ¥10 / ¥2、次セッションで確定)
+- ⬜ 既存 4 名の coin 残高確認 (2 名 inochitsun.../8lightfull... の残高未確認、TAmJump が AWS Console で確認)
 - ⬜ 告知メール送付 (Resend 経由、既存 4 名 + SNS フォロワー)
 - ⬜ リリース日の決定 (Kickstarter ONE HEART 10/8 終了後の可能性)
+- ⬜ 既存 3 名 (知人) への告知方法 (LINE / メール / 直接口頭)
 
-#### Phase R2: 有料化廃止 + YouTube フル尺化
+#### Phase R2: 有料化廃止 + YouTube フル尺化 (次セッション最優先)
+- ⬜ **TAmJump から YouTube フル版 URL 提供待ち** (全曲、no-no/kiki/gEN/TAMSIC 名義)
+- ⬜ tamsic-content.js の各曲 `youtubeUrl` を Sample → Full に一括差し替え
+- ⬜ tamsic.html の T+ Series 3 曲の準備中枠を YouTube iframe に置換
+- ⬜ KING MAKER / EARTH の MP3 到着後、tamsic.html に MP3 プレイヤー追加
 - ⬜ 全 HTML から「フル試聴 30 coin」ボタン削除
 - ⬜ `release-control.js` の locked/full 判定廃止 (全曲即公開)
-- ⬜ `tamsic-content.js` の各曲 `youtubeUrl` をフル尺動画 URL に差し替え (TAmJump から新 URL 提供必要)
 - ⬜ 便箋メール送信ボタン一旦非表示 (Phase R5 で復活検討)
 - ⬜ `unlockFullTrack()` / `spendCoins()` の呼び出し箇所コメントアウト (コードは残す、既存 coin 残高保護のため)
 
-#### Phase R3: 英語プライマリ化 (方針 β 採用)
-- ⬜ `TAMSICLang` のデフォルト言語を EN に変更
-- ⬜ 全 13 HTML の `data-ja` / `data-en` 属性の主従関係反転
-- ⬜ ニュース記事 (`tamsic-content.js` news 配列) の `titleEn` を主にした表示ロジック
-- ⬜ ハンバーガーメニュー (`mobile-nav.js`) の言語切替 UI を目立たせる
+#### Phase R3: 英語プライマリ化 (骨組みセッション⑩ で完了、細部は順次)
+- ✅ `TAMSICLang` のデフォルト言語を EN に変更 (lang.js DEFAULT_LANG='en')
+- ✅ 全 15 HTML の `<html lang>` 属性を 'ja' → 'en' に
+- ✅ lang.js 未読込ページ (index/go/reset-password) に追加
+- ✅ index.html ナビに JA 切替ボタン追加、他 8 ページの data-lang-toggle 挙動確認
+- ✅ ハンバーガーメニュー (mobile-nav.js) の言語切替 UI 動作継続
+- ⬜ ニュース記事 (`tamsic-content.js` news 配列) の titleEn 品質向上 (現状は既存翻訳のまま)
 - ⬜ 楽曲タイトルの英題/日本題併記実装 (例: "On the Edge (ぎりぎりだよ。)")
+- ⬜ data-en 属性が未定義の要素の追加 (現状 EN 未定義箇所は JP がそのまま表示)
 
-#### Phase R4: アーティストプラットフォーム化
-- ⬜ 現状の 3 アーティスト固定構造 (nono.html / kiki.html / gen.html) を可変数対応に
+#### Phase R4: アーティストプラットフォーム化 (セッション⑩ で TAMSIC 名義追加は完了、可変数対応は次)
+- ✅ TAMSIC 名義アーティストページ tamsic.html 新規作成 (5 曲、2 セクション: T+ Series と Named Tracks)
+- ✅ 全アーティストページ + mypage のナビに TAMSIC タブ追加
+- ✅ index.html Artists グリッドに TAMSIC カード追加 (先頭、Artist 000)
+- ⬜ 現状の 4 アーティスト固定構造 (nono/kiki/gen/tamsic) を可変数対応に (テンプレート化)
 - ⬜ アーティスト応募フォーム (Google Form or サイト内 form + Cloudflare Worker)
 - ⬜ 応募内容の TAmJump への通知 (Resend 経由)
 - ⬜ 新規アーティスト追加手順のマニュアル化 (`docs/TAMSIC_運用マニュアル.md` §4 に追記)

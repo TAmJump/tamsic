@@ -83,6 +83,55 @@ TAmJump からの方針決定:
 - Phase H2 (closing 多言語化): 英語プライマリ化 (Phase R3) と統合設計に。
 - スマホ UI 微調整: リニューアル実装時にまとめて対処。
 
+---
+
+## セッション⑩ (2026-09-16) 進捗レポート
+
+セッション⑩ で以下を実装完了。commit `c898d00` → `2505a72` の 7 commit で v4.2.2.14 から v4.2.3.4 まで進めた。
+
+### ✅ 完了済 (このセッション内で全て push 済み)
+
+**方針・ドキュメント整備 (commit c898d00, bb42534)**:
+- リニューアル計画書 v1 新規作成 (`docs/TAMSIC_リニューアル計画書_v1.md`、8 章構成、Phase R1〜R5 詳細)
+- HANDOFF / TODO / 設計書に方針転換を反映
+- TAMJ vision-map (`https://tamjump.com/vision-map.html`) を軸に据える方針を明記
+- ONE HEART Kickstarter は TAMSIC で告知しない、と明記 (次セッションで同じ誤解しないよう警告)
+
+**Phase R3 英語プライマリ化 (commit fe2c647、v4.2.3)**:
+- `lang.js` DEFAULT_LANG を 'ja' → 'en' に変更
+- 全 15 HTML の `<html lang>` を en に
+- lang.js 未読込だった 3 ページ (index/go/reset-password) に追加
+- index.html ナビに JA 切替ボタン追加
+- Kickstarter バナーを i18n 化 (この時点では削除前)
+- 挙動: 既存訪問者 (localStorage=ja) は JP 継続、ブラウザ ja も JP、それ以外 EN
+
+**Phase R1 リニューアル告知バナー実装 (commit 8f7ad43 → 8095e88 → bb2151b、v4.2.3.1 → v4.2.3.3)**:
+- `renewal.html` 新規作成 (詳細ストーリーページ、EN プライマリ + JP 切替、4 章構成 + Thanks)
+- index.html 最上部にリニューアル告知バナー配置 (最終的にヒーロー占領型、深いネイビー #0B1D35 + Gold + Playfair Display italic)
+- news 記事 `news-renewal-2026` 追加、news.html レンダリング改修 (href フィールド対応)
+- Kickstarter バナー・カード完全削除 (TAmJump の意図は vision-map への導線であり、Kickstarter とは別物という理解)
+- ナビ背景を rgba 半透明 → 完全不透明 #FAFAF7 に (バナー上部への白い霞対策)
+- renewal.html callout をネイビー統一 + 「まさに裏の世界の活動が TAMSIC」トーンに書き換え
+- thanks セクションの薄クリームグラデ廃止、細ライン区切りのみに
+
+**TAMSIC 名義アーティストページ (commit 2505a72、v4.2.3.4)**:
+- `tamsic.html` 新規作成 (5 曲、2 セクション: T+ Series と Named Tracks)
+- `assets/images/tamsic/` に 6 画像配置 (プロファイル用ロゴ + 5 曲カバー)
+- `assets/audio/tamsic/` に MP3 3 曲を整理移動 (repo 直下から)
+- index.html hero 3 曲カプセルの src を新パスに更新
+- 全アーティストページ + mypage のナビに `TAMSIC` タブ追加
+- index.html Artists グリッドに TAMSIC カード追加 (先頭、レーベル本体 000)
+- renewal.html §01 本文の「no-no / kiki / gEN」→「no-no / kiki / gEN / TAMSIC」
+
+### ⬜ 次セッション以降
+
+- **YouTube URL 到着後**: tamsic.html の準備中枠を YouTube iframe に置換 + tamsic-content.js の各曲 youtubeUrl を Sample → Full に一括差し替え (Phase R2 の実質着手)
+- **KING MAKER / EARTH の MP3 到着後**: tamsic.html の該当曲ブロックに MP3 プレイヤー追加
+- **転用レート (1 coin = ¥X) 最終確定** + 既存 4 名への告知
+- **リリース日決定** (Coming soon 表記が現実的)
+- **Phase R2 有料化廃止の実コード撤去** (30 coin ボタン削除、release-control locked/full 廃止、便箋メール非表示)
+- **Phase R4 アーティストプラットフォーム化** (可変数対応、応募フォーム)
+
 詳細は `docs/TAMSIC_TODO_v4.md` を参照。
 
 **運用関連の作業 (会員へのコイン直接付与、トラブル対応など)** は `docs/TAMSIC_運用マニュアル.md` を参照。本書 (HANDOFF) は技術的な引き継ぎ、運用マニュアルは日常運用ノウハウという役割分担。

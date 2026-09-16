@@ -238,3 +238,74 @@ TAMSIC
 前セッションで計画された **Phase I: 運営者向け 会員数ダッシュボード** (admin.html リアルタイム表示 + 日次メール) は、リニューアル後も引き続き有用。
 - リニューアル後は「アーティスト応募数」「ファンクラブ会員数」「グッズ購入者数」「寄付累計額」などの表示項目を追加検討
 - 実装タイミングは Phase R1〜R2 と並行が現実的
+
+---
+
+## 9. セッション⑩ 実装レポート (2026-09-16)
+
+計画書を書きながら並行して実装した内容の記録。commit `c898d00` から `2505a72` まで、v4.2.2.14 → v4.2.3.4 に進んだ。
+
+### 9-1. 完了した実装
+
+**Phase R1 告知系 (v4.2.3.1 → v4.2.3.3)**
+- `index.html` 最上部にリニューアル告知バナー配置。ヒーロー占領型 (padding 120px 24px 56px)、深いネイビー #0B1D35 背景 + Gold #C4960E アクセント + Playfair Display italic の大見出し「TAMSIC is being renewed. / — Thanks to your support.」+ 日本語補足 + READ MORE ボタン + 装飾ドット 6 個。
+- `renewal.html` 新規作成。EN プライマリ + JP data-ja/data-en 切替対応。4 章構成 (01 YouTube フル尺 / 02 プラットフォーム化 / 03 ファンクラブ+医療支援循環 / 04 コイン転用) + Thanks。§03 の下に TAMJ vision-map への callout (ネイビー統一)。冒頭 lede に「海外 thousands」の控えめ言及。
+- `tamsic-content.js` news 配列先頭に `news-renewal-2026` 追加 (Announcement タグ、href フィールド新設)。
+- `news.html` レンダリング改修: href フィールドがあれば title をリンク化 (Gold 下線、ホバー効果)。
+- Kickstarter 関連削除: index.html の Kickstarter バナー / セクション / カード全撤去。方針として「TAMSIC で Kickstarter は告知しない」を §2-7 に明記、次セッションの Claude が同じ誤解しないよう警告。
+- ナビ背景を rgba 半透明 → 完全不透明 #FAFAF7 に (バナー上部への白い霞対策)。
+- renewal.html callout の文言を「まさに裏の世界の活動が TAMSIC」トーンに書き換え、色もネイビー統一。
+
+**Phase R3 英語プライマリ化の骨組み (v4.2.3)**
+- `lang.js` DEFAULT_LANG='en'、detect() 改修 (localStorage 保存済は継続、ブラウザ 'ja' は JP、それ以外 EN)
+- 全 15 HTML の `<html lang>` を 'ja' → 'en'
+- フォールバック `|| 'ja'` を `|| 'en'` に (auth.js, gate-modal.js, forgot-password.html, signup.html, login.html)
+- lang.js 未読込ページ 3 つ (index.html, go.html, reset-password.html) に読込追加
+- index.html ナビに JA 切替ボタン追加 (他 8 ページの data-lang-toggle と同スタイル)
+
+**TAMSIC 名義アーティストページ (v4.2.3.4)**
+- `tamsic.html` 新規作成 (5 曲、2 セクション: T+ Series 3 曲 + Named Tracks 2 曲)
+  - Hero: `TAMSIC` + 「音として自己を表現する」紹介文
+  - Profile カード: TAMSIC 印鑑ロゴをネイビー額装 + About セクション (正体 / 役割 / 居場所 = TAMJ vision-map の裏側)
+  - Discography: T+111 / T+101 / T+110 は MP3 プレイヤー + YouTube 準備中枠、KING MAKER / EARTH は Coming soon 表示のみ
+  - MP3 プレイヤー独立実装 (排他制御、シーク対応)
+- `assets/images/tamsic/` に 6 画像配置 (プロフィール用ロゴ + 5 曲カバー)
+- `assets/audio/tamsic/` に MP3 3 曲を repo 直下から整理移動
+- index.html hero 3 曲カプセルの src を新パスに更新
+- 全アーティストページ (nono/kiki/gen) + mypage のナビに TAMSIC タブ追加
+- index.html Artists グリッドに TAMSIC カード追加 (先頭、TAMSIC Artist 000)
+- renewal.html §01 本文の「no-no / kiki / gEN」を「no-no / kiki / gEN / TAMSIC」に更新
+
+### 9-2. セッション⑩ 内の commit ハッシュ
+
+| # | commit | 版 | 概要 |
+|---|--------|----|------|
+| 1 | `c898d00` | -    | リニューアル方針決定 + Phase I 追加 (docs のみ) |
+| 2 | `fe2c647` | v4.2.3 | 英語プライマリ化 (Phase R3 骨組み) |
+| 3 | `8f7ad43` | v4.2.3.1 | リニューアル告知バナー実装 (旧・薄クリーム) |
+| 4 | `8095e88` | v4.2.3.2 | バナーをヒーロー占領型に変更 |
+| 5 | `bb2151b` | v4.2.3.3 | Kickstarter 削除 + バナー位置修正 + vision-map 強調 |
+| 6 | `bb42534` | -    | docs: vision-map 軸 + Kickstarter 切り分け明記 |
+| 7 | `2505a72` | v4.2.3.4 | TAMSIC 名義アーティストページ新規追加 |
+
+### 9-3. 次セッションで着手すべきタスク (優先順)
+
+1. **YouTube フル版 URL の受領と一括差し替え** (TAmJump からの提供待ち)
+   - 全曲 (no-no 5 曲 / kiki 6 曲 / gEN 3 曲 / TAMSIC 5 曲、計 19 曲)
+   - `tamsic-content.js` の各曲 `youtubeUrl` を Sample → Full に差し替え
+   - tamsic.html の T+ Series 3 曲の準備中枠を iframe に置換
+2. **KING MAKER / EARTH の MP3 受領後**: tamsic.html に MP3 プレイヤー追加
+3. **転用レート最終決定** (1 coin = ¥100 / ¥10 / ¥2 の 3 択)
+4. **既存 4 名の coin 残高確認** (inochitsun.../8lightfull... の 2 名は未確認)
+5. **Phase R2 有料化廃止の実コード撤去** (30 coin ボタン削除、release-control 廃止、便箋メール非表示)
+6. **告知メール送付** (既存 4 名 + SNS フォロワーへ、Resend 経由)
+7. **リリース日決定** (Coming soon 表記が現実的、Kickstarter ONE HEART 10/8 終了後の可能性)
+
+### 9-4. 未対応の細部
+
+- 期間限定 100 coin バナー (`signup-campaign-section` / `signup-campaign-mini`): 現状 `display:none` で見えない、Phase R2 で完全削除予定、放置中
+- `data-en` 属性未定義の要素: 英語ページで JP がそのまま表示される箇所が残存
+- 楽曲タイトルの英題併記: 未着手 (TAmJump に英題を用意してもらう必要)
+- ニュース記事の英訳品質: `titleEn` の翻訳確認は未実施
+- `tamsic-content.js` への TAMSIC 名義 5 曲データ登録: 現状 tamsic.html が静的なので不要、動的一覧が必要になったら対応
+

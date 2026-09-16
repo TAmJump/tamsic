@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TAMSIC 設計書 v4.2.2.14 完全統合版</title>
+<title>TAMSIC 設計書 v4.2.3.4 完全統合版</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -120,7 +120,7 @@ ul.styled li strong{color:var(--black)}
   <div class="h-label">System Design Document — Standalone Edition</div>
   <h1>TAM<em>S</em>IC 設計書</h1>
   <p>音楽レーベル・会員制試聴サイト — 収益化導線・認証・歌詞保護・自動化を含む完全統合版</p>
-  <div class="meta">Version 4.2.2.14　／　2026.05.12　／　対象: 運用担当・開発担当・引継ぎ先　／　Confidential</div>
+  <div class="meta">Version 4.2.3.4　／　2026.09.16　／　対象: 運用担当・開発担当・引継ぎ先　／　Confidential</div>
   <div class="standalone-banner">
     <strong>本設計書 1 つで 100% 引き継ぎ可能。</strong>過去の v1 / v2 / v3 を参照せずに TAMSIC を運用・開発・引継ぎできるよう設計されています。本ファイル＋ソースコード（GitHub repo）のみで完結します。<br>
     <strong>セッション⑨ (2026-05-10〜12) 反映済</strong>: v4.2.2 から v4.2.2.14 までの 14 段階の変更 (Web 便箋ミニマル化、メール 2 列、同曲複数受信、フル試聴整合性、スマホ残高バグ修正、ハンバーガーメニュー、index.html hero スマホ調整、News 縦並び、会員先行廃止、gEN 新曲 2 曲追加、release 日 YouTube 統一、ADMIN 撤廃) を本文と改訂履歴の両方に記載。
@@ -1896,8 +1896,20 @@ chmod +x .git/hooks/pre-commit</pre>
       <li><strong>利益の一部をへき地・海外過疎地の医療支援へ</strong> (ブランドの核)</li>
     </ol>
     <strong>加えて</strong>: 英語をプライマリ言語に転換 (方針 β: 英語プライマリ + JP 切替トグル)。<br>
-    <strong>告知ストーリー</strong>: 「みなさんの応援により、TAMSIC が生まれ変わります」。<br><br>
-    詳細方針・実装フェーズ (Phase R1〜R5) は <code>docs/TAMSIC_リニューアル計画書_v1.md</code> を参照。以下の Phase H1/H2/I は本リニューアルとの整合性を再確認する必要あり (下記の注記参照)。
+    <strong>告知ストーリー</strong>: 「みなさんの応援により、TAMSIC が生まれ変わります」。<br>
+    <strong>TAMJ vision-map を軸に据える</strong>: TAMSIC は TAmJump 社の未来予想図の <em>裏側で動く活動</em> として位置づけ、<a href="https://tamjump.com/vision-map.html" target="_blank">https://tamjump.com/vision-map.html</a> を主要な世界観の入口とする。<br>
+    <strong>ONE HEART Kickstarter との切り分け</strong>: Kickstarter プロジェクトは TAMSIC で告知しない (TAmJump 社の別事業)。この方針は変更しない。<br><br>
+    <strong>セッション⑩ (2026-09-16) 実装済 (v4.2.3.4)</strong>:
+    <ul style="margin:6px 0">
+      <li>✅ <strong>Phase R1</strong> 告知系実装完了 (index.html リニューアル告知バナー / renewal.html 詳細ページ / news 記事 / Kickstarter 削除 / vision-map 強調)</li>
+      <li>✅ <strong>Phase R3</strong> 英語プライマリ化の骨組み完了 (lang.js デフォルト EN、全 HTML lang 属性 en 化)</li>
+      <li>✅ <strong>Phase R4</strong> TAMSIC 名義アーティストページ tamsic.html 新規追加 (5 曲、2 セクション、ナビ + Artists グリッドに TAMSIC タブ)</li>
+      <li>⬜ <strong>Phase R1 残</strong>: 転用レート確定 / 既存 4 名 coin 残高確認 / 告知メール送付 / リリース日決定</li>
+      <li>⬜ <strong>Phase R2</strong>: YouTube フル版 URL 到着後の一括差し替え、有料化廃止コード撤去 (次セッション最優先)</li>
+      <li>⬜ <strong>Phase R4 残</strong>: アーティスト応募フォーム、可変数対応</li>
+      <li>⬜ <strong>Phase R5</strong>: ファンクラブ + グッズ + 医療支援</li>
+    </ul>
+    詳細方針・実装フェーズ (Phase R1〜R5) は <code>docs/TAMSIC_リニューアル計画書_v1.md</code> を、セッション⑩ の実装レポートは同ドキュメントの <code>§9</code> を参照。以下の Phase H1/H2/I は本リニューアルとの整合性を再確認する必要あり (下記の注記参照)。
   </div>
 
   <div class="hint" style="background:#FFF8E8;border-left:3px solid var(--gold);padding:14px 18px;margin:16px 0">
@@ -2217,7 +2229,7 @@ console.log(window.TAMSIC_CONTENT)
 </section>
 
 <footer style="padding:48px 0 60px;text-align:center;color:var(--g4);font-size:.8rem;border-top:1px solid var(--g2)">
-  TAMSIC 設計書 v4.2.2.14 Standalone Edition　／　2026.05.12　／　Confidential<br>
+  TAMSIC 設計書 v4.2.3.4 Standalone Edition　／　2026.09.16　／　Confidential<br>
   <span style="display:inline-block;margin-top:6px">v1 / v2 / v3 の全情報を統合。本ファイル 1 つで 100% 引き継ぎ可能。</span><br>
   <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.1 更新: gEN 追加 / 3ページ構造統一 / 価格半額 / Admin unlock / unセカイ 2曲 / add-track 同名曲対応 / add-artist 既知バグ記録</span>
   <br>
@@ -2248,6 +2260,20 @@ console.log(window.TAMSIC_CONTENT)
   <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.2.14 更新 (2026.05.12、commit 6a9276e): ADMIN 特権を完全撤廃、公開済ラベルに公開日を表示。release-control.js から _isAdmin() / ADMIN_EMAILS を削除し、TAmJump (tiger@tamjump.com / animalb001@gmail.com) も一般ユーザーと同じ挙動に統一。getMeta() の公開済ラベルを label:'公開中' note:'公開中' から label:'NOW AVAILABLE' note:'YYYY.MM.DD 公開' に変更、公開前と同じく日付が UI に表示される構造に。これにより TAmJump が常時 full 扱いで全曲モザイクなし表示になっていた問題、および公開済の曲が「公開中」とのみ表示され公開日が分からなかった問題を同時に解決。動作確認は別アカウント (例: 専用テストアカウント、liberty さんのような一般会員) でログインする運用に変更。docs/TAMSIC_運用マニュアル.md §4.2 から ADMIN_EMAILS の記述削除。</span>
   <br>
   <span style="display:inline-block;margin-top:8px;color:var(--g5)">セッション⑨ 累計成果 (2026.05.10〜12): 16 commit、v4.2.2 〜 v4.2.2.14 まで 14 段階のキャッシュバスター更新。Resend 詰まり解消、Web 便箋ミニマル化、メール 2 列レイアウト、同曲複数受信解禁、フル試聴 1 回 / レター 1 通整合性、スマホ残高バグ修正、共通ハンバーガーメニュー + 全 13 HTML 対応、index.html ヒーロー配置試行 5 回、News 縦並び、会員先行廃止、gEN 新曲 2 曲追加 (gen-002/003)、release 日 YouTube 公開日統一、ADMIN 撤廃 + 公開日ラベル化。運用作業として liberty.2wink7@gmail.com に AWS Cognito Console 経由で 10,000 coin 付与、docs/TAMSIC_運用マニュアル.md を新規作成 (会員コイン直接付与手順、Cognito 6 属性一覧、push 前チェックリストを集約)。次セッションの最優先タスクは Phase H1 = closing 500 通り生成 + 14 曲分の creatorNote 執筆。詳細は HANDOFF_v4.md §0 / docs/TAMSIC_TODO_v4.md / docs/TAMSIC_運用マニュアル.md を参照。</span>
+  <br>
+  <span style="display:inline-block;margin-top:16px;padding:8px 12px;background:#FFF0F0;border-left:3px solid #C94040;color:#333;font-weight:500">🔴 セッション⑩ 開始 (2026.09.16) — TAMSIC リニューアル方針決定 + Phase R1/R3/R4(TAMSIC) 実装</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.3 更新 (2026.09.16、commit fe2c647): Phase R3 英語プライマリ化。lang.js DEFAULT_LANG を 'ja' → 'en' に変更、detect() 改修 (localStorage 保存済は継続、ブラウザ 'ja' は JP、それ以外 EN)。フォールバック `|| 'ja'` を `|| 'en'` に (auth.js 2箇所 / gate-modal.js 3箇所 / forgot-password.html / signup.html / login.html 各 1 箇所)。全 15 HTML の &lt;html lang&gt; を en に。lang.js 未読込ページ (index / go / reset-password) に読込追加。index.html ナビに JA 切替ボタン追加 (他 8 ページと同スタイル)。Kickstarter バナー (commit 41f7299 で追加された部分) を i18n 化 (この時点では削除前)。既存 4 名の会員は localStorage=ja のため JP 表示継続、新規海外訪問者は EN 表示。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.3.1 更新 (2026.09.16、commit 8f7ad43): Phase R1 リニューアル告知バナー実装 (初版)。index.html 最上部に薄クリーム #FFFCF2 + Gold 細帯を配置、renewal.html を新規作成 (詳細ストーリーページ、EN プライマリ + JP 切替、4 章構成 + Thanks)。news 記事 news-renewal-2026 追加 (href フィールド新設)、news.html レンダリング改修で href あれば title をリンク化。Kickstarter バナーは削除、代わりに artists セクション直前に Kickstarter カードを配置 (この時点では別セクションで併存)。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.3.2 更新 (2026.09.16、commit 8095e88): リニューアル告知バナーをヒーロー占領型 (案⑦) に変更。深いネイビー #0B1D35 背景 + Gold #C4960E + Playfair Display italic 大見出し「TAMSIC is being renewed. / — Thanks to your support.」+ 日本語補足 + READ MORE ボタン + 装飾ドット 6 個。padding 44px 24px 40px、高さ ~220px。TAmJump 判断で薄クリーム版から急遽差し替え、「もっと目立たせたい」要望に応えて可視性強化。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.3.3 更新 (2026.09.16、commit bb2151b): 3 つの問題を同時修正。(1) Kickstarter セクション完全削除: TAmJump の意図は 'TAMJ vision-map への導線' であり Kickstarter とは別物という理解、docs/TAMSIC_リニューアル計画書_v1.md §2-7 に「TAMSIC で Kickstarter は告知しない」を確定方針として記録。(2) TOP バナー位置修正: nav の rgba 半透明 + backdrop-filter がバナー上部に白い霞として被り違和感を生んでいた → nav 背景を #FAFAF7 完全不透明に、バナー padding-top を 44px → 120px に拡大。(3) TAMJ vision-map 強調: renewal.html callout の文言を「まさに裏の世界の活動が TAMSIC」トーンに書き換え、色もネイビー統一 (薄クリーム廃止)、thanks セクションも薄クリームグラデ廃止で細ライン区切りのみに。</span>
+  <br>
+  <span style="display:inline-block;margin-top:4px;color:var(--g5)">v4.2.3.4 更新 (2026.09.16、commit 2505a72): TAMSIC 名義アーティストページ tamsic.html 新規作成。5 曲を 2 セクション (T+ Series: T+111/T+101/T+110 と Named Tracks: KING MAKER/EARTH) に分けて表示、TAMSIC 印鑑ロゴを profile 写真として額装。T+ Series 3 曲は MP3 プレイヤー (排他制御 + シーク対応) + YouTube 準備中枠、Named Tracks 2 曲は COMING SOON 表示のみ。assets/images/tamsic/ に 6 画像配置、assets/audio/tamsic/ に MP3 3 曲を repo 直下から整理移動 (T+111.mp3 → assets/audio/tamsic/tamsic_t111.mp3 等)、index.html hero 3 カプセルの src を新パスに更新。全アーティストページ + mypage のナビに TAMSIC タブ追加、index.html Artists グリッドに TAMSIC カード追加 (先頭、Artist 000 = レーベル本体)、renewal.html §01 本文の 'no-no / kiki / gEN' を 'no-no / kiki / gEN / TAMSIC' に更新。</span>
+  <br>
+  <span style="display:inline-block;margin-top:8px;color:var(--g5)">セッション⑩ 累計成果 (2026.09.16): 7 commit、v4.2.2.14 → v4.2.3.4 まで進行。TAMSIC リニューアル方針決定 (5 本柱 + 英語プライマリ化 + TAMJ vision-map 軸)、Phase R1 告知系実装完了 (バナー + renewal.html + news 記事)、Phase R3 英語プライマリ化骨組み完了、Phase R4 の TAMSIC 名義アーティストページ新規追加。ONE HEART Kickstarter は TAMSIC で告知しない方針を確定記録 (docs/TAMSIC_リニューアル計画書_v1.md §2-7)。次セッションの最優先タスクは Phase R2 (YouTube フル版 URL 到着後の一括差し替え、有料化廃止コード撤去)、Phase R1 残タスク (転用レート確定、既存 4 名 coin 残高確認、告知メール送付、リリース日決定)。詳細は HANDOFF_v4.md §0 / docs/TAMSIC_リニューアル計画書_v1.md §9 / docs/TAMSIC_TODO_v4.md を参照。</span>
 </footer>
 
 </body>
