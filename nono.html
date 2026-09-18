@@ -5,20 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>no-no | TAMSIC</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Syncopate:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
-<script src="tamsic-content.js?v=4.2.3.12"></script>
+<script src="tamsic-content.js?v=4.2.3.13"></script>
 <script src="purchase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js" async></script>
-<script src="auth.js?v=4.2.3.12"></script>
-<script src="coins.js?v=4.2.3.12"></script>
+<script src="auth.js?v=4.2.3.13"></script>
+<script src="coins.js?v=4.2.3.13"></script>
 <script src="release-control.js"></script>
 <script src="lang.js"></script>
-<script src="tamsic.js?v=4.2.3.12"></script>
-<script src="lyrics-guard.js?v=4.2.3.12"></script>
+<script src="tamsic.js?v=4.2.3.13"></script>
+<script src="lyrics-guard.js?v=4.2.3.13"></script>
 <script src="gate-modal.js"></script>
-<script src="letter-frames.js?v=4.2.3.12"></script>
-<script src="letter-content.js?v=4.2.3.12"></script>
-<script src="letter-renderer.js?v=4.2.3.12"></script>
-<script src="letter-send.js?v=4.2.3.12"></script>
+<script src="letter-frames.js?v=4.2.3.13"></script>
+<script src="letter-content.js?v=4.2.3.13"></script>
+<script src="letter-renderer.js?v=4.2.3.13"></script>
+<script src="letter-send.js?v=4.2.3.13"></script>
 <style>
 :root{--bg:#EEF3F9;--text:#0B1D35;--accent:#0099CC;--light:#D4E2F0;--mid:#5B7FA0;--white:#FFFFFF;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -141,9 +141,24 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
 }
 
 
+
+/* --- 画面幅に応じた複数カラム表示 (v4.2.3.13 / tamsic.html と同方針) --- */
+.track-grid{display:block;}
+@media(min-width:1200px){
+  .track-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 36px;align-items:start;}
+  .track-grid .track-block{grid-template-columns:1fr;gap:18px;padding:26px;border:1px solid var(--light);border-bottom:1px solid var(--light);background:#fff;}
+  .track-grid .track-block:last-child{border:1px solid var(--light);}
+  .track-grid .tb-cover{width:140px;}
+  .track-grid .full-box{grid-template-columns:1fr;display:block;}
+  .track-grid .full-side{margin-top:18px;}
+}
+@media(min-width:1700px){
+  .track-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .track-grid .tb-cover{width:120px;}
+}
 </style>
-<link rel="stylesheet" href="letter.css?v=4.2.3.12">
-<link rel="stylesheet" href="mobile.css?v=4.2.3.12">
+<link rel="stylesheet" href="letter.css?v=4.2.3.13">
+<link rel="stylesheet" href="mobile.css?v=4.2.3.13">
 </head>
 <body>
 <nav>
@@ -531,7 +546,7 @@ function renderTracks(){
         <a href="mypage.html" class="release-pill">${_L('マイページ','MY PAGE')}</a>
       </div>
     </div>`;
-  c.innerHTML=hero+renderCoinPanel()+_tracks.map((t,i)=>{
+  c.innerHTML=hero+renderCoinPanel()+'<div class="track-grid">'+_tracks.map((t,i)=>{
     const meta=getReleaseMeta(t);
     const num=String(i+1).padStart(2,'0');
     const coverSrc=getTrackCoverSrc(t); const blurStyle = meta.showMask ? 'filter:blur(18px) saturate(.8); transform:scale(1.06);' : '';
@@ -576,7 +591,7 @@ function renderTracks(){
         </div>
       </div>
     </div>`;
-  }).join('');
+  }).join('')+'</div>';
 }
 function renderGallery(){
   const g=document.getElementById('gallery-grid');
@@ -661,6 +676,6 @@ init();
 renderGallery();
 
 </script>
-<script src="mobile-nav.js?v=4.2.3.12"></script>
+<script src="mobile-nav.js?v=4.2.3.13"></script>
 </body>
 </html>
