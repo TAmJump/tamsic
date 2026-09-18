@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TAMSIC | TAMSIC</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Syncopate:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="lang.js?v=4.2.3.9"></script>
+<script src="lang.js?v=4.2.3.10"></script>
 <style>
 :root{--bg:#EEF3F9;--text:#0B1D35;--accent:#C4960E;--accent2:#0099CC;--light:#D4E2F0;--mid:#5B7FA0;--white:#FFFFFF;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -111,7 +111,7 @@ footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justi
   footer{padding:32px 24px;flex-direction:column;text-align:center;}
 }
 </style>
-<link rel="stylesheet" href="mobile.css?v=4.2.3.9">
+<link rel="stylesheet" href="mobile.css?v=4.2.3.10">
 </head>
 <body>
 
@@ -247,6 +247,12 @@ footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justi
     <div class="track-body">
       <div class="track-num">TAMSIC · NAMED TRACK</div>
       <div class="track-title">KING MAKER</div>
+      <div class="track-mp3">
+        <button class="track-mp3-play" data-audio-btn="tamsicKingMaker" type="button">▶</button>
+        <div class="track-mp3-progress" data-audio-progress="tamsicKingMaker"><div class="track-mp3-fill"></div></div>
+        <span class="track-mp3-time" data-audio-time="tamsicKingMaker">0:00</span>
+        <audio id="tamsicKingMaker" preload="metadata" src="assets/audio/tamsic/tamsic_kingmaker.mp3"></audio>
+      </div>
       <div class="track-yt">
         <iframe src="https://www.youtube.com/embed/CA9hfWano7k" title="TAMSIC KING MAKER" loading="lazy" allowfullscreen></iframe>
       </div>
@@ -259,6 +265,12 @@ footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justi
     <div class="track-body">
       <div class="track-num">TAMSIC · NAMED TRACK</div>
       <div class="track-title">EARTH</div>
+      <div class="track-mp3">
+        <button class="track-mp3-play" data-audio-btn="tamsicEarth" type="button">▶</button>
+        <div class="track-mp3-progress" data-audio-progress="tamsicEarth"><div class="track-mp3-fill"></div></div>
+        <span class="track-mp3-time" data-audio-time="tamsicEarth">0:00</span>
+        <audio id="tamsicEarth" preload="metadata" src="assets/audio/tamsic/tamsic_earth.mp3"></audio>
+      </div>
       <div class="track-yt">
         <iframe src="https://www.youtube.com/embed/Q6ohgcXjAZc" title="TAMSIC EARTH" loading="lazy" allowfullscreen></iframe>
       </div>
@@ -284,7 +296,7 @@ footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justi
 // MP3 プレイヤー制御 (シンプル版、ライブラリなし)
 (function(){
   var audios = {};
-  document.querySelectorAll('audio[id^="tamsicT"]').forEach(function(a){
+  document.querySelectorAll('audio[id^="tamsic"]').forEach(function(a){
     audios[a.id] = a;
   });
 
@@ -339,6 +351,6 @@ footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justi
   });
 })();
 </script>
-<script src="mobile-nav.js?v=4.2.3.9"></script>
+<script src="mobile-nav.js?v=4.2.3.10"></script>
 </body>
 </html>
