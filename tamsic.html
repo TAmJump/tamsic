@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TAMSIC | TAMSIC</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Syncopate:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="lang.js?v=4.2.3.10"></script>
+<script src="lang.js?v=4.2.3.11"></script>
 <style>
 :root{--bg:#EEF3F9;--text:#0B1D35;--accent:#C4960E;--accent2:#0099CC;--light:#D4E2F0;--mid:#5B7FA0;--white:#FFFFFF;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -110,8 +110,28 @@ footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justi
   .sec-title{font-size:32px;}
   footer{padding:32px 24px;flex-direction:column;text-align:center;}
 }
+
+/* --- 公開予定パネル / 複数カラム表示 (v4.2.3.11) --- */
+.track-grid{display:block;}
+.track-yt-soon{width:100%;aspect-ratio:16/9;background:var(--white);border:1px solid var(--light);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;padding:18px;}
+.tys-label{font-family:'Syncopate',sans-serif;font-size:9px;letter-spacing:.35em;color:var(--accent);text-transform:uppercase;}
+.tys-rule{width:44px;height:2px;background:var(--accent);}
+.tys-date{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:clamp(22px,2.4vw,34px);color:var(--text);line-height:1.1;}
+.tys-time{font-family:'Syncopate',sans-serif;font-size:12px;letter-spacing:.22em;color:var(--mid);}
+.tys-note{font-size:11px;color:var(--mid);letter-spacing:.06em;line-height:1.7;}
+@media(min-width:1200px){
+  .track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:36px 40px;}
+  .track-grid .track-block{grid-template-columns:1fr;gap:16px;padding:26px;background:var(--white);border:1px solid var(--light);}
+  .track-grid .track-block:last-child{border:1px solid var(--light);}
+  .track-grid .track-cover{width:132px;}
+  .track-grid .track-title{font-size:26px;}
+}
+@media(min-width:1700px){
+  .track-grid{grid-template-columns:repeat(3,1fr);}
+  .track-grid .track-cover{width:116px;}
+}
 </style>
-<link rel="stylesheet" href="mobile.css?v=4.2.3.10">
+<link rel="stylesheet" href="mobile.css?v=4.2.3.11">
 </head>
 <body>
 
@@ -181,6 +201,7 @@ footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justi
   </div>
 
   <!-- T+111 -->
+  <div class="track-grid">
   <div class="track-block" id="t-111">
     <div class="track-cover"><img src="assets/images/tamsic/tamsic_t111.png" alt="T+111"></div>
     <div class="track-body">
@@ -192,9 +213,7 @@ footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justi
         <span class="track-mp3-time" data-audio-time="tamsicT111">0:00</span>
         <audio id="tamsicT111" preload="metadata" src="assets/audio/tamsic/tamsic_t111.mp3"></audio>
       </div>
-      <div class="track-yt">
-        <iframe src="https://www.youtube.com/embed/S0dxeOQm57k" title="TAMSIC T+111" loading="lazy" allowfullscreen></iframe>
-      </div>
+      <div class="track-yt" data-yt="S0dxeOQm57k" data-release="2026-09-25T20:00:00+09:00"></div>
     </div>
   </div>
 
@@ -210,9 +229,7 @@ footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justi
         <span class="track-mp3-time" data-audio-time="tamsicT101">0:00</span>
         <audio id="tamsicT101" preload="metadata" src="assets/audio/tamsic/tamsic_t101.mp3"></audio>
       </div>
-      <div class="track-yt">
-        <iframe src="https://www.youtube.com/embed/fTYIVRMgGB8" title="TAMSIC T+101" loading="lazy" allowfullscreen></iframe>
-      </div>
+      <div class="track-yt" data-yt="fTYIVRMgGB8" data-release="2026-09-25T20:15:00+09:00"></div>
     </div>
   </div>
 
@@ -228,11 +245,11 @@ footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justi
         <span class="track-mp3-time" data-audio-time="tamsicT110">0:00</span>
         <audio id="tamsicT110" preload="metadata" src="assets/audio/tamsic/tamsic_t110.mp3"></audio>
       </div>
-      <div class="track-yt">
-        <iframe src="https://www.youtube.com/embed/rD5dGzw3jMM" title="TAMSIC T+110" loading="lazy" allowfullscreen></iframe>
-      </div>
+      <div class="track-yt" data-yt="rD5dGzw3jMM" data-release="2026-09-25T20:45:00+09:00"></div>
     </div>
   </div>
+  </div>
+
 
   <!-- ============ Named Tracks ============ -->
   <div class="sec-sub-header">
@@ -242,6 +259,7 @@ footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justi
   </div>
 
   <!-- KING MAKER -->
+  <div class="track-grid">
   <div class="track-block" id="king-maker">
     <div class="track-cover"><img src="assets/images/tamsic/tamsic_kingmaker.png" alt="KING MAKER"></div>
     <div class="track-body">
@@ -253,9 +271,7 @@ footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justi
         <span class="track-mp3-time" data-audio-time="tamsicKingMaker">0:00</span>
         <audio id="tamsicKingMaker" preload="metadata" src="assets/audio/tamsic/tamsic_kingmaker.mp3"></audio>
       </div>
-      <div class="track-yt">
-        <iframe src="https://www.youtube.com/embed/CA9hfWano7k" title="TAMSIC KING MAKER" loading="lazy" allowfullscreen></iframe>
-      </div>
+      <div class="track-yt" data-yt="CA9hfWano7k" data-release="2026-09-25T21:15:00+09:00"></div>
     </div>
   </div>
 
@@ -271,11 +287,11 @@ footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justi
         <span class="track-mp3-time" data-audio-time="tamsicEarth">0:00</span>
         <audio id="tamsicEarth" preload="metadata" src="assets/audio/tamsic/tamsic_earth.mp3"></audio>
       </div>
-      <div class="track-yt">
-        <iframe src="https://www.youtube.com/embed/Q6ohgcXjAZc" title="TAMSIC EARTH" loading="lazy" allowfullscreen></iframe>
-      </div>
+      <div class="track-yt" data-yt="Q6ohgcXjAZc" data-release="2026-09-25T21:30:00+09:00"></div>
     </div>
   </div>
+  </div>
+
 
 </section>
 
@@ -351,6 +367,65 @@ footer{background:var(--text);color:#F1E9D2;padding:44px 56px;display:flex;justi
   });
 })();
 </script>
-<script src="mobile-nav.js?v=4.2.3.10"></script>
+<script>
+/* 公開予定パネル: 公開時刻前は日時を表示し、時刻を過ぎたら埋め込みに切り替える */
+(function(){
+  var TXT = {
+    ja:{label:'公開予定', note:'この日時に YouTube で公開'},
+    en:{label:'Premiere', note:'Available on YouTube at this time'}
+  };
+  function pad(n){ return n < 10 ? '0' + n : '' + n; }
+  function lang(){
+    try { return (window.TAMSICLang && window.TAMSICLang.get()) === 'ja' ? 'ja' : 'en'; }
+    catch(e){ return 'en'; }
+  }
+  function jstParts(d){
+    // 表示は日本時間で固定（閲覧者のタイムゾーンに関わらず）
+    var u = d.getTime() + d.getTimezoneOffset() * 60000;
+    var j = new Date(u + 9 * 3600000);
+    return {
+      date: j.getFullYear() + '.' + pad(j.getMonth() + 1) + '.' + pad(j.getDate()),
+      time: pad(j.getHours()) + ':' + pad(j.getMinutes())
+    };
+  }
+  function render(el){
+    var vid = el.getAttribute('data-yt');
+    var rel = el.getAttribute('data-release');
+    var t = rel ? new Date(rel) : null;
+    if (!t || isNaN(t.getTime()) || Date.now() >= t.getTime()) {
+      if (el.getAttribute('data-state') !== 'live') {
+        el.setAttribute('data-state', 'live');
+        el.innerHTML = '<iframe src="https://www.youtube.com/embed/' + vid +
+          '" loading="lazy" allowfullscreen></iframe>';
+      }
+      return false;
+    }
+    var p = jstParts(t), L = TXT[lang()];
+    el.setAttribute('data-state', 'soon');
+    el.innerHTML =
+      '<div class="track-yt-soon">' +
+        '<div class="tys-label">' + L.label + '</div>' +
+        '<div class="tys-rule"></div>' +
+        '<div class="tys-date">' + p.date + '</div>' +
+        '<div class="tys-time">' + p.time + ' JST</div>' +
+        '<div class="tys-note">' + L.note + '</div>' +
+      '</div>';
+    return true;
+  }
+  var els = [].slice.call(document.querySelectorAll('.track-yt[data-yt]'));
+  function tick(){
+    var pending = false;
+    els.forEach(function(el){ if (render(el)) pending = true; });
+    if (pending) setTimeout(tick, 30000);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', tick);
+  } else { tick(); }
+  document.addEventListener('tamsic:langchange', function(){
+    els.forEach(function(el){ if (el.getAttribute('data-state') === 'soon') render(el); });
+  });
+})();
+</script>
+<script src="mobile-nav.js?v=4.2.3.11"></script>
 </body>
 </html>
