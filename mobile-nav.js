@@ -1,7 +1,7 @@
 /**
  * mobile-nav.js — TAMSIC 共通ハンバーガーメニュー (v4.2.2.5)
  *
- * 役割: スマホ表示時 (max-width:768px) に既存の <ul class="nav-links"> を非表示にし、
+ * 役割: 画面が狭いとき (max-width:1100px) に既存の <ul class="nav-links"> を非表示にし、
  *        右上にハンバーガーアイコン (☰) を表示。タップで右からスライドインのドロワーを開く。
  *        ドロワー内に既存のナビ項目をすべて複製表示、ログイン状態に応じて「ログイン/ログアウト」を切替。
  *
@@ -149,7 +149,7 @@
         margin: 20px 0 6px;
         font-family: 'Jost', sans-serif;
       }
-      @media (max-width: 768px) {
+      @media (max-width: 1100px) {
         .tm-hamburger { display: flex; }
         body.tm-drawer-open { overflow: hidden; }
       }
