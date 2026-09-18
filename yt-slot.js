@@ -15,8 +15,10 @@
   'use strict';
 
   var TXT = {
-    ja: { label: '公開予定', note: 'この日時に YouTube で公開' },
-    en: { label: 'Premiere', note: 'Available on YouTube at this time' }
+    ja: { label: '公開予定', note: 'この日時に YouTube で公開',
+          live: 'YouTube で聴く', liveNote: 'クリックすると YouTube が開きます' },
+    en: { label: 'Premiere', note: 'Available on YouTube at this time',
+          live: 'Listen on YouTube', liveNote: 'Opens YouTube in a new tab' }
   };
 
   function injectStyles() {
@@ -33,7 +35,15 @@
       '.yts-date{font-family:"Playfair Display",serif;font-style:italic;font-weight:700;',
       'font-size:clamp(22px,2.4vw,34px);color:#0B1D35;line-height:1.1;}',
       '.yts-time{font-size:12px;letter-spacing:.22em;color:#5B7FA0;}',
-      '.yts-note{font-size:11px;color:#5B7FA0;letter-spacing:.06em;line-height:1.7;}'
+      '.yts-note{font-size:11px;color:#5B7FA0;letter-spacing:.06em;line-height:1.7;}',
+      '.yts-link{width:100%;aspect-ratio:16/9;background:#fff;border:1px solid rgba(11,29,53,.14);',
+      'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;',
+      'text-align:center;padding:18px;text-decoration:none;transition:border-color .2s,background .2s;}',
+      '.yts-link:hover{border-color:#C4960E;background:#FDFCF8;}',
+      '.ytl-icon{width:52px;height:52px;border-radius:50%;background:#C4960E;color:#fff;',
+      'display:flex;align-items:center;justify-content:center;font-size:17px;padding-left:3px;}',
+      '.ytl-label{font-size:12px;letter-spacing:.22em;color:#0B1D35;text-transform:uppercase;}',
+      '.ytl-note{font-size:11px;color:#5B7FA0;letter-spacing:.06em;}'
     ].join('');
     document.head.appendChild(s);
   }
@@ -66,8 +76,14 @@
     if (!t || isNaN(t.getTime()) || Date.now() >= t.getTime()) {
       if (el.getAttribute('data-state') !== 'live') {
         el.setAttribute('data-state', 'live');
-        el.innerHTML = '<iframe src="https://www.youtube.com/embed/' + vid +
-          '" loading="lazy" allowfullscreen></iframe>';
+        var G = TXT[lang()];
+        el.innerHTML =
+          '<a class="yts-link" href="https://youtu.be/' + vid +
+            '" target="_blank" rel="noopener">' +
+            '<span class="ytl-icon" aria-hidden="true">&#9654;</span>' +
+            '<span class="ytl-label">' + G.live + '</span>' +
+            '<span class="ytl-note">' + G.liveNote + '</span>' +
+          '</a>';
       }
       return false;
     }
@@ -96,7 +112,8 @@
   }
 
   document.addEventListener('tamsic:langchange', function () {
-    document.querySelectorAll('.yt-slot[data-state="soon"]').forEach(function (el) {
+    document.querySelectorAll('.yt-slot[data-state]').forEach(function (el) {
+      el.removeAttribute('data-state');
       fill(el);
     });
   });
