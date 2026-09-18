@@ -5,20 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>gEN | TAMSIC</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="tamsic-content.js?v=4.2.3.13"></script>
+<script src="yt-slot.js?v=4.2.3.14"></script>
+<script src="tamsic-content.js?v=4.2.3.14"></script>
 <script src="purchase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js" async></script>
-<script src="auth.js?v=4.2.3.13"></script>
-<script src="coins.js?v=4.2.3.13"></script>
+<script src="auth.js?v=4.2.3.14"></script>
+<script src="coins.js?v=4.2.3.14"></script>
 <script src="release-control.js"></script>
 <script src="lang.js"></script>
-<script src="tamsic.js?v=4.2.3.13"></script>
-<script src="lyrics-guard.js?v=4.2.3.13"></script>
+<script src="tamsic.js?v=4.2.3.14"></script>
+<script src="lyrics-guard.js?v=4.2.3.14"></script>
 <script src="gate-modal.js"></script>
-<script src="letter-frames.js?v=4.2.3.13"></script>
-<script src="letter-content.js?v=4.2.3.13"></script>
-<script src="letter-renderer.js?v=4.2.3.13"></script>
-<script src="letter-send.js?v=4.2.3.13"></script>
+<script src="letter-frames.js?v=4.2.3.14"></script>
+<script src="letter-content.js?v=4.2.3.14"></script>
+<script src="letter-renderer.js?v=4.2.3.14"></script>
+<script src="letter-send.js?v=4.2.3.14"></script>
 <style>
 :root{--bg:#f2f1ef;--text:#1A1816;--accent:#4A4540;--light:#DDDAD4;--mid:#857E76;--white:#FFFFFF;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -157,8 +158,8 @@ footer{background:var(--text);color:#fff;padding:44px 56px;display:flex;justify-
   .track-grid .tb-cover{width:120px;}
 }
 </style>
-<link rel="stylesheet" href="letter.css?v=4.2.3.13">
-<link rel="stylesheet" href="mobile.css?v=4.2.3.13">
+<link rel="stylesheet" href="letter.css?v=4.2.3.14">
+<link rel="stylesheet" href="mobile.css?v=4.2.3.14">
 </head>
 <body>
 <nav>
@@ -570,7 +571,7 @@ function renderTracks(){
           <button class="mode-btn premium ${meta.canFull ? '' : 'is-restricted'}" onclick="setMode('${t.id}','full',this)">${meta.canFull ? `${_L('フル試聴','Full')} ${t.price===0?"FREE":(t.price||30)+"coin"}` : meta.label}</button>
         </div>
         <div class="yt-panel" id="panel-yt-${t.id}">
-          ${t.youtubeUrl?ytEmbed(t.youtubeUrl):ytPh()}
+          ${t.youtubeUrl?ytSlot(t):ytPh()}
         </div>
         <div class="full-panel" id="panel-full-${t.id}" style="display:none">
           <div class="full-box">
@@ -592,6 +593,7 @@ function renderTracks(){
       </div>
     </div>`;
   }).join('')+'</div>';
+  if(window.TAMSICYTSlot) window.TAMSICYTSlot.refresh();
 }
 function renderGallery(){
   const g=document.getElementById('gallery-grid');
@@ -600,6 +602,15 @@ function renderGallery(){
   g.innerHTML=photos.map(src=>`<div class="g-item"><img src="${src}" alt="gEN" style="width:100%;height:100%;object-fit:cover;"></div>`).join('');
 }
 
+function ytVideoId(url){
+  try{const u=new URL(url);return u.searchParams.get('v')||u.pathname.split('/').pop();}catch(e){return '';}
+}
+function ytSlot(t){
+  const id=ytVideoId(t.youtubeUrl||'');
+  if(!id) return ytPh();
+  const rel=t.youtubeReleaseAt?` data-release="${t.youtubeReleaseAt}"`:'';
+  return`<div class="yt-slot" data-yt-id="${id}"${rel}></div>`;
+}
 function ytEmbed(url){
   let id='';
   try{const u=new URL(url);id=u.searchParams.get('v')||u.pathname.split('/').pop();}catch(e){return ytPh();}
@@ -676,6 +687,6 @@ init();
 renderGallery();
 
 </script>
-<script src="mobile-nav.js?v=4.2.3.13"></script>
+<script src="mobile-nav.js?v=4.2.3.14"></script>
 </body>
 </html>
