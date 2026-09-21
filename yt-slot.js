@@ -17,10 +17,12 @@
   var TXT = {
     ja: { label: '公開予定', note: 'この日時に YouTube で公開',
           live: 'YouTube で聴く', liveNote: 'クリックすると YouTube が開きます',
-          sample: 'サンプルを YouTube で聴く', fullAt: 'フルバージョン公開' },
+          sample: 'サンプルを YouTube で聴く', fullAt: 'フルバージョン公開',
+          btnFull: 'フルバージョン', btnSample: 'サンプル' },
     en: { label: 'Premiere', note: 'Available on YouTube at this time',
           live: 'Listen on YouTube', liveNote: 'Opens YouTube in a new tab',
-          sample: 'Listen to the sample on YouTube', fullAt: 'Full version' }
+          sample: 'Listen to the sample on YouTube', fullAt: 'Full version',
+          btnFull: 'Full version', btnSample: 'Sample' }
   };
 
   function injectStyles() {
@@ -46,6 +48,14 @@
       'display:flex;align-items:center;justify-content:center;font-size:17px;padding-left:3px;}',
       '.ytl-label{font-size:12px;letter-spacing:.22em;color:#0B1D35;text-transform:uppercase;}',
       '.ytl-note{font-size:11px;color:#5B7FA0;letter-spacing:.06em;}',
+      '.yts-card{width:100%;aspect-ratio:16/9;background:#fff;border:1px solid rgba(11,29,53,.14);',
+      'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:18px;}',
+      '.yts-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}',
+      '.yts-btn{display:inline-block;padding:10px 20px;border:1px solid #C4960E;color:#C4960E;',
+      'font-size:11px;letter-spacing:.16em;text-decoration:none;transition:background .2s,color .2s;}',
+      '.yts-btn:hover{background:#C4960E;color:#fff;}',
+      '.yts-btn--full{background:#C4960E;color:#fff;}',
+      '.yts-btn--full:hover{background:#A87F0A;border-color:#A87F0A;}',
       '.ytl-full{font-size:11px;color:#C4960E;letter-spacing:.1em;border-top:1px solid rgba(196,150,14,.35);padding-top:10px;margin-top:2px;}'
     ].join('');
     document.head.appendChild(s);
@@ -80,6 +90,22 @@
       if (el.getAttribute('data-state') !== 'live') {
         el.setAttribute('data-state', 'live');
         var G = TXT[lang()];
+        var smp = el.getAttribute('data-sample');
+        if (smp) {
+          // 公開後もサンプルは残す。フル / サンプルを選べるようにする
+          el.innerHTML =
+            '<div class="yts-card">' +
+              '<span class="ytl-icon" aria-hidden="true">&#9654;</span>' +
+              '<span class="ytl-label">' + G.live + '</span>' +
+              '<div class="yts-btns">' +
+                '<a class="yts-btn yts-btn--full" href="https://youtu.be/' + vid +
+                  '" target="_blank" rel="noopener">' + G.btnFull + '</a>' +
+                '<a class="yts-btn" href="' + smp +
+                  '" target="_blank" rel="noopener">' + G.btnSample + '</a>' +
+              '</div>' +
+            '</div>';
+          return false;
+        }
         el.innerHTML =
           '<a class="yts-link" href="https://youtu.be/' + vid +
             '" target="_blank" rel="noopener">' +
