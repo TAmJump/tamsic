@@ -16,9 +16,11 @@
 
   var TXT = {
     ja: { label: '公開予定', note: 'この日時に YouTube で公開',
-          live: 'YouTube で聴く', liveNote: 'クリックすると YouTube が開きます' },
+          live: 'YouTube で聴く', liveNote: 'クリックすると YouTube が開きます',
+          sample: 'サンプルを YouTube で聴く', fullAt: 'フルバージョン公開' },
     en: { label: 'Premiere', note: 'Available on YouTube at this time',
-          live: 'Listen on YouTube', liveNote: 'Opens YouTube in a new tab' }
+          live: 'Listen on YouTube', liveNote: 'Opens YouTube in a new tab',
+          sample: 'Listen to the sample on YouTube', fullAt: 'Full version' }
   };
 
   function injectStyles() {
@@ -43,7 +45,8 @@
       '.ytl-icon{width:52px;height:52px;border-radius:50%;background:#C4960E;color:#fff;',
       'display:flex;align-items:center;justify-content:center;font-size:17px;padding-left:3px;}',
       '.ytl-label{font-size:12px;letter-spacing:.22em;color:#0B1D35;text-transform:uppercase;}',
-      '.ytl-note{font-size:11px;color:#5B7FA0;letter-spacing:.06em;}'
+      '.ytl-note{font-size:11px;color:#5B7FA0;letter-spacing:.06em;}',
+      '.ytl-full{font-size:11px;color:#C4960E;letter-spacing:.1em;border-top:1px solid rgba(196,150,14,.35);padding-top:10px;margin-top:2px;}'
     ].join('');
     document.head.appendChild(s);
   }
@@ -90,6 +93,16 @@
 
     var p = jstParts(t), L = TXT[lang()];
     el.setAttribute('data-state', 'soon');
+    var sample = el.getAttribute('data-sample');
+    if (sample) {
+      el.innerHTML =
+        '<a class="yts-link" href="' + sample + '" target="_blank" rel="noopener">' +
+          '<span class="ytl-icon" aria-hidden="true">&#9654;</span>' +
+          '<span class="ytl-label">' + L.sample + '</span>' +
+          '<span class="ytl-full">' + L.fullAt + '　' + p.date + '  ' + p.time + ' JST</span>' +
+        '</a>';
+      return true;
+    }
     el.innerHTML =
       '<div class="yts-soon">' +
         '<div class="yts-label">' + L.label + '</div>' +

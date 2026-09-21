@@ -5,21 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>kiki | TAMSIC</title>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Nunito:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="yt-slot.js?v=4.2.3.15"></script>
-<script src="tamsic-content.js?v=4.2.3.15"></script>
+<script src="yt-slot.js?v=4.2.3.16"></script>
+<script src="tamsic-content.js?v=4.2.3.16"></script>
 <script src="purchase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js" async></script>
-<script src="auth.js?v=4.2.3.15"></script>
-<script src="coins.js?v=4.2.3.15"></script>
+<script src="auth.js?v=4.2.3.16"></script>
+<script src="coins.js?v=4.2.3.16"></script>
 <script src="release-control.js"></script>
 <script src="lang.js"></script>
-<script src="tamsic.js?v=4.2.3.15"></script>
-<script src="lyrics-guard.js?v=4.2.3.15"></script>
+<script src="tamsic.js?v=4.2.3.16"></script>
+<script src="lyrics-guard.js?v=4.2.3.16"></script>
 <script src="gate-modal.js"></script>
-<script src="letter-frames.js?v=4.2.3.15"></script>
-<script src="letter-content.js?v=4.2.3.15"></script>
-<script src="letter-renderer.js?v=4.2.3.15"></script>
-<script src="letter-send.js?v=4.2.3.15"></script>
+<script src="letter-frames.js?v=4.2.3.16"></script>
+<script src="letter-content.js?v=4.2.3.16"></script>
+<script src="letter-renderer.js?v=4.2.3.16"></script>
+<script src="letter-send.js?v=4.2.3.16"></script>
 <style>
 :root{--bg:#FDF8F4;--text:#221418;--accent:#C85A72;--accent2:#E8A0B0;--light:#EEE0D8;--mid:#9A7068;--white:#FFFFFF;--soft:#F7EEE8;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -151,8 +151,8 @@ footer{background:var(--text);color:#fff;padding:48px 64px;display:flex;justify-
   .track-grid .tb-cover{width:120px;}
 }
 </style>
-<link rel="stylesheet" href="letter.css?v=4.2.3.15">
-<link rel="stylesheet" href="mobile.css?v=4.2.3.15">
+<link rel="stylesheet" href="letter.css?v=4.2.3.16">
+<link rel="stylesheet" href="mobile.css?v=4.2.3.16">
 </head>
 <body>
 <nav>
@@ -581,7 +581,8 @@ function ytSlot(t){
   const id=ytVideoId(t.youtubeUrl||'');
   if(!id) return ytPh();
   const rel=t.youtubeReleaseAt?` data-release="${t.youtubeReleaseAt}"`:'';
-  return`<div class="yt-slot" data-yt-id="${id}"${rel}></div>`;
+  const smp=t.youtubeSampleUrl?` data-sample="${t.youtubeSampleUrl}"`:'';
+  return`<div class="yt-slot" data-yt-id="${id}"${rel}${smp}></div>`;
 }
 function ytEmbed(url){
   let id='';
@@ -659,6 +660,6 @@ init();
 renderGallery();
 
 </script>
-<script src="mobile-nav.js?v=4.2.3.15"></script>
+<script src="mobile-nav.js?v=4.2.3.16"></script>
 </body>
 </html>
