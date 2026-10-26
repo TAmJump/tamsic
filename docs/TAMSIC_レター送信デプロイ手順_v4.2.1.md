@@ -85,7 +85,7 @@ App client `62e35ra0h4s2dr657euorlm5bu` で、上記 6 属性すべて **Read / 
 
 ```toml
 COGNITO_DOMAIN  = "ap-northeast-1vozrgcy5k.auth.ap-northeast-1.amazoncognito.com"
-ALLOWED_ORIGINS = "https://tamsic.tamjump.com"
+ALLOWED_ORIGINS = "https://tamsic.115en.com"
 FROM_ADDRESS    = "TAMSIC <letter@tamjump.com>"
 ```
 
@@ -153,7 +153,7 @@ wrangler secret put RESEND_API_KEY
 
 ### ドメイン設定
 
-- **ドメイン**: `tamjump.com`
+- **ドメイン**: `115en.com`
 - **Status**: Verified (2026-05-09)
 - **Region**: Tokyo (ap-northeast-1)
 - **Enable Sending**: ON
@@ -173,7 +173,7 @@ wrangler secret put RESEND_API_KEY
 
 - **名前**: `tamsic-letter-prod`
 - **Permission**: Sending access
-- **Domain scope**: `tamjump.com`
+- **Domain scope**: `115en.com`
 - **値**: `re_xxxxxxxx...` (Worker secret に登録済み、画面では一度しか表示されない)
 
 ### 実機操作手順 (再現用)
@@ -181,7 +181,7 @@ wrangler secret put RESEND_API_KEY
 1. https://resend.com → Sign Up → GitHub OAuth (`Continue with GitHub`)
 2. 認可画面で **Authorize Resend** (Personal user data > Email read のみ)
 3. オンボーディング (Team name, 用途選択) を進めてダッシュボード到達
-4. 左サイドバー **Domains** → 右上 **Add Domain** → `tamjump.com` 入力 + Region: Tokyo 選択 → Add
+4. 左サイドバー **Domains** → 右上 **Add Domain** → `115en.com` 入力 + Region: Tokyo 選択 → Add
 5. **Auto configure** ボタン (Cloudflare ロゴ) を押す
 6. Cloudflare の認可画面 → 内容確認 → **Authorize** で 3 レコードが Cloudflare DNS に自動追加される
 7. Resend のドメインページに戻る → ステータスが **Pending** (検証中)
@@ -189,7 +189,7 @@ wrangler secret put RESEND_API_KEY
 9. ドメイン詳細を開いて、右上 **Verify DNS Records** ボタンを押す
 10. 数秒〜数十秒で **Verified** (緑) に変わる
 11. 左サイドバー **API keys** → **Create API Key**
-12. Name: `tamsic-letter-prod`、Permission: `Sending access`、Domain: `tamjump.com` → Add
+12. Name: `tamsic-letter-prod`、Permission: `Sending access`、Domain: `115en.com` → Add
 13. 表示された `re_xxx` をコピー → Worker secret として `wrangler secret put RESEND_API_KEY` で登録
 
 ### 検証方法
@@ -221,7 +221,7 @@ curl -X POST https://api.resend.com/emails \
 ### 検証シナリオ (本番動作確認)
 
 ```
-[1] https://tamsic.tamjump.com/nono.html を開く
+[1] https://tamsic.115en.com/nono.html を開く
 [2] F12 → リロードボタン右クリック → 「キャッシュの消去とハード再読み込み」
 [3] ログインしている状態で「ぎりぎりだよ。」のフル試聴ボタン押下 → 30 coin 消費
 [4] アンロック後、便箋表示

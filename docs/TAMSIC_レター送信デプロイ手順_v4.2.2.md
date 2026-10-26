@@ -98,7 +98,7 @@ login.html は SDK 直叩き (`CognitoUser.authenticateUser()`) を使ってい�
 
 ```toml
 COGNITO_DOMAIN  = "ap-northeast-1vozrgcy5k.auth.ap-northeast-1.amazoncognito.com"
-ALLOWED_ORIGINS = "https://tamsic.tamjump.com"
+ALLOWED_ORIGINS = "https://tamsic.115en.com"
 FROM_ADDRESS    = "TAMSIC <letter@tamjump.com>"
 ```
 
@@ -192,7 +192,7 @@ https://dash.cloudflare.com → Workers & Pages → tamsic-send-letter → Obser
 
 ### ドメイン設定 (現状)
 
-- **ドメイン**: `tamjump.com`
+- **ドメイン**: `115en.com`
 - **Status**: ⚠️ **Not Started のまま動かない**
 - **Region**: Tokyo (ap-northeast-1)
 - **Enable Sending**: ON
@@ -218,7 +218,7 @@ https://dash.cloudflare.com → Workers & Pages → tamsic-send-letter → Obser
 
 - **名前**: `tamsic-letter-prod`
 - **Permission**: Sending access
-- **Domain scope**: `tamjump.com`
+- **Domain scope**: `115en.com`
 - **Token**: `re_eEtGXsZf...` (本ドキュメントには冒頭8文字のみ記載、Worker secret に登録済)
 
 ### エラー詳細 (Worker Observability で確認)
@@ -240,7 +240,7 @@ https://dash.cloudflare.com → Workers & Pages → tamsic-send-letter → Obser
 1. https://resend.com → Sign Up → GitHub OAuth (`Continue with GitHub`)
 2. 認可画面で **Authorize Resend** (Personal user data > Email read のみ)
 3. オンボーディング (Team name, 用途選択) を進めてダッシュボード到達
-4. 左サイドバー **Domains** → 右上 **Add Domain** → `tamjump.com` 入力 + Region: Tokyo 選択 → Add
+4. 左サイドバー **Domains** → 右上 **Add Domain** → `115en.com` 入力 + Region: Tokyo 選択 → Add
 5. **Auto configure** ボタン (Cloudflare ロゴ) を押す
 6. Cloudflare の認可画面 → 内容確認 → **Authorize** で 3 レコードが Cloudflare DNS に自動追加される
 7. Resend のドメインページに戻る → ステータスが **Not Started** または **Pending** に
@@ -260,13 +260,13 @@ https://dash.cloudflare.com → Workers & Pages → tamsic-send-letter → Obser
 
 ##### Step 2: ドメイン削除
 - URL: `https://resend.com/domains`
-- `tamjump.com` 行をクリックして詳細ページへ
+- `115en.com` 行をクリックして詳細ページへ
 - 右上の `…` メニュー → Delete domain
-- 確認画面で `tamjump.com` をタイプ → Delete domain ボタン押下
+- 確認画面で `115en.com` をタイプ → Delete domain ボタン押下
 
 ##### Step 3: ドメイン再登録
 - 同じ `https://resend.com/domains` 画面で右上 `+ Add domain`
-- Domain: `tamjump.com`
+- Domain: `115en.com`
 - Region: Tokyo (ap-northeast-1)
 - Add ボタン押下
 
@@ -285,7 +285,7 @@ https://dash.cloudflare.com → Workers & Pages → tamsic-send-letter → Obser
 - Create API Key ボタン
 - Name: `tamsic-letter-prod`
 - Permission: **Sending access** (Full access ではなく)
-- Domain: **`tamjump.com`** を明示選択 (All Domains ではない)
+- Domain: **`115en.com`** を明示選択 (All Domains ではない)
 - Add ボタン押下
 - 表示された `re_xxx...` をコピー
 
@@ -300,7 +300,7 @@ wrangler secret put RESEND_API_KEY
 (secret 更新は即時反映、Worker 再 deploy 不要)
 
 ##### Step 8: 送信テスト
-ブラウザで `https://tamsic.tamjump.com/nono.html` → ハードリロード → フル試聴解放されていれば便箋下「この手紙をメールで受け取る」ボタン → 送信する → 受信箱確認
+ブラウザで `https://tamsic.115en.com/nono.html` → ハードリロード → フル試聴解放されていれば便箋下「この手紙をメールで受け取る」ボタン → 送信する → 受信箱確認
 
 #### オプション B: 数時間〜翌日待ち
 Resend の検証キューが詰まってる可能性。1〜2時間〜翌朝放置してから Verify DNS Records ボタンを押すと通る場合がある。
@@ -346,7 +346,7 @@ curl -X POST https://api.resend.com/emails \
 ### 検証シナリオ (Resend 詰まり解消後)
 
 ```
-[1] https://tamsic.tamjump.com/nono.html を開く
+[1] https://tamsic.115en.com/nono.html を開く
 [2] F12 → リロードボタン右クリック → 「キャッシュの消去とハード再読み込み」
 [3] ログイン状態のまま、フル試聴ボタン押下 → 30 coin 消費
 [4] アンロック後、便箋表示
@@ -382,7 +382,7 @@ curl -X POST https://api.resend.com/emails \
 ```js
 const it = localStorage.getItem('tamsic_id_token');
 console.log(JSON.parse(atob(it.split('.')[1])));
-// => { aud: '62e35ra0h4s2dr657euorlm5bu', email: 'tiger@tamjump.com', ... }
+// => { aud: '62e35ra0h4s2dr657euorlm5bu', email: 'tiger@115en.com', ... }
 ```
 
 ### ケース 2: 502 Bad Gateway / resend-failed
@@ -435,7 +435,7 @@ wrangler whoami  ::確認
 // DevTools Console
 localStorage.clear();
 sessionStorage.clear();
-window.location.href = 'https://ap-northeast-1vozrgcy5k.auth.ap-northeast-1.amazoncognito.com/logout?client_id=62e35ra0h4s2dr657euorlm5bu&logout_uri=' + encodeURIComponent('https://tamsic.tamjump.com/');
+window.location.href = 'https://ap-northeast-1vozrgcy5k.auth.ap-northeast-1.amazoncognito.com/logout?client_id=62e35ra0h4s2dr657euorlm5bu&logout_uri=' + encodeURIComponent('https://tamsic.115en.com/');
 ```
 
 これで Cognito 側の cookie もクリア → 再ログインで完全に新しい OAuth フローが走る。

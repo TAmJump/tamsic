@@ -53,7 +53,7 @@
 
 ### 2-6. TAMJ vision-map を軸に据える
 TAMSIC は「音楽レーベル」単体ではなく、**タムジ株式会社 (TAMJ) が描く「未来予想図」の裏側で動く活動**として位置づける。音楽が地域とつながり、地域が医療とつながり、医療が社会とつながる。ひとつの循環の中の、静かで確かな一部。
-- **リンク先**: `https://tamjump.com/vision-map.html`
+- **リンク先**: `https://115en.com/vision-map.html`
 - **反映箇所**: `renewal.html` の callout セクション、および将来的に about.html にも同様の表現を追加検討
 - **ブランドメッセージ**: 「まさに裏の世界の活動が TAMSIC」というトーンで、vision-map への導線を主要な世界観の説明として据える
 
@@ -62,7 +62,7 @@ TAMSIC は「音楽レーベル」単体ではなく、**タムジ株式会社 (
 - TAmJump 個人 / TAmJump 社の別プロジェクトとして扱う
 - TAMSIC は音楽レーベル、Kickstarter は TAMJ の別事業、という明確な切り分け
 - 将来的に「Kickstarter バナーを TAMSIC に追加してほしい」等の依頼があっても、この方針は変更しないこと
-- 関連告知が必要な場合は TAMJ 側 (tamjump.com or vision-map.html) で扱う
+- 関連告知が必要な場合は TAMJ 側 (115en.com or vision-map.html) で扱う
 
 ---
 
@@ -109,7 +109,7 @@ TAMSIC は「音楽レーベル」単体ではなく、**タムジ株式会社 (
 
 ### 4-3. 既存コイン残高の転用 (次セッションで確定)
 - **現在の会員**: 4 名 (うち TAmJump 本人以外は全員 TAmJump の知り合い = 一般公募会員ではない)
-  - tiger@tamjump.com (TAmJump 本人): 8,860 coin
+  - tiger@115en.com (TAmJump 本人): 8,860 coin
   - liberty.2wink7@gmail.com: 10,000 coin
   - inochitsun... (知人): coin 残高未確認
   - 8lightfull... (知人): coin 残高未確認

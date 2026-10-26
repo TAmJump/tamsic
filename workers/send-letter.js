@@ -18,7 +18,7 @@
  * 環境変数 (Cloudflare Worker secret):
  *   RESEND_API_KEY        - Resend API key (re_xxxxx...)
  *   FROM_ADDRESS          - 送信元 (例: 'TAMSIC <letter@tamjump.com>')
- *   ALLOWED_ORIGINS       - カンマ区切りの許可 Origin (例: 'https://tamsic.tamjump.com')
+ *   ALLOWED_ORIGINS       - カンマ区切りの許可 Origin (例: 'https://tamsic.115en.com')
  *   COGNITO_DOMAIN        - 'ap-northeast-1vozrgcy5k.auth.ap-northeast-1.amazoncognito.com'
  *
  * デプロイ:
@@ -37,7 +37,7 @@
  *       "lyrics":      "上手に笑うことだけ\n...",
  *       "creatorNote": "強くならなきゃって、何度も自分に言い聞かせた...",
  *       "trackClosings": ["●●さん、ぎりぎりでも...", ...],   // 曲別 closing 候補
- *       "coverPath":   "https://tamsic.tamjump.com/assets/images/...",
+ *       "coverPath":   "https://tamsic.115en.com/assets/images/...",
  *       "nickname":    "JIN",
  *       "userBirthday":     "1990-05-08",                  // (省略可) 記念日判定用
  *       "userRegisteredAt": "2025-05-08"                   // (省略可)
@@ -397,7 +397,7 @@ function buildMailHtml(opts) {
 </div>
 <div style="max-width:680px;margin:18px auto 0;text-align:center;font-family:system-ui,sans-serif;font-size:11px;color:#999;line-height:1.6;">
   TAMSIC — このメールは ${escHtml(opts.email)} 宛に、フル試聴アンロックの記念レターとして送信されました。<br>
-  Web版で開く: <a href="https://tamsic.tamjump.com/" style="color:#999;">tamsic.tamjump.com</a> · 無断転載禁止
+  Web版で開く: <a href="https://tamsic.115en.com/" style="color:#999;">tamsic.115en.com</a> · 無断転載禁止
 </div>
 </body></html>`;
 }
@@ -464,7 +464,7 @@ async function verifyUser(token, env) {
 // ─────────────────────────────────────────
 export default {
   async fetch(request, env) {
-    const allowed = (env.ALLOWED_ORIGINS || 'https://tamsic.tamjump.com').split(',').map(s => s.trim());
+    const allowed = (env.ALLOWED_ORIGINS || 'https://tamsic.115en.com').split(',').map(s => s.trim());
     const origin  = request.headers.get('Origin') || '';
     const cors    = corsHeaders(origin, allowed);
 

@@ -2,7 +2,7 @@
 
 3アーティスト (no-no / kiki / gEN) のオリジナル楽曲レーベルの会員制 Web サイト。
 
-- **本番 URL**: https://tamsic.tamjump.com
+- **本番 URL**: https://tamsic.115en.com
 - **ホスティング**: Cloudflare Pages (main 自動デプロイ)
 - **認証**: AWS Cognito
 - **メール送信**: Cloudflare Worker + Resend

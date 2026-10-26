@@ -80,7 +80,7 @@
 
 ### 2.1 ログインができないユーザーへの対処
 
-- **Pwd 忘れ**: `https://tamsic.tamjump.com/forgot-password.html` を案内
+- **Pwd 忘れ**: `https://tamsic.115en.com/forgot-password.html` を案内
 - **メール検証が完了していない**: Cognito Console でユーザー詳細 → 「ユーザーを検証 (Confirm)」ボタンを管理者が押して強制的に confirmed にできる (招待運用などで使用)
 - **アカウント無効化されてる**: Cognito Console → ユーザーアクション → 「ユーザーを有効化」
 
@@ -115,7 +115,7 @@
 1. `https://resend.com/api-keys` で `tamsic-letter-prod` Delete
 2. `https://resend.com/domains` でドメイン Delete → 同画面で Add (Tokyo region 必須)
 3. Auto configure で Cloudflare 連携 → Verify
-4. 新 API キー作成 (Sending access、Domain: `tamjump.com` 明示)
+4. 新 API キー作成 (Sending access、Domain: `115en.com` 明示)
 5. ローカル PC で `wrangler secret put RESEND_API_KEY` で更新
 
 ### 3.3 Worker 再デプロイ
@@ -213,7 +213,7 @@ grep "サイトで聴く\|panel-site\|setMode.*'site'" *.html
 | AWS Cognito Console | https://ap-northeast-1.console.aws.amazon.com/cognito/v2/idp/user-pools/ap-northeast-1_vozRgCY5k | ユーザー管理 |
 | Resend ダッシュボード | https://resend.com/emails | 送信ログ、ドメイン認証、API キー |
 | GitHub repo | https://github.com/TAmJump/tamsic | ソースコード |
-| 本番サイト | https://tamsic.tamjump.com | エンドユーザー画面 |
+| 本番サイト | https://tamsic.115en.com | エンドユーザー画面 |
 
 ---
 

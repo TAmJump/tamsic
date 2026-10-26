@@ -7,7 +7,7 @@ compatibility_date = "2026-05-08"
 
 [vars]
 COGNITO_DOMAIN  = "ap-northeast-1vozrgcy5k.auth.ap-northeast-1.amazoncognito.com"
-ALLOWED_ORIGINS = "https://tamsic.tamjump.com"
+ALLOWED_ORIGINS = "https://tamsic.115en.com"
 FROM_ADDRESS    = "TAMSIC <letter@tamjump.com>"
 
 # ─── secrets (wrangler secret put コマンドで設定) ───

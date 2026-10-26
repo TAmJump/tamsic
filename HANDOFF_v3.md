@@ -17,11 +17,11 @@
 
 - **アーティスト**: no-no / kiki / gEN (3名)
 - **トラック数**: 12曲 (no-no:5 / kiki:6 / gEN:1、2026-05-09 時点)
-- **本番 URL**: https://tamsic.tamjump.com
+- **本番 URL**: https://tamsic.115en.com
 - **GitHub repo**: https://github.com/TAmJump/tamsic
 - **ホスティング**: Cloudflare Pages (main ブランチを自動デプロイ)
 - **認証**: AWS Cognito (User Pool ID: `ap-northeast-1_vozRgCY5k`、App client ID: `62e35ra0h4s2dr657euorlm5bu`)
-- **メール送信**: Resend (ドメイン `tamjump.com` Verified、送信元 `letter@tamjump.com`)
+- **メール送信**: Resend (ドメイン `115en.com` Verified、送信元 `letter@tamjump.com`)
 - **Worker**: Cloudflare Workers (URL: `https://tamsic-send-letter.animalb001.workers.dev`)
 
 ### サービスの性質
@@ -227,14 +227,14 @@
 - **Cloudflare アカウント**: `tamj_Account` (login email: `animalb001@gmail.com`)
 - **環境変数 `[vars]`** (wrangler.toml に定義済み):
   - `COGNITO_DOMAIN`: `ap-northeast-1vozrgcy5k.auth.ap-northeast-1.amazoncognito.com`
-  - `ALLOWED_ORIGINS`: `https://tamsic.tamjump.com`
+  - `ALLOWED_ORIGINS`: `https://tamsic.115en.com`
   - `FROM_ADDRESS`: `TAMSIC <letter@tamjump.com>`
 - **Secret**: `RESEND_API_KEY` (Resend 発行のキーを `wrangler secret put` で登録済み)
 
 ### 6.3 Resend (Phase F 完了)
 
 - **アカウント**: `animalb001@gmail.com` (GitHub OAuth でサインアップ)
-- **ドメイン**: `tamjump.com` Verified、Region: Tokyo (ap-northeast-1)
+- **ドメイン**: `115en.com` Verified、Region: Tokyo (ap-northeast-1)
 - **DNS レコード** (Cloudflare DNS に Auto configure で追加済):
   - DKIM: `resend._domainkey` TXT
   - SPF: `send` TXT (`v=spf1 include:amazonses.com ~all`)
@@ -344,7 +344,7 @@ scope: `letter` / `auth` / `coins` / `ui` / `content` / `phase-G` などその�
 ### 10.1 基本動作
 
 ```
-[1] https://tamsic.tamjump.com にアクセス → ログイン
+[1] https://tamsic.115en.com にアクセス → ログイン
 [2] mypage で 残高表示が「10,000 coin」のような3桁カンマ
 [3] mypage の「プロフィール」で nickname / 誕生日 を設定 → 「保存しました」緑表示
 [4] nono.html で「ぎりぎりだよ。」フル試聴ボタン → 30 coin 消費 → 9,970 coin

@@ -1,6 +1,6 @@
 # TAMSIC セキュリティ監査レポート（v3 時点）
 
-対象: https://github.com/TAmJump/tamsic / https://tamsic.tamjump.com
+対象: https://github.com/TAmJump/tamsic / https://tamsic.115en.com
 監査日: 2026-04-22
 監査範囲: 公開制御・課金ゲート・歌詞保護・認証
 
@@ -46,7 +46,7 @@ TAMSIC は GitHub Pages 上の**完全静的サイト**のため、サーバー�
 ### 問題
 
 これらはすべて**現時点で公開アクセス可能**です。例:
-- `https://tamsic.tamjump.com/assets/audio/kiki/kiki-rising.mp3`
+- `https://tamsic.115en.com/assets/audio/kiki/kiki-rising.mp3`
   → 2027年1月まで非公開のはずなのに、今すでにダウンロードできる
 
 URL は `tamsic-content.js` に平文で記載されているため、JavaScript を読めば全パスが判明します。

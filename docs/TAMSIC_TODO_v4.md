@@ -72,7 +72,7 @@
 
 **採用方針 (推奨案で合意): A + B の組合せ**
 - **A. admin.html にリアルタイム会員数表示**: 新規 Cloudflare Worker `tamsic-stats` (仮称) が Cognito API `ListUsers` を叩いて件数を集計 → JSON で返す。admin.html から fetch → 5 分自動更新 or 手動リロード。アクセス制限は Cognito ID token + `custom:role=admin` or email allowlist。
-- **B. 日次メール通知**: Cloudflare Worker Cron Triggers (毎朝 8:00 JST = UTC 23:00) で tamsic-stats を呼び、既存の Resend + `letter@tamjump.com` 流用して `info@tamjump.com` (or `tiger@tamjump.com`) に送信。
+- **B. 日次メール通知**: Cloudflare Worker Cron Triggers (毎朝 8:00 JST = UTC 23:00) で tamsic-stats を呼び、既存の Resend + `letter@tamjump.com` 流用して `info@115en.com` (or `tiger@115en.com`) に送信。
 
 **表示項目 (詳細版)**:
 - 総登録数 / メール検証済み数 / 今週の新規登録数 / 有効な購入者数 / アクティブユーザー数

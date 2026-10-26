@@ -193,7 +193,7 @@ ssh-keygen -t ed25519 -f tamsic_audio_vault_key -C "tamsic-audio-vault-deploy-ke
 `release: auto-release 1 track(s)` というコミットが TAMSIC Release Bot から
 入っていれば成功です。
 
-サイト側も https://tamsic.tamjump.com/nono.html でRE+が会員先行視聴できる
+サイト側も https://tamsic.115en.com/nono.html でRE+が会員先行視聴できる
 状態になります。
 
 ---

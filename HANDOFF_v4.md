@@ -63,7 +63,7 @@ TAmJump からの方針決定:
 - **サイトはアーティスト募集プラットフォームへ再設計**
 - **将来のファンクラブ + グッズ販売** (既存 coin はクレジット転用可、1c=¥[レート] 未確定)
 - **利益の一部をへき地・海外過疎地の医療支援へ** (ブランドの核)
-- **TAMJ vision-map を軸に据える**: TAMSIC は TAmJump 社の「未来予想図」の裏側で動く活動として位置づけ、`https://tamjump.com/vision-map.html` を主要な世界観の入口とする
+- **TAMJ vision-map を軸に据える**: TAMSIC は TAmJump 社の「未来予想図」の裏側で動く活動として位置づけ、`https://115en.com/vision-map.html` を主要な世界観の入口とする
 - **英語をプライマリ言語に転換** (方針 β: 英語プライマリ + JP 切替トグル)
 - **告知ストーリー**: 「みなさんの応援により、TAMSIC が生まれ変わります」
 - **ONE HEART Kickstarter との切り分け**: Kickstarter プロジェクト (WE ARE ALL ONE HEART) は TAMSIC サイト内で告知しない (TAmJump 社の別事業として扱う)。今後同様の依頼があっても方針変更しないこと。
@@ -94,7 +94,7 @@ TAmJump からの方針決定:
 **方針・ドキュメント整備 (commit c898d00, bb42534)**:
 - リニューアル計画書 v1 新規作成 (`docs/TAMSIC_リニューアル計画書_v1.md`、8 章構成、Phase R1〜R5 詳細)
 - HANDOFF / TODO / 設計書に方針転換を反映
-- TAMJ vision-map (`https://tamjump.com/vision-map.html`) を軸に据える方針を明記
+- TAMJ vision-map (`https://115en.com/vision-map.html`) を軸に据える方針を明記
 - ONE HEART Kickstarter は TAMSIC で告知しない、と明記 (次セッションで同じ誤解しないよう警告)
 
 **Phase R3 英語プライマリ化 (commit fe2c647、v4.2.3)**:
@@ -144,7 +144,7 @@ TAmJump からの方針決定:
 
 - **アーティスト**: no-no / kiki / gEN (3名、表記固定、大文字化禁止)
 - **トラック数**: **14 曲** (no-no: 5 / kiki: 6 / gEN: 3、2026-05-12 時点)
-- **本番 URL**: https://tamsic.tamjump.com
+- **本番 URL**: https://tamsic.115en.com
 - **GitHub repo**: https://github.com/TAmJump/tamsic (private)
 - **ホスティング**: Cloudflare Pages (main ブランチ自動デプロイ)
 - **認証**: AWS Cognito User Pool `ap-northeast-1_vozRgCY5k` / App client `62e35ra0h4s2dr657euorlm5bu`
@@ -384,17 +384,17 @@ acf4e0a  feat(integration): wire letter-send + profile UI + enable letter-receiv
 #### 環境変数 `[vars]` (wrangler.toml)
 ```toml
 COGNITO_DOMAIN  = "ap-northeast-1vozrgcy5k.auth.ap-northeast-1.amazoncognito.com"
-ALLOWED_ORIGINS = "https://tamsic.tamjump.com"
+ALLOWED_ORIGINS = "https://tamsic.115en.com"
 FROM_ADDRESS    = "TAMSIC <letter@tamjump.com>"
 ```
 
 #### Secret
-- `RESEND_API_KEY` — Resend で発行、`wrangler secret put` で登録済 (現在は `re_eEtGXsZf...` で始まる新キー、Resend ダッシュボードでドメイン `tamjump.com` 紐付け、Permission: Sending access)
+- `RESEND_API_KEY` — Resend で発行、`wrangler secret put` で登録済 (現在は `re_eEtGXsZf...` で始まる新キー、Resend ダッシュボードでドメイン `115en.com` 紐付け、Permission: Sending access)
 
 ### 6.3 Resend (Phase F) ⚠️ 詰まり中
 
 - **アカウント**: `animalb001@gmail.com` (GitHub OAuth サインアップ)
-- **ドメイン**: `tamjump.com`、Region: Tokyo (ap-northeast-1)
+- **ドメイン**: `115en.com`、Region: Tokyo (ap-northeast-1)
 - **ドメイン Status**: ⚠️ **Not Started のまま**動かない (Verify ボタン押下後も変化なし)
 - **DNS Records (Cloudflare 側)**: 全部正しく設定済、Proxy=DNS only
   - DKIM (TXT `resend._domainkey`): ✅ Resend 側 Verified
@@ -412,7 +412,7 @@ https://www.whatsmydns.net/#TXT/send.tamjump.com
 #### API Key
 - 名前: `tamsic-letter-prod`
 - Permission: Sending access
-- Domain: `tamjump.com` (明示的に紐付け済)
+- Domain: `115en.com` (明示的に紐付け済)
 - Token: `re_eEtGXsZf...` (Worker secret に登録済、本ドキュメントでは値の冒頭8文字のみ記載)
 
 ### 6.4 GitHub
@@ -542,7 +542,7 @@ App Client の OpenID Connect Scopes 設定 (Console UI) には `openid` をチ�
 ### 9.2 Resend ドメイン認証詰まり (未解決) ⚠️
 
 **症状**:
-- Resend ダッシュボードのドメイン詳細画面で `tamjump.com` の Status が `Not Started`
+- Resend ダッシュボードのドメイン詳細画面で `115en.com` の Status が `Not Started`
 - Verify DNS Records ボタンを何度押しても 5〜10分待っても変化なし
 - DKIM だけは Verified になっている、SPF (TXT) と MX が Not Started のまま
 - メール送信時に Resend API が `400 The associated domain with your API key is not verified. Please, create a new API key with full access or with a verified domain.` を返す
@@ -550,7 +550,7 @@ App Client の OpenID Connect Scopes 設定 (Console UI) には `openid` をチ�
 **事実関係**:
 - Cloudflare DNS には正しい3レコードが入っている (DKIM TXT / SPF TXT / MX、すべて Proxy=DNS only)
 - whatsmydns.net で世界中のすべての DNS サーバーから `send.tamjump.com` の TXT (SPF) が緑チェックで取得できる確認済
-- API キー `tamsic-letter-prod` は Domain `tamjump.com` で発行 (Permission: Sending access)
+- API キー `tamsic-letter-prod` は Domain `115en.com` で発行 (Permission: Sending access)
 - Worker secret には新キーが登録されている
 
 **つまり**: Cloudflare 側完璧、外部 DNS 完璧、API キー側完璧、にもかかわらず Resend の検証システムだけが Not Started のまま。これは Resend 側のキャッシュ or バグ。
@@ -559,11 +559,11 @@ App Client の OpenID Connect Scopes 設定 (Console UI) には `openid` をチ�
 
 #### オプション A: 削除→再登録 (確実、所要15分)
 1. Resend > API keys > `tamsic-letter-prod` の `…` → Delete (タイプ確認 `tamsic-letter-prod`)
-2. Resend > Domains > `tamjump.com` の `…` → Delete domain
-3. Domains > Add domain → `tamjump.com` / Region Tokyo → Add
+2. Resend > Domains > `115en.com` の `…` → Delete domain
+3. Domains > Add domain → `115en.com` / Region Tokyo → Add
 4. Auto configure ボタン → Cloudflare 認可 (既存レコードあるのでスキップで通る)
 5. Verify DNS Records ボタン押下 (DNS は実反映済なので今度は通るはず)
-6. API keys > Create API Key → Name `tamsic-letter-prod` / Sending access / Domain `tamjump.com`
+6. API keys > Create API Key → Name `tamsic-letter-prod` / Sending access / Domain `115en.com`
 7. Worker secret 更新: `wrangler secret put RESEND_API_KEY` で新キー貼り付け
 8. ブラウザで送信テスト
 
@@ -580,7 +580,7 @@ Subject: Domain verification stuck in "Not Started" status
 
 Hello,
 
-I added domain "tamjump.com" to my Resend account ~22 hours ago.
+I added domain "115en.com" to my Resend account ~22 hours ago.
 DKIM is showing as Verified, but SPF (TXT send) and MX (send) records 
 remain in "Not Started" status, even though:
 
@@ -650,7 +650,7 @@ animalb001
 ### 11.1 基本動作 (Resend 詰まり問題が解決後)
 
 ```
-[1] https://tamsic.tamjump.com にアクセス → ログイン (login.html で email + pwd)
+[1] https://tamsic.115en.com にアクセス → ログイン (login.html で email + pwd)
 [2] mypage で残高表示が「9,400 coin」のような3桁カンマ
 [3] mypage の「プロフィール」で nickname / 誕生日 を保存 → 「保存しました」緑表示
 [4] nono.html で「ぎりぎりだよ。」フル試聴ボタン → 30 coin 消費 → 9,370 coin
@@ -779,13 +779,13 @@ https://dash.cloudflare.com → Workers & Pages → tamsic-send-letter → Obser
 
 #### Step 2: ドメイン削除
 - URL: `https://resend.com/domains`
-- `tamjump.com` 行をクリックして詳細ページへ
+- `115en.com` 行をクリックして詳細ページへ
 - 右上の `…` メニュー → Delete domain
-- 確認画面で `tamjump.com` をタイプ → Delete domain ボタン押下
+- 確認画面で `115en.com` をタイプ → Delete domain ボタン押下
 
 #### Step 3: ドメイン再登録
 - 同じ `https://resend.com/domains` 画面で右上 + Add domain
-- Domain: `tamjump.com`
+- Domain: `115en.com`
 - Region: Tokyo (ap-northeast-1)
 - Add ボタン押下
 
@@ -804,7 +804,7 @@ https://dash.cloudflare.com → Workers & Pages → tamsic-send-letter → Obser
 - Create API Key ボタン
 - Name: `tamsic-letter-prod`
 - Permission: Sending access
-- Domain: `tamjump.com` (明示的に選択、All Domains はNG)
+- Domain: `115en.com` (明示的に選択、All Domains はNG)
 - Add ボタン押下
 - 表示された `re_xxx...` をコピー (一度しか見られない、セキュリティ上 Claude には見せない方がよい)
 
@@ -821,7 +821,7 @@ wrangler secret put RESEND_API_KEY
 (secret 更新は即時反映、Worker 再 deploy 不要)
 
 #### Step 8: 送信テスト
-ブラウザで `https://tamsic.tamjump.com/nono.html` → ハードリロード (Ctrl+Shift+R) → フル試聴解放されていれば便箋下「この手紙をメールで受け取る」ボタン → 送信する → 受信箱確認
+ブラウザで `https://tamsic.115en.com/nono.html` → ハードリロード (Ctrl+Shift+R) → フル試聴解放されていれば便箋下「この手紙をメールで受け取る」ボタン → 送信する → 受信箱確認
 
 ---
 

@@ -49,7 +49,7 @@
     // Track の coverPath を絶対 URL にする (メーラー側で表示するため)
     let coverAbs = track.coverPath || '';
     if (coverAbs && !/^https?:/i.test(coverAbs)) {
-      coverAbs = (window.location.origin || 'https://tamsic.tamjump.com') + '/' + coverAbs.replace(/^\/+/, '');
+      coverAbs = (window.location.origin || 'https://tamsic.115en.com') + '/' + coverAbs.replace(/^\/+/, '');
     }
 
     let res;

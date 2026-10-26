@@ -8,8 +8,8 @@ const AUTH_CONFIG = {
   userPoolId:   'ap-northeast-1_vozRgCY5k',
   clientId:     '62e35ra0h4s2dr657euorlm5bu',
   domain:       'ap-northeast-1vozrgcy5k.auth.ap-northeast-1.amazoncognito.com',
-  redirectUri:  'https://tamsic.tamjump.com/callback.html',
-  logoutUri:    'https://tamsic.tamjump.com/',
+  redirectUri:  'https://tamsic.115en.com/callback.html',
+  logoutUri:    'https://tamsic.115en.com/',
   scopes:       'openid email profile',
 };
 

@@ -76,7 +76,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
 <pre class="ascii">
                               ┌──────────────────────────────────────┐
                               │  ENDUSER (Web Browser)               │
-                              │  https://tamsic.tamjump.com          │
+                              │  https://tamsic.115en.com          │
                               └────────────────┬─────────────────────┘
                                                │
                        ┌───────────────────────┴────────────────────────┐
@@ -97,7 +97,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
         │  Cloudflare Worker       │                │  Resend                  │
         │  tamsic-send-letter      │ ──────────────►│  api.resend.com/emails   │
         │  - Cognito userInfo 検証 │                │  - SPF/DKIM/MX 認証済    │
-        │  - Frame/Closing 抽選    │                │  - tamjump.com Verified  │
+        │  - Frame/Closing 抽選    │                │  - 115en.com Verified  │
         │  - HTML メール組立       │                └──────────┬───────────────┘
         └──────────────────────────┘                           │
                                                                ▼
@@ -151,7 +151,7 @@ tamsic_wallet (cache) / tamsic_access_token / tamsic_refresh_token / tamsic_id_t
 <div class="layer-title">External Services</div>
 <div class="layer-grid">
 <div class="cmp"><strong>Resend</strong> (api.resend.com)<br>
-ドメイン: tamjump.com Verified、API key: tamsic-letter-prod、月3,000通無料枠</div>
+ドメイン: 115en.com Verified、API key: tamsic-letter-prod、月3,000通無料枠</div>
 <div class="cmp"><strong>Square</strong><br>
 コインパック決済、現状は手動「購入を反映する」ボタン</div>
 <div class="cmp"><strong>YouTube</strong><br>
@@ -252,7 +252,7 @@ tamsic_wallet (cache) / tamsic_access_token / tamsic_refresh_token / tamsic_id_t
 <table>
 <tr><th>Variable</th><th>Type</th><th>Value (本番)</th></tr>
 <tr><td>COGNITO_DOMAIN</td><td>vars</td><td>ap-northeast-1vozrgcy5k.auth.ap-northeast-1.amazoncognito.com</td></tr>
-<tr><td>ALLOWED_ORIGINS</td><td>vars</td><td>https://tamsic.tamjump.com</td></tr>
+<tr><td>ALLOWED_ORIGINS</td><td>vars</td><td>https://tamsic.115en.com</td></tr>
 <tr><td>FROM_ADDRESS</td><td>vars</td><td>TAMSIC &lt;letter@tamjump.com&gt;</td></tr>
 <tr><td>RESEND_API_KEY</td><td>secret</td><td>re_xxx... (画面では非表示)</td></tr>
 </table>
