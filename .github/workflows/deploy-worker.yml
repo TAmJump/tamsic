@@ -1,0 +1,23 @@
+name: Deploy Worker (tamsic-send-letter)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'workers/**'
+      - '.github/workflows/deploy-worker.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy tamsic-send-letter
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: b9de28abfd009bbf696ceec4da62c5b8
+          workingDirectory: workers
+          command: deploy --keep-vars
