@@ -827,26 +827,7 @@ footer {
 <script src="lang.js?v=4.2.3.18"></script>
 </head>
 <body>
-<!-- TAMSIC リニューアル告知バナー (v4.2.3.6: チラシ画像版、掲載期限 2026-12-31 まで) -->
-<section id="renewal-banner" style="display:none;background:#FAFAF7;padding:100px 20px 40px;text-align:center;border-bottom:1px solid var(--light);">
-  <a href="renewal.html" style="display:inline-block;max-width:820px;width:100%;line-height:0;text-decoration:none;transition:opacity .25s;" onmouseover="this.style.opacity='.92'" onmouseout="this.style.opacity='1'">
-    <img src="assets/images/news20260917_edited.png" alt="TAMSIC is being renewed. Autumn 2026 — Music for a kinder tomorrow." style="width:100%;height:auto;display:block;">
-  </a>
-  <div style="margin-top:28px;">
-    <a href="renewal.html" style="display:inline-block;padding:13px 36px;background:#0B1D35;color:#F1E9D2;font-family:'Jost',sans-serif;font-size:11px;font-weight:600;letter-spacing:.25em;text-transform:uppercase;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='#C4960E';this.style.color='#0E0E0E'" onmouseout="this.style.background='#0B1D35';this.style.color='#F1E9D2'" data-ja="詳しく →" data-en="Read more →">Read more →</a>
-  </div>
-</section>
-<script>
-// 掲載期限制御: 2026-09-16 〜 2026-12-31 の間のみ表示
-(function(){
-  var start = new Date('2026-09-16T00:00:00+09:00');
-  var end   = new Date('2026-12-31T23:59:59+09:00');
-  var now   = new Date();
-  if (now >= start && now <= end) {
-    document.getElementById('renewal-banner').style.display = 'block';
-  }
-})();
-</script>
+
 
 
 <nav>
